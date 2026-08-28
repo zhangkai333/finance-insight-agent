@@ -1,0 +1,37 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+*.egg-info/
+
+# Runtime outputs
+data/artifacts/
+data/logs/
+data/evaluation/
+
+# Local/derived datasets. Publish only after checking redistribution rights.
+data/*.sqlite3
+data/processed/
+data/selected/
+evals/human_review_round*.csv
+evals/human_review_round*.evidence.jsonl
+
+# Local transfer/export bundles (may contain secrets or licensed data)
+transfer_bundle/
+transfer_bundles/
+*.transfer.zip
+
+# Competition and third-party source material: verify redistribution rights first
+资料待放入/
+*.pdf
+
+# Editor/OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+

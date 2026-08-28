@@ -1,0 +1,17 @@
+.git
+.pytest_cache
+__pycache__
+资料待放入
+data/*.sqlite3
+data/artifacts
+data/logs
+data/evaluation
+data/processed
+data/selected
+*.pdf
+*.pyc
+.env
+transfer_bundle
+transfer_bundles
+*.transfer.zip
+

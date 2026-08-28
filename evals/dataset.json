@@ -1,0 +1,102 @@
+[
+  {
+    "id": "q1",
+    "question": "查询凯莱英2024年营业收入",
+    "expected_tools": [
+      "financial_query"
+    ],
+    "expected_company": "002821",
+    "expected_metrics": [
+      "revenue"
+    ],
+    "min_citations": 0,
+    "min_charts": 0,
+    "expected_numeric": {
+      "year": 2024,
+      "metric": "revenue",
+      "value": 580465.733692,
+      "tolerance": 1e-06
+    }
+  },
+  {
+    "id": "q2",
+    "question": "查询凯莱英2022到2024年ROE趋势",
+    "expected_tools": [
+      "financial_query",
+      "financial_analysis"
+    ],
+    "expected_company": "002821",
+    "expected_metrics": [
+      "roe"
+    ],
+    "min_citations": 0,
+    "min_charts": 0,
+    "expected_numeric": {
+      "year": 2024,
+      "metric": "roe",
+      "value": 5.56,
+      "tolerance": 1e-06
+    }
+  },
+  {
+    "id": "q3",
+    "question": "查询2024年营业收入排名",
+    "expected_tools": [
+      "financial_query"
+    ],
+    "expected_company": null,
+    "expected_metrics": [
+      "revenue"
+    ],
+    "min_citations": 0,
+    "min_charts": 0
+  },
+  {
+    "id": "q4",
+    "question": "分析凯莱英2022到2024年营业收入异常变化并解释原因",
+    "expected_tools": [
+      "financial_query",
+      "financial_analysis",
+      "annual_report_search"
+    ],
+    "expected_company": "002821",
+    "expected_metrics": [
+      "revenue"
+    ],
+    "min_citations": 1,
+    "min_charts": 0
+  },
+  {
+    "id": "q5",
+    "question": "绘制凯莱英2022到2024年营业收入趋势图",
+    "expected_tools": [
+      "financial_query",
+      "financial_analysis",
+      "chart_generation"
+    ],
+    "expected_company": "002821",
+    "expected_metrics": [
+      "revenue"
+    ],
+    "min_citations": 0,
+    "min_charts": 1
+  },
+  {
+    "id": "q6",
+    "question": "分析凯莱英2022—2024年营业收入、净利润和ROE的变化，如果发现异常年份，结合对应年报分析原因，并生成趋势图和分析报告。",
+    "expected_tools": [
+      "financial_query",
+      "financial_analysis",
+      "annual_report_search",
+      "chart_generation"
+    ],
+    "expected_company": "002821",
+    "expected_metrics": [
+      "revenue",
+      "net_profit_attributable",
+      "roe"
+    ],
+    "min_citations": 1,
+    "min_charts": 3
+  }
+]

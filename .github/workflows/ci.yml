@@ -1,0 +1,30 @@
+name: Python CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev,mysql]"
+      - name: Compile
+        run: python -m compileall -q src scripts tests
+      - name: Run database-independent tests
+        run: >-
+          python -m pytest -q
+          tests/unit/test_intent_and_structured.py
+          tests/unit/test_llm.py
+          tests/unit/test_resilience_and_stores.py
+          tests/unit/test_dataset_and_mysql_loader.py
+          tests/integration/test_demo_data_initializer.py
+
