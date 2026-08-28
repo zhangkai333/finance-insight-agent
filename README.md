@@ -268,6 +268,7 @@ tests/
 - `docs/OPEN_SOURCE_RELEASE.md`：GitHub 发布、CI、数据许可和“下载可用”方案；
 - `docs/DATA_LICENSE.md`：代码许可与第三方/竞赛数据许可的边界；
 - `docs/笔记本接管项目_完整迁移步骤_不迁移APIKey.md`：公司电脑一次性导出、笔记本接管、且不迁移 DeepSeek API Key 的完整实操步骤；
+- `docs/笔记本接管与继续优化操作步骤.md`：笔记本接管、人工评测补充包、四项固定优化优先级及可直接发送给笔记本 Codex 的提示词；
 - `docs/MIGRATION.md`：迁移入口与安全规则摘要；
 - `scripts/export_transfer_bundle.ps1` / `scripts/import_transfer_bundle.ps1`：带 SHA256 校验的迁移脚本。
 
