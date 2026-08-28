@@ -267,8 +267,8 @@ tests/
 - `evals/human_review_round1.csv`：已导入 60 条真实 DeepSeek Agent 回答的首轮审核表；
 - `docs/OPEN_SOURCE_RELEASE.md`：GitHub 发布、CI、数据许可和“下载可用”方案；
 - `docs/DATA_LICENSE.md`：代码许可与第三方/竞赛数据许可的边界；
-- `docs/MIGRATION.md`：通过 GitHub + 私有数据包迁移到笔记本；
+- `docs/笔记本接管项目_完整迁移步骤_不迁移APIKey.md`：公司电脑一次性导出、笔记本接管、且不迁移 DeepSeek API Key 的完整实操步骤；
+- `docs/MIGRATION.md`：迁移入口与安全规则摘要；
 - `scripts/export_transfer_bundle.ps1` / `scripts/import_transfer_bundle.ps1`：带 SHA256 校验的迁移脚本。
 
 仓库现在已提供无版权风险的合成 Demo 初始化脚本，因此公开 clone 可以完成端到端演示；真实 SQLite、原始资料和首轮人工审核证据仍应保持私有。建议先推送 Private 仓库检查一次，再改为 Public。
-
