@@ -12,7 +12,7 @@
 | 内容 | 迁移方式 | 是否放 GitHub |
 |---|---|---|
 | Python 源代码、测试、脚本、项目文档 | 笔记本从 GitHub 克隆 | 是 |
-| SQLite 数据库、处理结果、评估结果、日志、原始资料 | U 盘或移动硬盘私下迁移 | 否 |
+| SQLite 数据库、处理结果、评估结果、日志、原始资料 | 加密压缩后通过微信文件传输助手迁移 | 否 |
 | `.env` 和 DeepSeek API Key | **不迁移**；笔记本重新创建 `.env` | **绝对不可以** |
 | `.venv`、缓存、临时文件 | 不迁移；笔记本重新生成 | 否 |
 
@@ -20,7 +20,7 @@
 
 - `data/`：约 45.62 MB，共约 295 个文件；
 - `资料待放入/`：约 614.61 MB，共 540 个文件；
-- 合计约 660 MB，建议移动硬盘至少预留 2 GB 空间。
+- 合计约 660 MB；通过微信传输前需要先生成迁移包并压缩，建议电脑至少预留 2 GB 临时空间。
 
 本项目的安全迁移脚本会复制全部 `data/` 和原始资料，但会主动拒绝导出 `.env`。
 
@@ -51,20 +51,18 @@ origin  https://github.com/zhangkai333/finance-insight-agent.git
 
 ---
 
-## 第 2 步：准备移动硬盘或 U 盘
+## 第 2 步：准备微信传输目录
 
-1. 插入移动硬盘或 U 盘；
-2. 在“此电脑”中查看盘符，例如 `E:`；
-3. 确认可用空间至少 2 GB；
-4. 下文统一以 `E:` 为例。你的盘符不是 `E:` 时，必须替换成自己的盘符。
+你已选择使用微信文件传输助手，不使用移动硬盘。先在公司电脑桌面创建一个临时导出目录：
 
-建议先在移动硬盘中新建：
-
-```text
-E:\FinanceInsightBackup
+```powershell
+$transferRoot = Join-Path $HOME "Desktop\FinanceInsightTransfer"
+New-Item -ItemType Directory -Force -Path $transferRoot
 ```
 
-不要把迁移包放在项目目录内，也不要上传百度网盘、公开网盘或 GitHub。
+这次私人数据约 660 MB。微信不能直接发送整个文件夹，所以后面要先压缩。由于内容属于私人数据，**推荐使用带密码的 7-Zip 压缩包**，不要直接发送未加密 ZIP。
+
+> 当前电脑没有检测到可直接在 PowerShell 中调用的 `7z` 命令。如果没有安装 7-Zip，可以先安装后使用右键菜单；也可以先生成迁移包，随后在文件资源管理器中用已有压缩软件加密。不要把压缩密码发到微信或写进文件名。
 
 ---
 
@@ -76,7 +74,7 @@ E:\FinanceInsightBackup
 cd "C:\Users\admin\Documents\ChatGPT\泰迪杯B题agent应用开发项目"
 
 powershell -ExecutionPolicy Bypass -File .\scripts\export_transfer_bundle.ps1 `
-  -Destination "E:\FinanceInsightBackup" `
+  -Destination "$HOME\Desktop\FinanceInsightTransfer" `
   -IncludeAllLocalData `
   -IncludeSourceDocuments
 ```
@@ -84,7 +82,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\export_transfer_bundle.ps1 `
 执行完成后，PowerShell 会显示类似：
 
 ```text
-Transfer bundle created: E:\FinanceInsightBackup\finance-insight-transfer-20260828-xxxxxx
+Transfer bundle created: C:\Users\你的用户名\Desktop\FinanceInsightTransfer\finance-insight-transfer-20260828-xxxxxx
 The bundle intentionally excludes .env and API keys.
 Files are checksummed in manifest.sha256.json.
 ```
@@ -118,7 +116,7 @@ Files are checksummed in manifest.sha256.json.
 执行：
 
 ```powershell
-$latest = Get-ChildItem -LiteralPath "E:\FinanceInsightBackup" -Directory |
+$latest = Get-ChildItem -LiteralPath "$HOME\Desktop\FinanceInsightTransfer" -Directory |
   Sort-Object LastWriteTime -Descending |
   Select-Object -First 1
 
@@ -163,14 +161,45 @@ README-TRANSFER.txt
 
 ---
 
-## 第 5 步：安全弹出移动硬盘
+## 第 5 步：压缩并通过微信文件传输助手发送
 
-1. 等待复制完全结束；
-2. 关闭所有正在查看移动硬盘文件的窗口；
-3. 使用 Windows 任务栏的“安全删除硬件并弹出媒体”；
-4. 再拔出移动硬盘。
+### 推荐：使用 7-Zip 加密压缩
 
-到这里，公司电脑的“导出”工作完成，但**先不要删除公司电脑上的项目**。必须等笔记本完成测试后再清理。
+1. 在文件资源管理器中打开桌面的 `FinanceInsightTransfer`；
+2. 找到刚生成的 `finance-insight-transfer-时间戳` 文件夹；
+3. 右键该文件夹，选择 **7-Zip → 添加到压缩包**；
+4. 压缩格式选择 `7z`；
+5. 在“加密”区域设置一个你自己记得住的密码；
+6. 加密方法选择 `AES-256`，并勾选“加密文件名”；
+7. 如果微信提示文件过大，在“分卷大小”中填写 `190M`，生成多个分卷；
+8. 不要把密码写进压缩包名称，也不要通过微信发送密码。
+
+生成后可能是一个文件：
+
+```text
+finance-insight-transfer-时间戳.7z
+```
+
+也可能是多个分卷：
+
+```text
+finance-insight-transfer-时间戳.7z.001
+finance-insight-transfer-时间戳.7z.002
+finance-insight-transfer-时间戳.7z.003
+...
+```
+
+然后：
+
+1. 打开公司电脑微信；
+2. 打开“文件传输助手”；
+3. 发送压缩包；如果是分卷，必须把所有分卷都发送；
+4. 等待每个文件都显示发送完成；
+5. 不要发送原始项目文件夹，不要单独发送 `.env`。
+
+> 微信属于第三方传输渠道。即使数据属于你，也应确认不违反公司的设备和数据管理规定。加密压缩可以降低文件在传输或账号异常时被直接读取的风险。
+
+到这里，公司电脑的“发送”工作完成，但**先不要删除公司电脑上的项目或压缩包**。必须等笔记本完成解压、SHA256 校验和测试后再清理。
 
 ---
 
@@ -323,21 +352,26 @@ git status --short
 
 ---
 
-## 第 7 步：接入移动硬盘并导入全部私有数据
+## 第 7 步：从微信接收、解压并导入全部私有数据
 
-把移动硬盘插入笔记本。假设它仍然是 `E:`。
+1. 在笔记本登录你自己的微信；
+2. 打开“文件传输助手”；
+3. 把压缩包下载到笔记本，例如：
 
-先找到迁移包名称：
-
-```powershell
-Get-ChildItem -LiteralPath "E:\FinanceInsightBackup" -Directory
+```text
+C:\Users\你的用户名\Downloads\FinanceInsightTransfer
 ```
 
-然后把下方 `时间戳` 替换为真实目录名：
+4. 如果是多个 `.001/.002/...` 分卷，必须全部下载到同一目录；
+5. 右键第一个 `.7z` 或 `.7z.001` 文件，使用 7-Zip 解压；
+6. 输入你在公司电脑设置的密码；
+7. 解压后应得到 `finance-insight-transfer-时间戳` 文件夹。
+
+然后在已经 Clone 的项目根目录执行，替换其中的用户名和时间戳：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\import_transfer_bundle.ps1 `
-  -BundlePath "E:\FinanceInsightBackup\finance-insight-transfer-时间戳" `
+  -BundlePath "C:\Users\你的用户名\Downloads\FinanceInsightTransfer\finance-insight-transfer-时间戳" `
   -CopySourceDocuments
 ```
 
@@ -347,9 +381,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\import_transfer_bundle.ps1 `
 -CopyEnv
 ```
 
-导入脚本即使收到该参数也会直接拒绝，不会导入 `.env`。
-
-脚本会先根据 `manifest.sha256.json` 校验每个文件。成功时应看到：
+导入脚本会先根据 `manifest.sha256.json` 校验每个文件。成功时应看到：
 
 ```text
 Checksum verification passed.
@@ -478,7 +510,7 @@ C:\Users\你的用户名\Documents\GitHub\finance-insight-agent
 - [ ] 笔记本测试通过；
 - [ ] FastAPI 可以启动；
 - [ ] 已在笔记本 Codex 中打开项目；
-- [ ] 重要文件在移动硬盘上仍有一份备份。
+- [ ] 公司电脑和笔记本上暂时都保留了压缩包备份。
 
 满足后，在公司电脑进行：
 
@@ -489,7 +521,7 @@ C:\Users\你的用户名\Documents\GitHub\finance-insight-agent
 5. 按公司规定清理 Windows 凭据、浏览器下载记录和个人登录；
 6. 使用文件资源管理器删除公司电脑上的项目目录，并清空回收站；
 7. 删除公司电脑上单独保存的迁移包；
-8. 不要删除移动硬盘和笔记本上的备份。
+8. 确认笔记本完全可用前，不要删除公司电脑或笔记本上的压缩包备份。
 
 > 清理前请遵守公司的设备和数据管理制度。如果公司要求由 IT 清理，交给 IT 处理，不要自行绕过公司政策。
 
@@ -543,11 +575,11 @@ python -m pip install -e ".[dev,mysql]"
 
 ## 4. 导入时提示校验失败
 
-说明移动硬盘中的某个文件复制不完整或已损坏。不要跳过校验：
+说明微信下载的分卷不完整、顺序缺失，或压缩包/文件已损坏。不要跳过校验：
 
 1. 删除笔记本中本次导入的不完整数据；
 2. 回公司电脑重新生成迁移包；
-3. 重新安全弹出移动硬盘；
+3. 确认所有微信分卷均已完整下载，必要时重新发送或下载；
 4. 再导入一次。
 
 ## 5. 测试不是 `30 passed`
@@ -667,7 +699,7 @@ docs/ADR.md
 - [ ] 最新代码和本文档已 Push 到 GitHub；
 - [ ] 已用 `-IncludeAllLocalData -IncludeSourceDocuments` 生成迁移包；
 - [ ] 迁移包没有 `.env`；
-- [ ] 移动硬盘安全弹出；
+- [ ] 加密压缩包或所有分卷已通过微信发送完成；
 - [ ] 尚未提前删除公司电脑项目。
 
 ## 笔记本
@@ -699,4 +731,4 @@ docs: add secure one-time laptop handover guide
 
 3. 点击 **Commit to main**，然后点击 **Push origin**。
 
-Push 完成后，再执行本文“公司电脑第 3 步”生成移动硬盘迁移包。
+Push 完成后，再执行本文“公司电脑第 3 步”生成迁移包，并按第 5 步加密压缩后通过微信文件传输助手发送。
