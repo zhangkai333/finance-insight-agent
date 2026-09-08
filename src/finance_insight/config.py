@@ -65,16 +65,31 @@ class Settings:
     mysql_user: str = _env("MYSQL_USER", "finance") or "finance"
     mysql_password: str = _env("MYSQL_PASSWORD", "change-me") or "change-me"
     mysql_connect_timeout_seconds: int = int(_env("MYSQL_CONNECT_TIMEOUT_SECONDS", "5") or 5)
+    mysql_read_timeout_seconds: int = int(_env("MYSQL_READ_TIMEOUT_SECONDS", "10") or 10)
+    mysql_pool_size: int = int(_env("MYSQL_POOL_SIZE", "4") or 4)
+    mysql_pool_acquire_timeout_seconds: float = float(_env("MYSQL_POOL_ACQUIRE_TIMEOUT_SECONDS", "5") or 5)
     mysql_fallback_to_sqlite: bool = _bool_env("MYSQL_FALLBACK_TO_SQLITE", True)
     llm_api_key: str | None = _env("DEEPSEEK_API_KEY") or _env("LLM_API_KEY")
     llm_base_url: str = _env("LLM_BASE_URL", "https://api.deepseek.com") or "https://api.deepseek.com"
     llm_model: str = _env("LLM_MODEL", "deepseek-chat") or "deepseek-chat"
     llm_timeout_seconds: float = float(_env("LLM_TIMEOUT_SECONDS", "30") or 30)
+    max_concurrent_requests: int = int(_env("MAX_CONCURRENT_REQUESTS", "2") or 2)
+    request_queue_timeout_seconds: float = float(_env("REQUEST_QUEUE_TIMEOUT_SECONDS", "15") or 15)
     redis_url: str | None = _env("REDIS_URL")
 
     def __post_init__(self) -> None:
         if self.finance_backend not in {"sqlite", "mysql"}:
             raise ValueError("FINANCE_BACKEND 只能是 sqlite 或 mysql")
+        if self.max_concurrent_requests < 1:
+            raise ValueError("MAX_CONCURRENT_REQUESTS 必须大于 0")
+        if self.request_queue_timeout_seconds <= 0:
+            raise ValueError("REQUEST_QUEUE_TIMEOUT_SECONDS 必须大于 0")
+        if self.mysql_read_timeout_seconds <= 0:
+            raise ValueError("MYSQL_READ_TIMEOUT_SECONDS 必须大于 0")
+        if self.mysql_pool_size < 1:
+            raise ValueError("MYSQL_POOL_SIZE 必须大于 0")
+        if self.mysql_pool_acquire_timeout_seconds <= 0:
+            raise ValueError("MYSQL_POOL_ACQUIRE_TIMEOUT_SECONDS 必须大于 0")
 
     @property
     def llm_enabled(self) -> bool:

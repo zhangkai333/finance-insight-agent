@@ -58,6 +58,8 @@ class QueryResponse(BaseModel):
     tool_events: list[dict[str, Any]] = Field(default_factory=list)
     errors: list[str] = Field(default_factory=list)
     fallback_used: bool = False
+    evidence_summary: dict[str, Any] = Field(default_factory=dict)
+    execution_context: dict[str, Any] = Field(default_factory=dict)
 
 
 class TaskResponse(BaseModel):
@@ -79,3 +81,5 @@ class HealthResponse(BaseModel):
     finance_backend_effective: str = "sqlite"
     finance_backend_ready: bool = True
     finance_backend_fallback_reason: str | None = None
+    max_concurrent_requests: int = 2
+    active_requests: int = 0

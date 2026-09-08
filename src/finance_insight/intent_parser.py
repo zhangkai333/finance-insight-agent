@@ -23,6 +23,8 @@ METRIC_ALIASES: dict[str, tuple[str, ...]] = {
     "operating_cash_margin": ("经营现金流率", "经营现金流/营业收入"),
 }
 
+CHART_REQUEST_TERMS = ("图", "可视化", "绘制")
+
 
 def _company_aliases(db_path: Path) -> dict[str, CompanyRef]:
     con = sqlite3.connect(db_path)
@@ -78,6 +80,11 @@ def _metrics(question: str) -> list[str]:
     return list(dict.fromkeys(code for _, _, code, _ in ordered))
 
 
+def _needs_chart(question: str) -> bool:
+    """Charts are optional and must be explicitly requested by the user."""
+    return any(word in question for word in CHART_REQUEST_TERMS)
+
+
 def parse_intent(question: str, config: Settings = settings) -> QueryIntent:
     aliases = _company_aliases(config.finance_db)
     companies: list[CompanyRef] = []
@@ -97,7 +104,7 @@ def parse_intent(question: str, config: Settings = settings) -> QueryIntent:
         metrics = ["revenue"]
     needs_rag = any(word in question for word in ("原因", "解释", "年报", "依据", "为什么", "研报"))
     anomaly = any(word in question for word in ("异常", "波动", "大幅", "显著变化", "下滑", "下降"))
-    chart = any(word in question for word in ("图", "可视化", "绘制"))
+    chart = _needs_chart(question)
     calculation = anomaly or any(word in low for word in ("同比", "cagr", "增速", "利润率", "平均")) or len(_years(question)) > 1
     task_type = "ranking" if ranking else (
         "comprehensive_analysis" if needs_rag or anomaly or chart else
@@ -142,5 +149,13 @@ def parse_intent_with_llm(question: str, llm: LLMClient, config: Settings = sett
         raise ValueError("LLM 返回了白名单外指标")
     if any(year not in (2022, 2023, 2024) for year in intent.period.years):
         raise ValueError("LLM 请求了当前数据集外年份")
+    # Routing flags are business policy, not model discretion. This prevents a valid
+    # JSON response from skipping calculations or adding optional tools by accident.
+    deterministic = parse_intent(question, config)
+    intent.needs_calculation = deterministic.needs_calculation
+    intent.needs_rag = deterministic.needs_rag
+    intent.needs_chart = deterministic.needs_chart
+    intent.needs_anomaly_detection = deterministic.needs_anomaly_detection
+    intent.task_type = deterministic.task_type
     intent.parser = f"llm-json:{response.model}"
     return intent

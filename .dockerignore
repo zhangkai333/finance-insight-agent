@@ -8,6 +8,9 @@ data/logs
 data/evaluation
 data/processed
 data/selected
+evals/human_review_round*.csv
+evals/human_review_round*.evidence.jsonl
+evals/dataset_human_reviewed_v1.json
 *.pdf
 *.pyc
 .env

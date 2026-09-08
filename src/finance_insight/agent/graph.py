@@ -79,7 +79,7 @@ class FinanceInsightAgent:
                 for key in (
                     "backend", "requested_backend", "record_count", "scope",
                     "retrieval_mode", "embedding_provider", "fallback_reason",
-                    "anomaly_count", "count",
+                    "anomaly_count", "count", "connection_pool",
                 )
                 if key in result.data
             },
@@ -241,6 +241,65 @@ class FinanceInsightAgent:
         ])
         return "\n".join(lines)
 
+    @staticmethod
+    def _evidence_summary(state: AgentState) -> dict[str, Any]:
+        """Expose bounded, typed evidence for the UI and replay checks."""
+        facts = [
+            {
+                key: row.get(key)
+                for key in (
+                    "stock_code", "company_name", "report_year", "metric_code",
+                    "metric_name", "metric_value", "normalized_unit", "source_file",
+                    "source_page", "quality_status",
+                )
+                if key in row
+            }
+            for row in state.get("financial_data", [])[:50]
+        ]
+        calculations = state.get("calculations", {})
+        series = []
+        for item in calculations.get("series", [])[:20]:
+            series.append({
+                "stock_code": item.get("stock_code"),
+                "company_name": item.get("company_name"),
+                "metric_code": item.get("metric_code"),
+                "metric_name": item.get("metric_name"),
+                "points": item.get("points", [])[:10],
+                "cagr_pct": item.get("cagr_pct"),
+            })
+        return {
+            "facts": facts,
+            "calculations": {
+                "series": series,
+                "anomalies": state.get("anomalies", [])[:20],
+                "rules": calculations.get("rules", {}),
+            },
+            "provenance": {
+                "facts": "FinancialQueryTool / SQLite or MySQL",
+                "calculations": "FinancialAnalysisTool / Python deterministic formulas",
+                "citations": "AnnualReportSearchTool / FTS5 + vector or fallback",
+                "summary": "LLM synthesis or deterministic fallback; never source of numeric facts",
+            },
+        }
+
+    def _execution_context(self, state: AgentState) -> dict[str, Any]:
+        """Return only the small set of run facts useful to a reviewer."""
+        sql_event = next(
+            (event for event in state.get("tool_events", []) if event.get("tool_name") == "financial_query"),
+            {},
+        )
+        details = sql_event.get("details", {})
+        return {
+            "requested_backend": details.get("requested_backend", self.config.finance_backend),
+            "effective_backend": details.get("backend", self.config.finance_backend),
+            "backend_fallback_reason": details.get("fallback_reason"),
+            "llm_requested": bool(state.get("use_llm", True)),
+            "llm_configured": self.config.llm_enabled,
+            "fallback_used": bool(state.get("fallback_used", False)),
+            "step_count": state.get("step_count", 0),
+            "recursion_limit": 12,
+        }
+
     def _synthesize(self, state: AgentState) -> dict[str, Any]:
         answer = self._deterministic_answer(state)
         fallback = state.get("fallback_used", False)
@@ -292,6 +351,8 @@ class FinanceInsightAgent:
                 charts=final.get("chart_paths", []), citations=final.get("citations", []),
                 tool_events=final.get("tool_events", []), errors=final.get("errors", []),
                 fallback_used=final.get("fallback_used", False),
+                evidence_summary=self._evidence_summary(final),
+                execution_context=self._execution_context(final),
             )
         except Exception as exc:
             self.tracer.emit(
@@ -301,5 +362,6 @@ class FinanceInsightAgent:
             return QueryResponse(
                 trace_id=trace_id, session_id=session_id, status="error",
                 answer=f"任务失败：{exc}", errors=[str(exc)], fallback_used=True,
+                evidence_summary={}, execution_context={"fallback_used": True, "recursion_limit": 12},
             )
 

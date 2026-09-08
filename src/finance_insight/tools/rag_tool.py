@@ -128,6 +128,9 @@ class AnnualReportSearchTool:
                 }
                 for row in rows
             ]
+            for citation, row in zip(citations, rows):
+                citation["snippet"] = " ".join(str(row.get("content", "")).split())[:240]
+                citation["retrieval_mode"] = row.get("retrieval_mode", "unknown")
             retrieval_mode = rows[0].get("retrieval_mode") if rows else "none"
             data = {
                 "query": search_query,

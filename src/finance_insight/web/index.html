@@ -96,9 +96,24 @@
 
           <div id="errorBanner" class="error-banner hidden"></div>
 
+          <section id="executionContext" class="run-context" aria-label="本次执行环境"></section>
+
           <section class="report-card">
             <div class="card-heading"><span>结论与分析</span><small>基于工具证据生成</small></div>
             <div id="answer" class="report-body"></div>
+          </section>
+
+          <section class="content-section evidence-section">
+            <div class="section-heading"><h3>证据分层</h3><span>可复核数据链</span></div>
+            <div id="provenance" class="provenance-grid"></div>
+            <div class="evidence-block">
+              <div class="evidence-label">结构化事实 / FinancialQueryTool</div>
+              <div id="facts" class="facts-table-wrap"></div>
+            </div>
+            <div class="evidence-block">
+              <div class="evidence-label">确定性计算 / Python</div>
+              <div id="calculations" class="calculation-list"></div>
+            </div>
           </section>
 
           <section id="chartsSection" class="content-section hidden">
