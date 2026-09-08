@@ -25,27 +25,41 @@ METRIC_ALIASES: dict[str, tuple[str, ...]] = {
 
 CHART_REQUEST_TERMS = ("图", "可视化", "绘制")
 
+MVP_COMPANIES: tuple[tuple[str, str], ...] = (
+    ("002821", "凯莱英"),
+    ("301080", "百普赛斯"),
+    ("301033", "迈普医学"),
+    ("301096", "百诚医药"),
+    ("300347", "泰格医药"),
+    ("300244", "迪安诊断"),
+    ("603127", "昭衍新药"),
+    ("603259", "药明康德"),
+    ("688222", "成都先导"),
+    ("688276", "百克生物"),
+)
 
-def _company_aliases(db_path: Path) -> dict[str, CompanyRef]:
-    con = sqlite3.connect(db_path)
-    try:
-        rows = con.execute("SELECT stock_code, company_name FROM companies").fetchall()
-    finally:
-        con.close()
+
+def _aliases_from_rows(rows: list[tuple[object, object]]) -> dict[str, CompanyRef]:
     aliases: dict[str, CompanyRef] = {}
     for code, name in rows:
         ref = CompanyRef(stock_code=str(code), company_name=str(name))
         aliases[str(code)] = ref
         aliases[str(name).replace("股份有限公司", "").replace("集团", "")] = ref
-    common = {
-        "凯莱英": "002821", "百普赛斯": "301080", "迈普医学": "301033",
-        "百诚医药": "301096", "泰格医药": "300347", "迪安诊断": "300244",
-        "昭衍新药": "603127", "药明康德": "603259", "成都先导": "688222",
-        "百克生物": "688276",
-    }
-    for alias, code in common.items():
-        aliases[alias] = aliases[code]
+    for code, short_name in MVP_COMPANIES:
+        if code in aliases:
+            aliases[short_name] = aliases[code]
     return aliases
+
+
+def _company_aliases(db_path: Path) -> dict[str, CompanyRef]:
+    if not db_path.is_file():
+        return _aliases_from_rows(list(MVP_COMPANIES))
+    try:
+        with sqlite3.connect(db_path) as con:
+            rows = con.execute("SELECT stock_code, company_name FROM companies").fetchall()
+    except (OSError, sqlite3.Error):
+        return _aliases_from_rows(list(MVP_COMPANIES))
+    return _aliases_from_rows(rows)
 
 
 def _years(question: str) -> list[int]:

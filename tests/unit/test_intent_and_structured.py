@@ -1,5 +1,6 @@
 import pytest
 
+from finance_insight.config import Settings
 from finance_insight.intent_parser import parse_intent
 from finance_insight.schemas import QueryIntent
 from finance_insight.structured_output import validate_structured
@@ -16,6 +17,15 @@ def test_parse_comprehensive_intent():
 def test_cross_company_ranking_without_named_company():
     intent = parse_intent("查询2024年营业收入排名")
     assert intent.task_type == "ranking" and len(intent.companies) == 10
+
+
+def test_parse_intent_uses_mvp_aliases_when_finance_database_is_missing(tmp_path):
+    intent = parse_intent(
+        "查询凯莱英2024年营业收入排名",
+        Settings(finance_db=tmp_path / "missing.sqlite3"),
+    )
+    assert intent.companies[0].stock_code == "002821"
+    assert intent.task_type == "ranking"
 
 
 def test_structured_output_repairs_code_fence_and_trailing_comma():
