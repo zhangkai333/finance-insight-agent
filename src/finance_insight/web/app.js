@@ -95,7 +95,47 @@ function renderCitations(citations) {
     <article class="citation">
       <strong>[${index + 1}] ${escapeHtml(item.source_file || "未知来源")}</strong>
       <span>${escapeHtml(item.company_name || "")} · ${escapeHtml(item.report_year || "")} 年 · 第 ${escapeHtml(item.page_number || "—")} 页 · Chunk ${escapeHtml(item.chunk_id || "—")}</span>
+      ${item.snippet ? `<p>${escapeHtml(item.snippet)}</p>` : ""}
     </article>`).join("");
+}
+
+function renderEvidence(evidence) {
+  const facts = evidence?.facts || [];
+  const calculations = evidence?.calculations || {};
+  const provenance = evidence?.provenance || {};
+  $("#provenance").innerHTML = Object.entries(provenance).map(([key, value]) => `
+    <div class="provenance-item"><span>${escapeHtml(key)}</span><strong>${escapeHtml(value)}</strong></div>
+  `).join("") || '<div class="empty">暂无证据摘要。</div>';
+  if (!facts.length) {
+    $("#facts").innerHTML = '<div class="empty">没有返回结构化事实，可能是无数据或核心查询失败。</div>';
+  } else {
+    const columns = [["company_name", "公司"], ["report_year", "年度"], ["metric_name", "指标"], ["metric_value", "数值"], ["normalized_unit", "单位"], ["source_page", "来源页"]];
+    $("#facts").innerHTML = `<table><thead><tr>${columns.map(([, label]) => `<th>${label}</th>`).join("")}</tr></thead><tbody>${facts.map((row) => `<tr>${columns.map(([key]) => `<td>${escapeHtml(row[key] ?? "—")}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  }
+  const series = calculations.series || [];
+  const anomalies = calculations.anomalies || [];
+  $("#calculations").innerHTML = series.length
+    ? series.map((item) => `<article class="calculation-item"><strong>${escapeHtml(item.metric_name || item.metric_code || "指标")}</strong><span>${(item.points || []).map((point) => `${escapeHtml(point.year)}年 ${Number(point.value).toLocaleString("zh-CN", { maximumFractionDigits: 2 })}${escapeHtml(point.unit || "")}`).join(" · ")}</span>${item.cagr_pct == null ? "" : `<small>CAGR ${Number(item.cagr_pct).toFixed(2)}%</small>`}</article>`).join("") + (anomalies.length ? `<div class="anomaly-note">检测到 ${anomalies.length} 个异常变化，原因解释必须回到年报引用核对。</div>` : "")
+    : '<div class="empty">本次没有执行 Python 序列计算。</div>';
+}
+
+function renderExecutionContext(context) {
+  const requested = context?.requested_backend || "—";
+  const effective = context?.effective_backend || "—";
+  const llm = context?.llm_requested
+    ? (context?.llm_configured ? "LLM 汇总已请求" : "LLM 未配置，确定性模式")
+    : "确定性模式";
+  const fallback = context?.fallback_used ? "已发生降级" : "未发生降级";
+  const items = [
+    ["数据源", `${requested} → ${effective}`],
+    ["汇总方式", llm],
+    ["执行状态", fallback],
+    ["工作流", `${context?.step_count ?? 0} 步 / 上限 ${context?.recursion_limit ?? "—"}`],
+  ];
+  if (context?.backend_fallback_reason) items.push(["降级原因", context.backend_fallback_reason]);
+  $("#executionContext").innerHTML = items.map(([label, value]) => `
+    <div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>
+  `).join("");
 }
 
 function renderTrace(events) {
@@ -122,6 +162,8 @@ function renderResult(data) {
   $("#statusBadge").textContent = statusText(data.status);
   $("#traceId").textContent = `Trace ${data.trace_id || "—"}`;
   $("#answer").innerHTML = renderMarkdown(data.answer || "没有生成报告。");
+  renderEvidence(data.evidence_summary || {});
+  renderExecutionContext(data.execution_context || {});
   $("#intent").innerHTML = renderIntent(data.intent);
   $("#citations").innerHTML = renderCitations(data.citations || []);
   $("#trace").innerHTML = renderTrace(data.tool_events || []);
@@ -159,7 +201,7 @@ async function runQuery(event) {
     localStorage.setItem("financeInsightSession", data.session_id);
     renderResult(data);
   } catch (error) {
-    renderResult({ status: "error", answer: `任务失败：${error.message}`, errors: [error.message], citations: [], charts: [], tool_events: [] });
+    renderResult({ status: "error", answer: `任务失败：${error.message}`, errors: [error.message], citations: [], charts: [], tool_events: [], execution_context: { fallback_used: true } });
   } finally {
     stopLoadingAnimation();
     submitButton.disabled = false;

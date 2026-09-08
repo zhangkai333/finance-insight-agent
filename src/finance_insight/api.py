@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from finance_insight.agent import FinanceInsightAgent
 from finance_insight.config import ROOT_DIR, settings
 from finance_insight.evaluation import run as run_evaluation
+from finance_insight.resilience import ConcurrencyLimiter
 from finance_insight.schemas import (
     EvaluationRequest,
     HealthResponse,
@@ -36,7 +37,8 @@ app.mount("/artifacts", StaticFiles(directory=settings.artifact_dir), name="arti
 
 agent = FinanceInsightAgent()
 store = build_store(settings.redis_url)
-executor = ThreadPoolExecutor(max_workers=4)
+request_limiter = ConcurrencyLimiter(settings.max_concurrent_requests)
+executor = ThreadPoolExecutor(max_workers=settings.max_concurrent_requests)
 
 
 def _public_response(response: QueryResponse) -> QueryResponse:
@@ -71,6 +73,8 @@ def health() -> HealthResponse:
         finance_backend_effective=effective,
         finance_backend_ready=ready,
         finance_backend_fallback_reason=fallback_reason,
+        max_concurrent_requests=settings.max_concurrent_requests,
+        active_requests=request_limiter.active,
     )
 
 
@@ -94,9 +98,13 @@ def meta() -> dict[str, Any]:
 
 @app.post("/v1/query", response_model=QueryResponse)
 def query(request: QueryRequest) -> QueryResponse:
-    response = _public_response(
-        agent.run(request.question, session_id=request.session_id, use_llm=request.use_llm)
-    )
+    try:
+        with request_limiter.slot(settings.request_queue_timeout_seconds):
+            response = _public_response(
+                agent.run(request.question, session_id=request.session_id, use_llm=request.use_llm)
+            )
+    except TimeoutError as exc:
+        raise HTTPException(status_code=429, detail=str(exc)) from exc
     store.set(f"session:{response.session_id}:last", response.model_dump(mode="json"), 3600)
     return response
 
@@ -104,9 +112,10 @@ def query(request: QueryRequest) -> QueryResponse:
 def _run_task(task_id: str, request: QueryRequest) -> None:
     store.set(f"task:{task_id}", {"task_id": task_id, "status": "running"}, 3600)
     try:
-        result = _public_response(
-            agent.run(request.question, session_id=request.session_id, use_llm=request.use_llm)
-        )
+        with request_limiter.slot(settings.request_queue_timeout_seconds):
+            result = _public_response(
+                agent.run(request.question, session_id=request.session_id, use_llm=request.use_llm)
+            )
         store.set(
             f"task:{task_id}",
             {
@@ -152,8 +161,9 @@ def _run_eval_task(task_id: str, request: EvaluationRequest) -> None:
     key = f"evaluation:{task_id}"
     store.set(key, {"task_id": task_id, "status": "running"}, 3600)
     try:
-        output = settings.eval_output.with_name(f"report_{task_id}.json")
-        summary = run_evaluation(settings.eval_dataset, output, use_llm=request.use_llm)
+        with request_limiter.slot(settings.request_queue_timeout_seconds):
+            output = settings.eval_output.with_name(f"report_{task_id}.json")
+            summary = run_evaluation(settings.eval_dataset, output, use_llm=request.use_llm)
         settings.eval_output.write_text(
             json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
         )

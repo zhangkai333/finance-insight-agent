@@ -18,6 +18,9 @@ def test_langgraph_agent_e2e():
     ]
     assert len(result.charts) == 3 and all(Path(path).exists() for path in result.charts)
     assert result.citations and "年报依据" in result.answer
+    assert result.evidence_summary["facts"]
+    assert result.execution_context["effective_backend"] == "sqlite"
+    assert result.execution_context["recursion_limit"] == 12
 
 
 def test_session_context_resolves_follow_up():
@@ -72,6 +75,8 @@ def test_workspace_static_health_and_browser_artifacts():
     assert response.status_code == 200
     payload = response.json()
     assert payload["status"] == "success"
+    assert payload["evidence_summary"]["facts"]
+    assert payload["execution_context"]["effective_backend"] in {"sqlite", "mysql"}
     assert payload["charts"] and all(path.startswith("/artifacts/") for path in payload["charts"])
     assert "/app/data/" not in payload["answer"]
     assert all(path in payload["answer"] for path in payload["charts"])

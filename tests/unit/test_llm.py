@@ -26,10 +26,23 @@ class FakeIntentLLM:
         return LLMResponse(content=json.dumps(payload, ensure_ascii=False), model="fake-json", usage={})
 
 
+class FakeOvereagerChartLLM(FakeIntentLLM):
+    def chat(self, messages, *, response_format=None):
+        response = super().chat(messages, response_format=response_format)
+        payload = json.loads(response.content)
+        payload["needs_chart"] = True
+        return LLMResponse(content=json.dumps(payload, ensure_ascii=False), model="fake-json", usage={})
+
+
 def test_structured_intent_uses_json_mode_and_whitelist():
     intent = parse_intent_with_llm("查询凯莱英2024年营业收入", FakeIntentLLM())
     assert intent.parser == "llm-json:fake-json"
     assert intent.metrics == ["revenue"]
+
+
+def test_llm_intent_cannot_add_chart_without_explicit_request():
+    intent = parse_intent_with_llm("查询凯莱英2022到2024年营业收入趋势", FakeOvereagerChartLLM())
+    assert intent.needs_chart is False and intent.needs_calculation is True
 
 
 def test_openai_compatible_client_retries_and_sends_deepseek_shape():

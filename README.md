@@ -55,9 +55,10 @@ parse → query_sql → [calculate] → [retrieve] → [chart] → synthesize
 | LangGraph | 显式节点、条件边、状态传递、会话检查点与终止控制 |
 | FastAPI | 浏览器工作台、同步问答、异步任务、会话、评测、静态图表和健康检查接口 |
 | Redis | Compose 中的真实会话/任务存储后端；TTL、AOF 与重启恢复已验证 |
+| 并发控制 | API 后台池与 Agent 槽位默认最多同时处理 2 个请求，超时返回 429 |
 | Matplotlib | 根据已验证序列生成 PNG 图表 |
 | MCP | 通过 stdio 暴露财务查询和年报检索工具 |
-| Docker Compose | 编排 API、Redis、MySQL；镜像构建、健康检查、服务 DNS 与卷持久化已实测 |
+| Docker Compose | 编排 API、Redis、MySQL；提供健康检查、服务 DNS 与卷持久化，历史环境已实测 |
 | Pytest + Eval | 单元、集成、E2E、故障注入和小规模评测集 |
 
 ## 4. MVP 数据范围
@@ -192,9 +193,9 @@ python -m finance_insight.evaluation `
   --output data/evaluation/report_extended_draft.json
 ```
 
-当前本机结果：
+当前本次复核结果：
 
-- 30 个测试全部通过；
+- 38 个测试全部通过；
 - 6 条 MVP 基准问题全部成功；
 - 意图准确率：1.0；
 - 工具选择准确率：1.0；
@@ -204,8 +205,11 @@ python -m finance_insight.evaluation `
 - 6 条集平均延迟 162.82 ms，P50 69.69 ms，P95 481.88 ms；
 - 60 条自动标注初稿也达到 60/60 可执行，平均 61.86 ms，P95 203.53 ms；
 - 评测模式：`deterministic-fallback`。
+- 默认并发上限为 2；同步查询、异步任务和 LLM 请求不会无限并发堆积。
 
 60 条数据的标签状态为 `auto_draft_requires_human_review`，只能作为扩展回归初稿，不能称为人工 gold set。上述结果也不代表生产环境泛化能力。
+
+后端与 RAG 专项复核：`scripts/validate_backends.py` 的 SQLite 基线和注入式 MySQL 故障降级通过，结果签名一致；当前环境 Docker 引擎不可用，因此真实 MySQL/Compose 运行未在本次复核中重跑。`scripts/benchmark_rag.py` 已可重复执行 FTS5、hashing vector 和混合检索，但当前只有 5 条固定查询，相关率是词项重叠代理指标，不是人工 Recall@K；语义 Embedding 与 Reranker 因未配置而标记为 `NOT_EXECUTED`。
 
 ## 10. Docker
 
@@ -221,7 +225,7 @@ docker compose up -d --build
 Invoke-RestMethod http://127.0.0.1:8000/health
 ```
 
-2026-08-27 已真实完成镜像重建并启动 `api`、`redis`、`mysql`，三个服务均为 healthy；API 使用 RedisStore，MySQL 持有 300 条事实且容器重启后数据仍在。API 在线财务查询已使用 MySQL；MySQL 不可用时可显式降级 SQLite，并在 health 与 trace 中暴露原因。详见 `docs/DEPLOYMENT.md`。
+历史上曾在 Docker 可用环境完成镜像重建、MySQL 导入和 Redis 持久化验证；本次复核机器当前 Docker Desktop 引擎不可用，故不把历史结果冒充为本次运行结果。现有故障注入脚本仍可在无 Docker 环境验证 SQLite fallback，并在 health/trace 中暴露原因。详见 `docs/DEPLOYMENT.md`。
 
 ## 10. 项目结构
 
@@ -245,9 +249,9 @@ tests/
 
 ## 11. 已验证与未验证边界
 
-**已实际运行：** SQLite 财务查询、MySQL 真实导入与回归、FTS5 + sqlite-vec 混合检索、Python 计算、PNG 图表、LangGraph 多工具链、真实 DeepSeek、FastAPI、Redis TTL/AOF/重启恢复、Docker Compose、MCP stdio、JSONL Trace、30 个测试、6 条固定 Eval 和 60 条自动标注评测初稿。
+**已实际运行：** SQLite 财务查询、历史环境中的 MySQL 真实导入与回归、FTS5 + sqlite-vec 混合检索、Python 计算、PNG 图表、LangGraph 多工具链、真实 DeepSeek、FastAPI、历史环境中的 Redis TTL/AOF/重启恢复与 Docker Compose、MCP stdio、JSONL Trace、38 个测试、6 条固定 Eval 和 60 条自动标注评测初稿。
 
-**尚未完成或仍有限制：** 多进程任务队列、60 条问题人工复核、BGE/FastEmbed 语义向量、Reranker、OCR、真实研报独立数据源、鉴权限流和生产并发压测。DeepSeek 5 次基准只是小样本，不代表生产 SLA。
+**尚未完成或仍有限制：** 60 条人工审核 Gold Set 冻结（审核表仍待字段格式修正）、多进程任务队列、BGE/FastEmbed 语义向量、Reranker、OCR、真实研报独立数据源、鉴权限流和生产并发压测。本次复核未能重新启动 Docker，因此真实 MySQL/Compose 运行状态需在 Docker Desktop 恢复后重验。DeepSeek 5 次基准只是小样本，不代表生产 SLA。
 
 ## 12. 文档导航
 

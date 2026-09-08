@@ -3,7 +3,7 @@ name = "finance-insight-agent"
 version = "0.2.0"
 description = "上市公司财报智能分析 Agent"
 requires-python = ">=3.11"
-dependencies = ["pydantic>=2.9", "fastapi>=0.115", "uvicorn>=0.30", "httpx>=0.27", "matplotlib>=3.8", "langgraph>=1.0", "redis>=5", "mcp>=2", "pypdf>=5", "sqlite-vec>=0.1.9", "pymysql>=1.1"]
+dependencies = ["pydantic>=2.9", "fastapi>=0.115", "uvicorn>=0.30", "httpx>=0.27", "matplotlib>=3.8", "Pillow>=10", "langgraph>=1.0", "redis>=5", "mcp>=2", "pypdf>=5", "sqlite-vec>=0.1.9", "pymysql>=1.1"]
 
 [project.optional-dependencies]
 dev=["pytest>=8", "PyYAML>=6"]

@@ -8,6 +8,7 @@ def test_sql_tool_returns_three_years():
     intent = parse_intent("查询凯莱英2022到2024年营业收入")
     result = FinancialQueryTool().run(intent)
     assert result.status == "success" and result.data["record_count"] == 3
+    assert result.data["connection_pool"] == "not_applicable"
     assert [row["report_year"] for row in result.data["records"]] == [2022, 2023, 2024]
 
 

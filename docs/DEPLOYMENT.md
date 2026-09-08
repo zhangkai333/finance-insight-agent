@@ -34,6 +34,8 @@ Compose 服务：API 8000、MySQL 8.4 3306、Redis 7（仅容器内部 6379）�
 | `MYSQL_FALLBACK_TO_SQLITE` | true | MySQL 故障时是否降级 |
 | `MYSQL_SYNC_FROM_SQLITE` | Compose true | 启动时幂等同步 |
 | `MYSQL_HOST/PORT/DATABASE/USER/PASSWORD` | 见 compose | MySQL 连接 |
+| `MYSQL_CONNECT_TIMEOUT_SECONDS/READ_TIMEOUT_SECONDS` | 5 / 10 | MySQL 连接与查询超时 |
+| `MYSQL_POOL_SIZE/POOL_ACQUIRE_TIMEOUT_SECONDS` | 4 / 5 | API 进程内 MySQL 空闲连接上限与等待时间 |
 | `FINANCE_DB` | `data/finance_insight.sqlite3` | 便携数据源/fallback |
 | `RAG_DB` | `data/rag.sqlite3` | 年报混合检索库 |
 | `REDIS_URL` | Compose `redis://redis:6379/0` | 会话/任务 Store |
@@ -55,7 +57,7 @@ python -m uvicorn finance_insight.api:app --host 127.0.0.1 --port 8000
 
 本地默认 SQLite，便于无 Docker 运行；要直连 MySQL，设置 `FINANCE_BACKEND=mysql` 及 MySQL 环境变量。
 
-## 5. 2026-08-27 空卷实测
+## 5. 历史 Docker 验收记录
 
 执行 `docker compose down -v` 后重新 `docker compose up -d --build`：
 
@@ -64,6 +66,14 @@ python -m uvicorn finance_insight.api:app --host 127.0.0.1 --port 8000
 - `/health` 返回 requested/effective 均为 mysql、ready=true、Store=redis；
 - 综合问题成功执行 4 步工具链，读取 MySQL 9 条事实，返回 3 图、4 引用，无 fallback；
 - 三个 `/artifacts/*.png` 均返回 200 `image/png`；容器日志无 CJK glyph missing 警告。
+
+以上是历史验收记录，不代表每次开发机都具备 Docker 运行条件。本次路线复核中，`docker compose config --quiet` 通过，但 Docker Desktop Linux engine 不可连接，因此未重新执行 `up`、健康检查、真实 MySQL 查询和容器端到端验收。不要把这次静态配置检查描述成运行时验证。
+
+无 Docker 时可使用以下脚本验证核心后端契约和注入式故障降级：
+
+```powershell
+.\.venv\Scripts\python.exe scripts\validate_backends.py
+```
 
 ## 6. 常用运维命令
 

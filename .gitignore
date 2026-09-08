@@ -7,6 +7,8 @@ venv/
 .env.*
 !.env.example
 *.egg-info/
+build/
+dist/
 
 # Runtime outputs
 data/artifacts/
@@ -24,6 +26,7 @@ evals/human_review_round*.evidence.jsonl
 transfer_bundle/
 transfer_bundles/
 *.transfer.zip
+finance-insight-transfer-*/
 
 # Competition and third-party source material: verify redistribution rights first
 资料待放入/

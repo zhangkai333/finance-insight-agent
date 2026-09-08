@@ -3,6 +3,9 @@ from __future__ import annotations
 import sqlite3
 import time
 from collections.abc import Sequence
+from contextlib import contextmanager
+from queue import Empty, Queue
+from threading import Lock
 from typing import Any
 
 from finance_insight.config import Settings, settings
@@ -31,6 +34,9 @@ class FinancialQueryTool:
     def __init__(self, config: Settings = settings):
         self.config = config
         self.db_path = config.finance_db
+        self._mysql_idle: Queue[Any] = Queue(maxsize=config.mysql_pool_size)
+        self._mysql_created = 0
+        self._mysql_lock = Lock()
 
     @staticmethod
     def _normalize_rows(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -80,14 +86,66 @@ class FinancialQueryTool:
             database=self.config.mysql_database,
             charset="utf8mb4",
             connect_timeout=self.config.mysql_connect_timeout_seconds,
-            read_timeout=10,
-            write_timeout=10,
+            read_timeout=self.config.mysql_read_timeout_seconds,
+            write_timeout=self.config.mysql_read_timeout_seconds,
             cursorclass=pymysql.cursors.DictCursor,
         )
 
-    def _query_mysql(self, intent: QueryIntent) -> list[dict[str, Any]]:
-        connection = self._mysql_connection()
+    @staticmethod
+    def _close_mysql_connection(connection: Any) -> None:
         try:
+            connection.close()
+        except Exception:
+            pass
+
+    @contextmanager
+    def _pooled_mysql_connection(self):
+        """Reuse bounded MySQL connections without hiding acquire/query failures."""
+        connection = None
+        reusable = False
+        try:
+            try:
+                connection = self._mysql_idle.get_nowait()
+            except Empty:
+                with self._mysql_lock:
+                    if self._mysql_created < self.config.mysql_pool_size:
+                        self._mysql_created += 1
+                        create_new = True
+                    else:
+                        create_new = False
+                if create_new:
+                    try:
+                        connection = self._mysql_connection()
+                    except Exception:
+                        with self._mysql_lock:
+                            self._mysql_created -= 1
+                        raise
+                else:
+                    try:
+                        connection = self._mysql_idle.get(
+                            timeout=self.config.mysql_pool_acquire_timeout_seconds
+                        )
+                    except Empty as exc:
+                        raise TimeoutError(
+                            f"MySQL 连接池已满，等待超过 {self.config.mysql_pool_acquire_timeout_seconds:.1f} 秒"
+                        ) from exc
+            connection.ping(reconnect=True)
+            yield connection
+            reusable = True
+        finally:
+            if connection is not None and reusable:
+                try:
+                    self._mysql_idle.put_nowait(connection)
+                    return
+                except Exception:
+                    pass
+            if connection is not None:
+                self._close_mysql_connection(connection)
+                with self._mysql_lock:
+                    self._mysql_created = max(0, self._mysql_created - 1)
+
+    def _query_mysql(self, intent: QueryIntent) -> list[dict[str, Any]]:
+        with self._pooled_mysql_connection() as connection:
             with connection.cursor() as cursor:
                 if intent.task_type == "ranking":
                     cursor.execute(
@@ -110,8 +168,6 @@ class FinancialQueryTool:
                         (*codes, *intent.metrics, *intent.period.years),
                     )
                 rows = cursor.fetchall()
-        finally:
-            connection.close()
         return self._normalize_rows(rows)
 
     @staticmethod
@@ -134,21 +190,33 @@ class FinancialQueryTool:
                 except Exception as exc:
                     if not self.config.mysql_fallback_to_sqlite:
                         raise
-                    rows = self._query_sqlite(intent)
-                    effective_backend = "sqlite"
-                    fallback_used = True
                     fallback_reason = f"mysql_unavailable: {exc}"
+                    fallback_used = True
+                    try:
+                        rows = self._query_sqlite(intent)
+                    except Exception as fallback_exc:
+                        raise RuntimeError(
+                            f"MySQL 查询失败，SQLite 降级也失败；{fallback_reason}；"
+                            f"sqlite_fallback_error: {fallback_exc}"
+                        ) from fallback_exc
+                    effective_backend = "sqlite"
             else:
                 rows = self._query_sqlite(intent)
                 effective_backend = "sqlite"
 
             rows = self._with_ranks(rows, intent)
             if not rows:
+                data = {
+                    "backend": effective_backend,
+                    "requested_backend": backend,
+                }
+                if fallback_reason:
+                    data["fallback_reason"] = fallback_reason
                 return ToolResult(
                     tool_name=self.name,
                     status="error",
                     error="在当前 FY 2022—FY 2024 MVP 数据中没有匹配的财务事实。",
-                    data={"backend": effective_backend, "requested_backend": backend},
+                    data=data,
                     latency_ms=(time.perf_counter() - started) * 1000,
                     fallback_used=fallback_used,
                 )
@@ -158,6 +226,7 @@ class FinancialQueryTool:
                 "scope": "FY 2022-2024 MVP",
                 "backend": effective_backend,
                 "requested_backend": backend,
+                "connection_pool": "mysql_bounded_pool" if effective_backend == "mysql" else "not_applicable",
             }
             if fallback_reason:
                 data["fallback_reason"] = fallback_reason
@@ -169,12 +238,16 @@ class FinancialQueryTool:
                 fallback_used=fallback_used,
             )
         except Exception as exc:
+            data = {"backend": backend, "requested_backend": backend}
+            if fallback_reason:
+                data["fallback_reason"] = fallback_reason
             return ToolResult(
                 tool_name=self.name,
                 status="error",
                 error=str(exc),
-                data={"backend": backend, "requested_backend": backend},
+                data=data,
                 latency_ms=(time.perf_counter() - started) * 1000,
+                fallback_used=fallback_used,
             )
 
     def ping(self) -> tuple[bool, str, str | None]:

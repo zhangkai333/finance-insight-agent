@@ -30,6 +30,8 @@ API 响应中的 `charts` 和确定性报告中的图表地址均为 `/artifacts
 
 `requested` 与 `effective` 不同时代表 MySQL 故障后使用了 SQLite fallback；原因同时写入 `finance_backend_fallback_reason`。
 
+`max_concurrent_requests` 默认是 `2`。同步查询和后台任务共享 Agent 并发槽位；槽位满时最多等待 `REQUEST_QUEUE_TIMEOUT_SECONDS`，超时返回 HTTP 429。这样可以控制 DeepSeek/数据库压力，避免请求无限堆积。
+
 ## 3. 元数据
 
 ### `GET /v1/meta`
@@ -54,7 +56,7 @@ API 响应中的 `charts` 和确定性报告中的图表地址均为 `/artifacts
 | `session_id` | string/null | 否 | 不传则生成 UUID；复用可承接上一轮公司上下文 |
 | `use_llm` | boolean | 否 | 默认 true；关闭或模型失败时输出确定性报告 |
 
-响应包含 `trace_id`、`session_id`、`status`、`answer`、`intent`、`charts`、`citations`、`tool_events`、`errors` 与 `fallback_used`。`tool_events.details` 可查看 SQL backend、记录数、检索模式、embedding provider、异常数与图表数。
+响应包含 `trace_id`、`session_id`、`status`、`answer`、`intent`、`charts`、`citations`、`tool_events`、`errors`、`fallback_used`、`evidence_summary` 与 `execution_context`。`evidence_summary` 是有上限的事实/计算/来源职责摘要；`execution_context` 展示本次 requested/effective backend、LLM 状态、fallback、步骤数和递归上限；`tool_events.details` 可查看 SQL backend、记录数、检索模式、embedding provider、异常数与图表数。
 
 状态：`success` 为核心链路成功，`partial` 为有可靠结果但可选步骤降级，`error` 为无法交付核心结果。
 
