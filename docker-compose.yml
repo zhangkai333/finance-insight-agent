@@ -5,11 +5,20 @@ services:
       - "8000:8000"
     environment:
       APP_ENV: ${APP_ENV:-development}
-      DATABASE_PATH: ${DATABASE_PATH:-data/finagent.db}
-      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.openai.com/v1}
+      FINANCE_DB: ${FINANCE_DB:-data/finance_insight.sqlite3}
+      RAG_DB: ${RAG_DB:-data/rag.sqlite3}
+      UPLOAD_DATABASE_PATH: ${UPLOAD_DATABASE_PATH:-data/legacy/finagent_runtime.db}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.deepseek.com}
       LLM_API_KEY: ${LLM_API_KEY:-}
-      LLM_MODEL: ${LLM_MODEL:-gpt-4o-mini}
+      LLM_MODEL: ${LLM_MODEL:-deepseek-chat}
       LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-30}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.2}
+      RAG_BACKEND: ${RAG_BACKEND:-sqlite}
+      EMBEDDING_BASE_URL: ${EMBEDDING_BASE_URL:-https://api.siliconflow.cn/v1}
+      EMBEDDING_API_KEY: ${EMBEDDING_API_KEY:-}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-BAAI/bge-m3}
+      CHROMA_PATH: ${CHROMA_PATH:-doc/data/.cache/chroma_db}
+      CHROMA_COLLECTION: ${CHROMA_COLLECTION:-report_knowledge}
       LLM_MAX_RETRIES: ${LLM_MAX_RETRIES:-2}
       LLM_CIRCUIT_FAILURE_THRESHOLD: ${LLM_CIRCUIT_FAILURE_THRESHOLD:-3}
       LLM_CIRCUIT_RESET_SECONDS: ${LLM_CIRCUIT_RESET_SECONDS:-60}

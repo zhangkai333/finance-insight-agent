@@ -1,7 +1,7 @@
 import pytest
 
-from app.config import Settings
-from app.storage import Database
+from finance_insight.legacy.config import Settings
+from finance_insight.legacy.storage import Database
 
 
 @pytest.fixture

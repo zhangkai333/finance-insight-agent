@@ -1,8 +1,8 @@
 import pytest
 
-from app.agent.graph import FinancialAgent
-from app.models import Intent, QueryRequest
-from app.rag.ingestion import DocumentIngestor
+from finance_insight.legacy.agent.graph import FinancialAgent
+from finance_insight.legacy.models import Intent, QueryRequest
+from finance_insight.legacy.rag.ingestion import DocumentIngestor
 
 
 @pytest.mark.anyio

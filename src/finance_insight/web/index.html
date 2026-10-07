@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="FinanceInsight Agent 财报智能分析工作台">
+  <title>FinanceInsight · 财报分析工作台</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="FinanceInsight 首页">
+        <span class="brand-mark">FI</span>
+        <span><strong>FinanceInsight</strong><small>财报分析 Agent</small></span>
+      </a>
+      <div class="system-state" id="systemState" aria-live="polite">
+        <span class="pulse"></span><span>正在检查服务…</span>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="query-panel">
+        <div class="eyebrow">ANALYSIS REQUEST</div>
+        <h1>把复杂财报问题<br>交给可追踪的 Agent</h1>
+        <p class="lead">每个结论都经过结构化查询、Python 计算与文档检索，并保留来源和工具轨迹。</p>
+
+        <form id="queryForm">
+          <label for="question">分析问题</label>
+          <div class="textarea-wrap">
+            <textarea id="question" maxlength="2000" required>分析凯莱英2022—2024年营业收入、净利润和ROE的变化，如果发现异常年份，结合对应年报分析原因，并生成趋势图和分析报告。</textarea>
+            <span id="charCount">0 / 2000</span>
+          </div>
+          <div class="form-options">
+            <label class="switch-row">
+              <input id="useLlm" type="checkbox" checked>
+              <span class="switch" aria-hidden="true"></span>
+              <span><strong>启用大模型汇总</strong><small>失败时自动降级为确定性报告</small></span>
+            </label>
+          </div>
+          <button class="primary-button" id="submitButton" type="submit">
+            <span>运行分析</span><span class="button-arrow">↗</span>
+          </button>
+        </form>
+
+        <section class="examples" aria-labelledby="examplesTitle">
+          <div class="section-kicker" id="examplesTitle">示例问题</div>
+          <button class="example" type="button">查询2024年营业收入排名</button>
+          <button class="example" type="button">结合年报解释凯莱英2024年净利润下降原因</button>
+          <button class="example" type="button">绘制凯莱英2022到2024年营业收入趋势图</button>
+        </section>
+
+        <section class="eval-card">
+          <div><span class="section-kicker">QUALITY GATE</span><strong>6 题固定回归评测</strong></div>
+          <button id="evalButton" class="secondary-button" type="button">运行评测</button>
+          <div id="evalSummary" class="eval-summary">尚未载入评测结果</div>
+        </section>
+      </aside>
+
+      <section class="result-panel" aria-live="polite">
+        <div id="welcomeState" class="welcome-state">
+          <div class="pipeline-visual" aria-hidden="true">
+            <span>任务识别</span><i></i><span>MySQL</span><i></i><span>Python</span><i></i><span>RAG</span><i></i><span>图表与报告</span>
+          </div>
+          <div class="welcome-copy">
+            <span class="eyebrow">READY FOR VERIFICATION</span>
+            <h2>输入问题后，这里将展示完整分析结果</h2>
+            <p>你可以直接检查回答、趋势图、年报引用、解析意图、每一次工具调用、重试次数和降级状态。</p>
+          </div>
+          <div class="capability-grid">
+            <article><b>01</b><span>安全查询</span><small>白名单参数，不执行模型自由 SQL</small></article>
+            <article><b>02</b><span>可信计算</span><small>同比、CAGR 与异常由 Python 完成</small></article>
+            <article><b>03</b><span>来源可查</span><small>返回文件、年度、页码和切片编号</small></article>
+            <article><b>04</b><span>失败可见</span><small>展示重试、fallback 与错误信息</small></article>
+          </div>
+        </div>
+
+        <div id="loadingState" class="loading-state hidden">
+          <div class="loading-orbit"><span></span></div>
+          <h2>Agent 正在执行分析链路</h2>
+          <div class="loading-steps" id="loadingSteps">
+            <span class="active">识别任务</span><span>查询财务库</span><span>Python 计算</span><span>检索年报</span><span>生成报告</span>
+          </div>
+          <p>复杂问题和大模型汇总通常需要几秒到几十秒，请保持当前页面打开。</p>
+        </div>
+
+        <div id="resultState" class="result-state hidden">
+          <div class="result-header">
+            <div>
+              <span class="eyebrow">ANALYSIS REPORT</span>
+              <h2 id="resultTitle">财报分析结果</h2>
+              <div class="meta-line"><span id="statusBadge"></span><span id="traceId"></span></div>
+            </div>
+            <button id="copyButton" class="icon-button" type="button">复制报告</button>
+          </div>
+
+          <div id="errorBanner" class="error-banner hidden"></div>
+
+          <section id="executionContext" class="run-context" aria-label="本次执行环境"></section>
+
+          <section class="report-card">
+            <div class="card-heading"><span>结论与分析</span><small>基于工具证据生成</small></div>
+            <div id="answer" class="report-body"></div>
+          </section>
+
+          <section class="content-section evidence-section">
+            <div class="section-heading"><h3>证据分层</h3><span>可复核数据链</span></div>
+            <div id="provenance" class="provenance-grid"></div>
+            <div class="evidence-block">
+              <div class="evidence-label">结构化事实 / FinancialQueryTool</div>
+              <div id="facts" class="facts-table-wrap"></div>
+            </div>
+            <div class="evidence-block">
+              <div class="evidence-label">确定性计算 / Python</div>
+              <div id="calculations" class="calculation-list"></div>
+            </div>
+          </section>
+
+          <section id="chartsSection" class="content-section hidden">
+            <div class="section-heading"><h3>趋势图表</h3><span id="chartCount"></span></div>
+            <div id="charts" class="chart-grid"></div>
+          </section>
+
+          <div class="detail-grid">
+            <section class="content-section">
+              <div class="section-heading"><h3>任务识别</h3><span>Structured Intent</span></div>
+              <div id="intent" class="intent-card"></div>
+            </section>
+            <section class="content-section">
+              <div class="section-heading"><h3>来源引用</h3><span id="citationCount"></span></div>
+              <div id="citations" class="citation-list"></div>
+            </section>
+          </div>
+
+          <section class="content-section trace-section">
+            <div class="section-heading"><h3>Agent 工具调用轨迹</h3><span id="traceSummary"></span></div>
+            <div id="trace" class="trace-list"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

@@ -1,15 +1,16 @@
 from fastapi.testclient import TestClient
 
 
-def test_api_query_and_trace(tmp_path, monkeypatch):
-    monkeypatch.setenv("DATABASE_PATH", str(tmp_path / "api.db"))
-    from app import main
+def test_api_query_and_trace(tmp_path):
+    from finance_insight import api
 
-    main.settings.database_path = tmp_path / "api.db"
-    main.database = main.Database(main.settings.database_path)
-    main.ingestor = main.DocumentIngestor(main.database)
-    main.agent = main.FinancialAgent(main.database, main.settings)
-    with TestClient(main.app) as client:
+    api.upload_database = api.Database(tmp_path / "api.db")
+    api.upload_ingestor = api.DocumentIngestor(api.upload_database)
+    api.legacy_agent = api.FinancialAgent(
+        api.upload_database,
+        api.LegacySettings(database_path=tmp_path / "api.db", llm_api_key="", max_agent_retries=1),
+    )
+    with TestClient(api.app) as client:
         upload = client.post(
             "/api/v1/documents",
             files={

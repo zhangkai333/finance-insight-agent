@@ -1,5 +1,5 @@
-from app.rag.ingestion import DocumentIngestor
-from app.rag.retrieval import HybridRetriever
+from finance_insight.legacy.rag.ingestion import DocumentIngestor
+from finance_insight.legacy.rag.retrieval import HybridRetriever
 
 
 def test_ingest_and_hybrid_search(database):

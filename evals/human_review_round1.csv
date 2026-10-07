@@ -1,0 +1,1006 @@
+id,category,label_status,question,expected_company,expected_metrics,expected_tools,expected_numeric,min_citations,min_charts,auto_task_success,auto_company_ok,auto_metric_ok,auto_tool_ok,auto_numeric_ok,actual_intent,actual_tools,actual_answer,actual_citations,actual_charts,actual_status,fallback_used,intent_correct,tool_correct,numeric_correct,citation_relevant_1_to_5,citation_supports_claim,chart_correct,answer_faithfulness_1_to_5,answer_completeness_1_to_5,question_naturalness_1_to_5,review_status,reviewer,review_notes
+point_01,point_query,auto_draft_requires_human_review,查询凯莱英2022年营业收入,002821,["revenue"],["financial_query"],"{""stock_code"":""002821"",""year"":2022,""metric"":""revenue"",""value"":1025532.539282,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询凯莱英2022年营业收入"",""companies"":[{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""}],""period"":{""years"":[2022],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据查询结果，凯莱英2022年营业收入为 **1,025,532.54万元**（约102.55亿元）。
+
+- **数据来源**：财务数据表（metric_code: revenue，报告年份2022）
+- **单位**：万元
+- **数据状态**：candidate_pending_review（待复核候选数据）
+
+**说明**：该数值来自财务数据表，未提供年报原文引用或计算过程，因此属于直接查询结果，未做额外解释或验证。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_02,point_query,auto_draft_requires_human_review,查询凯莱英2023年归母净利润,002821,["net_profit_attributable"],["financial_query"],"{""stock_code"":""002821"",""year"":2023,""metric"":""net_profit_attributable"",""value"":226881.044407,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询凯莱英2023年归母净利润"",""companies"":[{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""}],""period"":{""years"":[2023],""period_code"":""FY""},""metrics"":[""net_profit_attributable""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据查询到的财务数据，凯莱英2023年归属于上市公司股东的净利润为 **226,881.04万元**（约22.69亿元）。
+
+**数据说明：**
+- 该数值来源于凯莱英2024年年度报告（第9页），单位为万元。
+- 数据状态为“待审核候选数据”，建议以正式披露的审计报告为准。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_03,point_query,auto_draft_requires_human_review,查询迪安诊断2023年扣非净利润,300244,["net_profit_excl_non_recurring"],["financial_query"],"{""stock_code"":""300244"",""year"":2023,""metric"":""net_profit_excl_non_recurring"",""value"":29475.472809,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询迪安诊断2023年扣非净利润"",""companies"":[{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2023],""period_code"":""FY""},""metrics"":[""net_profit_excl_non_recurring""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据您提供的财务数据，迪安诊断2023年归属于上市公司股东的扣除非经常性损益的净利润为 **29,475.47万元**（即约2.95亿元）。
+
+- **数据来源**：迪安诊断2024年年度报告（第10页），该数据为原始数值，未经过额外计算。
+- **数据状态**：该数据标记为“candidate_pending_review”，即待审核状态，建议以正式披露文件为准。
+
+如需进一步分析（如同比变化、占净利润比例等），请提供更多数据或明确需求。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_04,point_query,auto_draft_requires_human_review,查询迪安诊断2024年经营活动现金流,300244,["operating_cash_flow"],["financial_query"],"{""stock_code"":""300244"",""year"":2024,""metric"":""operating_cash_flow"",""value"":120739.564834,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询迪安诊断2024年经营活动现金流"",""companies"":[{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""operating_cash_flow""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据提供的财务数据，迪安诊断2024年经营活动产生的现金流量净额为 **120,739.56万元**（约12.07亿元）。
+
+- **数据来源**：迪安诊断2024年年度报告（第10页）。
+- **数据状态**：该数据标记为“candidate_pending_review”，即待审核状态，可能尚未最终确认。
+- **说明**：此数值为直接查询结果，未进行额外计算或解释。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_05,point_query,auto_draft_requires_human_review,查询泰格医药2024年每股收益,300347,["eps"],["financial_query"],"{""stock_code"":""300347"",""year"":2024,""metric"":""eps"",""value"":0.47,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询泰格医药2024年每股收益"",""companies"":[{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""eps""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据查询结果，泰格医药（300347）2024年基本每股收益为 **0.47元/股**。
+
+- **数据来源**：泰格医药2024年年度报告（第11页）。
+- **说明**：该数值为直接查询到的财务数据，未进行额外计算。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_06,point_query,auto_draft_requires_human_review,查询泰格医药2022年ROE,300347,["roe"],["financial_query"],"{""stock_code"":""300347"",""year"":2022,""metric"":""roe"",""value"":10.72,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询泰格医药2022年ROE"",""companies"":[{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""}],""period"":{""years"":[2022],""period_code"":""FY""},""metrics"":[""roe""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据您提供的财务数据，**泰格医药2022年的加权平均净资产收益率（ROE）为10.72%**。
+
+- **数据来源**：该数值来自泰格医药2024年年度报告（第11页），指标名称为“加权平均净资产收益率”，单位为百分比。
+- **数据状态**：该数据目前标记为“待审核”（candidate_pending_review），建议以正式审计报告或官方披露为准。
+
+**说明**：此数值为直接引用财务数据，未进行额外计算。ROE反映股东权益的收益水平，但具体分析需结合公司盈利质量、负债水平等因素，此处不提供投资建议。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_07,point_query,auto_draft_requires_human_review,查询迈普医学2022年总资产,301033,["total_assets"],["financial_query"],"{""stock_code"":""301033"",""year"":2022,""metric"":""total_assets"",""value"":74491.949958,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询迈普医学2022年总资产"",""companies"":[{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""}],""period"":{""years"":[2022],""period_code"":""FY""},""metrics"":[""total_assets""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据查询结果，迈普医学2022年总资产为 **74,491.95万元**（约7.45亿元）。
+
+- **数据来源**：财务数据表（指标代码：total_assets，单位：万元）
+- **说明**：该数据来自“迈普医学：2024年年度报告.pdf”第9页，但标记为“待审核”（candidate_pending_review），建议以正式审计报告或官方披露为准。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_08,point_query,auto_draft_requires_human_review,查询迈普医学2023年归属于上市公司股东的净资产,301033,["net_assets"],["financial_query"],"{""stock_code"":""301033"",""year"":2023,""metric"":""net_assets"",""value"":63585.821341,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询迈普医学2023年归属于上市公司股东的净资产"",""companies"":[{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""}],""period"":{""years"":[2023],""period_code"":""FY""},""metrics"":[""net_assets""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据查询到的财务数据，迈普医学2023年归属于上市公司股东的净资产为 **63,585.82万元**（约6.36亿元）。
+
+**数据说明：**
+- **数值来源**：该数据来自迈普医学2024年年度报告（第9页），指标代码为“net_assets”，单位为万元。
+- **数据状态**：该数据标记为“candidate_pending_review”，即候选待审核状态，建议以正式披露的审计报告或年报原文为准进行最终确认。
+
+如需进一步分析（如同比变化、资产负债结构等），可提供更多数据或指定查询范围。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_09,point_query,auto_draft_requires_human_review,查询百普赛斯2023年销售净利率,301080,["net_margin"],["financial_query"],"{""stock_code"":""301080"",""year"":2023,""metric"":""net_margin"",""value"":28.252039,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询百普赛斯2023年销售净利率"",""companies"":[{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""}],""period"":{""years"":[2023],""period_code"":""FY""},""metrics"":[""net_margin""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据您提供的财务数据，百普赛斯（股票代码：301080）2023年的销售净利率为 **28.25%**。
+
+- **数据来源**：该数值来自“百普赛斯：2024年年度报告.pdf”第7页，指标名称为“净利率（计算）”，单位为百分比。
+- **计算口径**：该指标标注为“计算”值，即由净利润除以营业收入得出，属于派生数据，当前状态为“待审核”（derived_pending_review），建议以年报正式披露口径为准。
+
+如需进一步分析其构成或趋势，可提供更多财务明细数据。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_10,point_query,auto_draft_requires_human_review,查询百普赛斯2024年经营现金流率,301080,["operating_cash_margin"],["financial_query"],"{""stock_code"":""301080"",""year"":2024,""metric"":""operating_cash_margin"",""value"":13.132382,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询百普赛斯2024年经营现金流率"",""companies"":[{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""operating_cash_margin""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据提供的财务数据，百普赛斯（301080）2024年的**经营现金流/营业收入（计算）** 比率为 **13.13%**。
+
+该数值来源于《百普赛斯：2024年年度报告.pdf》第7页，属于基于原始财务数据计算得出的派生指标（状态为“待审核”）。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_11,point_query,auto_draft_requires_human_review,查询百诚医药2024年营业收入,301096,["revenue"],["financial_query"],"{""stock_code"":""301096"",""year"":2024,""metric"":""revenue"",""value"":80192.324422,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询百诚医药2024年营业收入"",""companies"":[{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据查询结果，百诚医药（股票代码：301096）2024年营业收入为 **80,192.32万元**（约8.02亿元）。
+
+- **数据来源**：百诚医药2024年年度报告（第10页）
+- **数据状态**：该数据标记为“待复核”（candidate_pending_review），建议以正式披露的审计报告为准。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_12,point_query,auto_draft_requires_human_review,查询百诚医药2022年归母净利润,301096,["net_profit_attributable"],["financial_query"],"{""stock_code"":""301096"",""year"":2022,""metric"":""net_profit_attributable"",""value"":19416.39702,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询百诚医药2022年归母净利润"",""companies"":[{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""}],""period"":{""years"":[2022],""period_code"":""FY""},""metrics"":[""net_profit_attributable""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据查询结果，百诚医药（股票代码：301096）2022年归属于上市公司股东的净利润为 **19,416.40万元**（单位：万元）。
+
+- **数据来源**：该数值来自《百诚医药：2024年年度报告.pdf》第10页，属于财务数据查询结果。
+- **数据状态**：该数据标记为“candidate_pending_review”，即待审核候选数据，可能存在待确认风险，建议以正式审计报告或官方披露为准。
+
+以上仅为数据事实陈述，不构成任何投资建议。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_13,point_query,auto_draft_requires_human_review,查询昭衍新药2022年扣非净利润,603127,["net_profit_excl_non_recurring"],["financial_query"],"{""stock_code"":""603127"",""year"":2022,""metric"":""net_profit_excl_non_recurring"",""value"":101943.540897,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询昭衍新药2022年扣非净利润"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""}],""period"":{""years"":[2022],""period_code"":""FY""},""metrics"":[""net_profit_excl_non_recurring""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据您提供的财务数据，昭衍新药（股票代码：603127）2022年归属于上市公司股东的扣除非经常性损益的净利润为 **101,943.54万元**（约10.19亿元）。
+
+- **数据来源**：年报文件（603127_20250329_1BW1.pdf）第7页。
+- **数据状态**：该数值标记为“candidate_pending_review”，即待审核的候选数据，建议以正式披露的年报为准进行核实。
+
+此数值为直接查询结果，未进行额外计算。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_14,point_query,auto_draft_requires_human_review,查询昭衍新药2023年经营活动现金流,603127,["operating_cash_flow"],["financial_query"],"{""stock_code"":""603127"",""year"":2023,""metric"":""operating_cash_flow"",""value"":62287.513844,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询昭衍新药2023年经营活动现金流"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""}],""period"":{""years"":[2023],""period_code"":""FY""},""metrics"":[""operating_cash_flow""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据查询结果，昭衍新药（股票代码：603127）2023年经营活动产生的现金流量净额为 **62,287.51万元**（约6.23亿元）。
+
+- **数据来源**：年报文件（603127_20250329_1BW1.pdf）第7页。
+- **数据状态**：该数据标记为“candidate_pending_review”，即待审核候选值，可能需进一步核实。
+- **说明**：此数值为财务报告中的直接披露值，未进行额外计算。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_15,point_query,auto_draft_requires_human_review,查询药明康德2023年每股收益,603259,["eps"],["financial_query"],"{""stock_code"":""603259"",""year"":2023,""metric"":""eps"",""value"":3.27,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询药明康德2023年每股收益"",""companies"":[{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""}],""period"":{""years"":[2023],""period_code"":""FY""},""metrics"":[""eps""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据查询到的财务数据，药明康德（股票代码：603259）2023年的基本每股收益为 **3.27元/股**。
+
+- **数据来源**：该数值来自年报文件（603259_20250318_7L3V.pdf）第8页，属于原始财务数据。
+- **数据状态**：该数据标记为“candidate_pending_review”，即待审核状态，建议以正式披露的年报为准。
+
+如需进一步分析（如与上年对比或计算增长率），请提供更多数据或明确需求。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_16,point_query,auto_draft_requires_human_review,查询药明康德2024年ROE,603259,["roe"],["financial_query"],"{""stock_code"":""603259"",""year"":2024,""metric"":""roe"",""value"":16.78,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询药明康德2024年ROE"",""companies"":[{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""roe""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据提供的财务数据，药明康德2024年的加权平均净资产收益率（ROE）为 **16.78%**。
+
+- **数据来源**：该数值来自药明康德2024年年报（文件编号：603259_20250318_7L3V.pdf）第8页，指标名称为“加权平均净资产收益率”。
+- **数据状态**：该数据目前标记为“候选待审核”（candidate_pending_review），尚未最终确认。
+
+请注意，此数值为年报披露的加权平均口径，与简单计算的期末净资产收益率可能存在差异。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_17,point_query,auto_draft_requires_human_review,查询成都先导2024年总资产,688222,["total_assets"],["financial_query"],"{""stock_code"":""688222"",""year"":2024,""metric"":""total_assets"",""value"":175651.660811,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询成都先导2024年总资产"",""companies"":[{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""total_assets""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据查询结果，成都先导（股票代码：688222）2024年总资产为 **175,651.66万元**（约17.57亿元）。
+
+- **数据来源**：年报文件 `688222_20250426_NOJZ.pdf` 第10页。
+- **数据状态**：该数值标记为“候选待审核”（candidate_pending_review），即尚未最终确认，可能存在后续调整。
+
+如需进一步核实，建议查阅该年报原文或后续审计报告。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_18,point_query,auto_draft_requires_human_review,查询成都先导2022年归属于上市公司股东的净资产,688222,["net_assets"],["financial_query"],"{""stock_code"":""688222"",""year"":2022,""metric"":""net_assets"",""value"":130251.212362,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询成都先导2022年归属于上市公司股东的净资产"",""companies"":[{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""}],""period"":{""years"":[2022],""period_code"":""FY""},""metrics"":[""net_assets""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据查询结果，成都先导（股票代码：688222）2022年归属于上市公司股东的净资产为 **130,251.21万元**（约13.03亿元）。
+
+- **数据来源**：年报文件（688222_20250426_NOJZ.pdf）第10页。
+- **数据状态**：该数据为待审核候选值（candidate_pending_review），建议以正式披露年报为准。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_19,point_query,auto_draft_requires_human_review,查询百克生物2022年销售净利率,688276,["net_margin"],["financial_query"],"{""stock_code"":""688276"",""year"":2022,""metric"":""net_margin"",""value"":16.943152,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询百克生物2022年销售净利率"",""companies"":[{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""}],""period"":{""years"":[2022],""period_code"":""FY""},""metrics"":[""net_margin""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据查询结果，百克生物（股票代码：688276）2022年的销售净利率为 **16.94%**（计算值）。
+
+- **数据来源**：年报文件 `688276_20250421_23A9.pdf` 第10页。
+- **数据性质**：该数值为“净利率（计算）”，属于基于财务数据计算得出的衍生指标，状态为“待审核”（derived_pending_review），非年报直接披露的原始数值。
+
+如需进一步核实，建议查阅该年报中利润表相关数据（如净利润与营业收入）进行交叉验证。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+point_20,point_query,auto_draft_requires_human_review,查询百克生物2023年经营现金流率,688276,["operating_cash_margin"],["financial_query"],"{""stock_code"":""688276"",""year"":2023,""metric"":""operating_cash_margin"",""value"":13.986328,""tolerance"":1e-06}",0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询百克生物2023年经营现金流率"",""companies"":[{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""}],""period"":{""years"":[2023],""period_code"":""FY""},""metrics"":[""operating_cash_margin""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""query"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据您提供的数据，百克生物（股票代码：688276）2023年的**经营现金流/营业收入（计算）** 为 **13.99%**（四舍五入，原始值为13.986328%）。
+
+**说明：**
+- 该数值来源于财务数据表，标注为“计算”指标，即由经营现金流净额除以营业收入得出。
+- 数据状态为“derived_pending_review”，表示该数值为派生计算值，尚待审核确认。
+- 未提供年报原文引用或额外计算过程，因此仅基于此数值回答。
+
+如需进一步分析该比率的构成或趋势，请提供更多数据或年报原文。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+trend_01,trend_analysis,auto_draft_requires_human_review,分析凯莱英2022—2024年营业收入趋势,002821,["revenue"],"[""financial_query"",""financial_analysis""]",null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析凯莱英2022—2024年营业收入趋势"",""companies"":[{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"基于提供的财务数据，凯莱英2022—2024年营业收入趋势如下：
+
+**数据事实（单位：万元）**
+- 2022年：1,025,532.54万元
+- 2023年：782,519.03万元
+- 2024年：580,465.73万元
+
+**计算分析**
+- 2023年同比变化：(782,519.03 - 1,025,532.54) / 1,025,532.54 ≈ **-23.7%**
+- 2024年同比变化：(580,465.73 - 782,519.03) / 782,519.03 ≈ **-25.8%**
+- 2022至2024年累计变化：(580,465.73 - 1,025,532.54) / 1,025,532.54 ≈ **-43.4%**
+
+**趋势结论**
+营业收入连续三年呈**显著下降趋势**，2023年和2024年分别同比下降约23.7%和25.8%，两年累计降幅约43.4%。
+
+**数据来源说明**
+以上数据均来自凯莱英2024年年度报告第9页，数据状态为“待复核候选”（candidate_pending_review），建议以正式审计报告为准。本分析仅基于数值计算，不构成投资建议。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+trend_02,trend_analysis,auto_draft_requires_human_review,分析迪安诊断2022—2024年归母净利润趋势,300244,["net_profit_attributable"],"[""financial_query"",""financial_analysis""]",null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析迪安诊断2022—2024年归母净利润趋势"",""companies"":[{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""net_profit_attributable""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","根据提供的财务数据，迪安诊断2022—2024年归属于上市公司股东的净利润趋势如下：
+
+- **2022年**：143,419.11万元（约14.34亿元）
+- **2023年**：30,746.11万元（约3.07亿元），同比下降78.56%
+- **2024年**：-35,727.77万元（约-3.57亿元），同比下降216.20%（即由盈转亏）
+
+**计算说明**：
+- 2023年同比降幅 = (30,746.11 - 143,419.11) / 143,419.11 × 100% ≈ -78.56%
+- 2024年同比降幅 = (-35,727.77 - 30,746.11) / 30,746.11 × 100% ≈ -216.20%
+
+**趋势总结**：归母净利润连续两年大幅下滑，2022年至2023年下降近八成，2024年进一步转为亏损，亏损金额超过3.5亿元。数据来源为迪安诊断2024年年度报告第10页，质量状态为待复核。
+
+以上仅为数据事实和计算结果，不构成投资建议。",[],["data/artifacts/380cb956-9b38-46f7-b64e-a5e9d5f8a196_300244_net_profit_attributable.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+trend_03,trend_analysis,auto_draft_requires_human_review,分析泰格医药2022—2024年扣非净利润趋势,300347,["net_profit_excl_non_recurring"],"[""financial_query"",""financial_analysis""]",null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析泰格医药2022—2024年扣非净利润趋势"",""companies"":[{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""net_profit_excl_non_recurring""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","根据提供的财务数据，泰格医药2022—2024年扣非净利润趋势如下（单位：万元）：
+
+| 年份 | 扣非净利润 | 同比变化 |
+|------|------------|----------|
+| 2022 | 153,951.98 | — |
+| 2023 | 147,724.21 | -4.05% |
+| 2024 | 85,489.54 | -42.13% |
+
+**计算说明**（基于Python计算结果）：
+- 2023年同比降幅 = (147,724.21 - 153,951.98) / 153,951.98 ≈ -4.05%
+- 2024年同比降幅 = (85,489.54 - 147,724.21) / 147,724.21 ≈ -42.13%
+- 2022—2024年复合年增长率（CAGR）= -25.48%
+
+**趋势总结**：
+- 扣非净利润连续两年下降，且降幅显著扩大（从-4.05%扩大至-42.13%）。
+- 2024年扣非净利润较2022年累计下降约44.5%（计算：1 - 85,489.54/153,951.98 ≈ 44.5%）。
+
+**数据来源**：所有数值均来自《泰格医药：2024年年度报告》第11页，质量状态为“candidate_pending_review”（待复核）。未提供年报原文引用或额外解释，以上仅为数值和计算结果的事实陈述，不构成投资建议。",[],["data/artifacts/e838e8bb-9e26-4233-8488-383905f14ac3_300347_net_profit_excl_non_recurring.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+trend_04,trend_analysis,auto_draft_requires_human_review,分析迈普医学2022—2024年经营活动现金流趋势,301033,["operating_cash_flow"],"[""financial_query"",""financial_analysis""]",null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析迈普医学2022—2024年经营活动现金流趋势"",""companies"":[{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""operating_cash_flow""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":0.95,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"基于提供的财务数据，迈普医学2022年至2024年经营活动产生的现金流量净额趋势如下：
+
+| 年份 | 经营活动现金流量净额（万元） | 同比变化 |
+|------|------------------------------|----------|
+| 2022 | 4,830.92 | — |
+| 2023 | 10,768.66 | +122.9% |
+| 2024 | 11,638.44 | +8.1% |
+
+**计算说明**（基于上述数值）：
+- 2023年较2022年增长：`(10,768.66 - 4,830.92) / 4,830.92 ≈ 122.9%`
+- 2024年较2023年增长：`(11,638.44 - 10,768.66) / 10,768.66 ≈ 8.1%`
+
+**趋势总结**：
+- 经营活动现金流净额连续三年为正，且呈逐年上升趋势。
+- 2023年增幅显著（超过一倍），2024年增速明显放缓，但绝对金额仍创三年新高。
+
+**数据来源**：所有数值均来自《迈普医学：2024年年度报告》第9页，质量状态为“待复核候选数据”，建议以正式披露文件为准。本分析仅陈述数据事实，不构成投资建议。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+trend_05,trend_analysis,auto_draft_requires_human_review,分析百普赛斯2022—2024年每股收益趋势,301080,["eps"],"[""financial_query"",""financial_analysis""]",null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析百普赛斯2022—2024年每股收益趋势"",""companies"":[{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""eps""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","根据提供的财务数据，百普赛斯（301080）2022—2024年基本每股收益趋势如下：
+
+- **2022年**：1.0319元/股
+- **2023年**：1.2801元/股，同比增长 **24.05%**
+- **2024年**：1.0319元/股，同比下降 **-19.39%**
+
+**计算说明**：
+- 2023年同比增幅 = (1.2801 - 1.0319) / 1.0319 × 100% ≈ 24.05%
+- 2024年同比降幅 = (1.0319 - 1.2801) / 1.2801 × 100% ≈ -19.39%
+- 2022年至2024年复合年增长率（CAGR）为 **0.0%**，即期末值等于期初值。
+
+**趋势总结**：每股收益在2023年显著上升，2024年回落至2022年水平，整体呈“先升后降”的波动形态，两年间无净增长。
+
+以上数据均来源于百普赛斯2024年年度报告（第7页），为原始数值及基于此的计算结果，未包含额外解释或投资建议。",[],["data/artifacts/6b7df943-0cf9-4657-9438-bb57cc7d5add_301080_eps.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+trend_06,trend_analysis,auto_draft_requires_human_review,分析百诚医药2022—2024年ROE趋势,301096,["roe"],"[""financial_query"",""financial_analysis""]",null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析百诚医药2022—2024年ROE趋势"",""companies"":[{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""roe""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"基于提供的财务数据，百诚医药2022—2024年加权平均净资产收益率（ROE）趋势如下：
+
+| 年份 | 加权平均净资产收益率（%） |
+|------|---------------------------|
+| 2022 | 8.15 |
+| 2023 | 10.55 |
+| 2024 | 2.01 |
+
+**趋势分析（基于数值计算）**：
+- 2022年至2023年：ROE从8.15%上升至10.55%，增幅为2.40个百分点，呈上升趋势。
+- 2023年至2024年：ROE从10.55%大幅下降至2.01%，降幅为8.54个百分点，呈显著下降趋势。
+- 整体来看，2022—2024年ROE呈现“先升后降”的走势，2024年降至三年最低点。
+
+**数据来源说明**：以上数值均来自《百诚医药：2024年年度报告》第10页，数据状态为“待复核”（candidate_pending_review），未提供其他计算或年报原文引用。如需进一步分析ROE变动原因（如净利润、净资产变化等），需补充相关财务数据或年报说明。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+trend_07,trend_analysis,auto_draft_requires_human_review,分析昭衍新药2022—2024年总资产趋势,603127,["total_assets"],"[""financial_query"",""financial_analysis""]",null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析昭衍新药2022—2024年总资产趋势"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""total_assets""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","基于提供的财务数据，昭衍新药（603127）2022年至2024年总资产趋势如下：
+
+**事实数据（单位：万元）**
+- 2022年：1,036,421.55万元
+- 2023年：1,002,715.96万元（同比下降3.25%）
+- 2024年：939,615.26万元（同比下降6.29%）
+
+**计算趋势**
+- 2022年至2024年总资产复合年增长率（CAGR）为 **-4.78%**，呈持续下降趋势。
+- 下降幅度逐年扩大：2023年同比降幅3.25%，2024年同比降幅扩大至6.29%。
+
+**说明**
+- 以上数值直接来源于年报数据（源文件：603127_20250329_1BW1.pdf，第7页），计算基于这些数值。
+- 未提供年报原文解释或管理层分析，因此无法说明下降的具体原因（如资产处置、减值、业务收缩等）。
+- 数据质量状态为“候选待审核”，但未发现异常值。
+
+如需了解下降原因，建议查阅年报中管理层讨论与分析部分。",[],["data/artifacts/0d38f25b-b836-49d2-9a49-347e742978ff_603127_total_assets.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+trend_08,trend_analysis,auto_draft_requires_human_review,分析药明康德2022—2024年归属于上市公司股东的净资产趋势,603259,["net_assets"],"[""financial_query"",""financial_analysis""]",null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析药明康德2022—2024年归属于上市公司股东的净资产趋势"",""companies"":[{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""net_assets""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"基于提供的财务数据，药明康德2022年至2024年归属于上市公司股东的净资产趋势如下：
+
+| 年份 | 归属于上市公司股东的净资产（万元） | 同比变化 |
+|------|-----------------------------------|----------|
+| 2022 | 4,658,995.34 | — |
+| 2023 | 5,512,245.39 | +853,250.05（+18.31%） |
+| 2024 | 5,863,271.52 | +351,026.13（+6.37%） |
+
+**计算说明**（基于上述数值）：
+- 2023年较2022年增长：5,512,245.39 - 4,658,995.34 = 853,250.05万元，增幅 = 853,250.05 / 4,658,995.34 ≈ 18.31%。
+- 2024年较2023年增长：5,863,271.52 - 5,512,245.39 = 351,026.13万元，增幅 = 351,026.13 / 5,512,245.39 ≈ 6.37%。
+
+**趋势总结**：净资产在2022—2024年间持续增长，但增速明显放缓（从18.31%降至6.37%）。数据来源为年报第8页，质量状态为待复核，以上仅为数值趋势描述，不构成投资建议。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+trend_09,trend_analysis,auto_draft_requires_human_review,分析成都先导2022—2024年销售净利率趋势,688222,["net_margin"],"[""financial_query"",""financial_analysis""]",null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析成都先导2022—2024年销售净利率趋势"",""companies"":[{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""net_margin""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","根据提供的财务数据，成都先导2022—2024年销售净利率趋势如下：
+
+**数值与计算（基于财务数据）**：
+- 2022年：净利率为 **7.66%**
+- 2023年：净利率为 **10.97%**（同比增长 **43.07%**）
+- 2024年：净利率为 **12.03%**（同比增长 **9.69%**）
+- 2022—2024年复合年增长率（CAGR）：**25.27%**
+
+**趋势解释**：
+- 净利率在三年间呈**持续上升**趋势，从2022年的7.66%提升至2024年的12.03%，累计提升约4.37个百分点。
+- 增长幅度在2023年最为显著（同比+43.07%），2024年增速放缓（同比+9.69%），但仍保持正增长。
+
+**数据来源说明**：
+- 所有净利率数值均为“计算”指标（derived_pending_review），来源于年报文件（688222_20250426_NOJZ.pdf）第10页，但尚未经过最终审核。
+- 未提供年报原文引用（rag_chunks为空），因此无法补充公司对净利率变化的官方解释。
+
+**注意**：以上仅为数据趋势描述，不构成投资建议。如需深入分析原因（如成本控制、收入结构变化等），需查阅年报中的管理层讨论或财务报表附注。",[],["data/artifacts/5bfb171c-4b63-41bf-9cd9-2cb436633d3e_688222_net_margin.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+trend_10,trend_analysis,auto_draft_requires_human_review,分析百克生物2022—2024年经营现金流率趋势,688276,["operating_cash_margin"],"[""financial_query"",""financial_analysis""]",null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析百克生物2022—2024年经营现金流率趋势"",""companies"":[{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""operating_cash_margin""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":0.95,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"基于提供的财务数据，百克生物2022年至2024年的经营现金流率（经营现金流/营业收入）趋势如下：
+
+- **2022年**：3.72%
+- **2023年**：13.99%
+- **2024年**：33.07%
+
+**趋势分析（计算）**：该比率从2022年到2024年呈持续上升趋势，2023年较2022年上升约10.27个百分点，2024年较2023年上升约19.09个百分点，增幅显著。
+
+**说明**：以上数值均为系统计算得出的“经营现金流/营业收入”比率，数据来源为年报第10页，状态为“待复核”（derived_pending_review），因此该趋势基于计算结果，未结合年报原文解释具体原因。如需了解上升背后的业务因素（如回款改善、销售增长等），建议查阅年报相关章节。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+ranking_01,ranking,auto_draft_requires_human_review,查询2024年十家公司营业收入排名,,["revenue"],["financial_query"],null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询2024年十家公司营业收入排名"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""},{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""},{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""},{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""},{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""},{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""},{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""},{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""},{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""},{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""ranking"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据提供的财务数据，2024年十家公司的营业收入排名如下（单位：万元）：
+
+1. **无锡药明康德新药开发股份有限公司**：3,924,143.14万元  
+2. **迪安诊断技术集团股份有限公司**：1,219,622.37万元  
+3. **杭州泰格医药科技股份有限公司**：660,312.02万元  
+4. **凯莱英医药集团（天津）股份有限公司**：580,465.73万元  
+5. **北京昭衍新药研究中心股份有限公司**：201,833.38万元  
+6. **长春百克生物科技股份公司**：122,908.41万元  
+7. **杭州百诚医药科技股份有限公司**：80,192.32万元  
+8. **北京百普赛斯生物科技股份有限公司**：64,502.19万元  
+9. **成都先导药物开发股份有限公司**：42,698.69万元  
+10. **迈普医学股份有限公司**：27,844.21万元  
+
+**说明**：  
+- 以上排名基于数据中“rank”字段，该字段已按营业收入降序排列。  
+- 所有数值均直接来源于提供的财务数据，未进行额外计算。  
+- 数据仅反映2024年报告期的营业收入，不涉及其他财务指标或公司经营评价。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+ranking_02,ranking,auto_draft_requires_human_review,查询2024年十家公司归母净利润排名,,["net_profit_attributable"],["financial_query"],null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询2024年十家公司归母净利润排名"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""},{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""},{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""},{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""},{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""},{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""},{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""},{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""},{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""},{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""net_profit_attributable""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""ranking"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据提供的财务数据，2024年十家公司的归母净利润排名如下（单位：万元）：
+
+1. **无锡药明康德新药开发股份有限公司**：945,030.84  
+2. **凯莱英医药集团（天津）股份有限公司**：94,895.00  
+3. **杭州泰格医药科技股份有限公司**：40,514.35  
+4. **长春百克生物科技股份公司**：23,209.38  
+5. **北京百普赛斯生物科技股份有限公司**：12,383.25  
+6. **迈普医学股份有限公司**：7,885.42  
+7. **北京昭衍新药研究中心股份有限公司**：7,407.54  
+8. **成都先导药物开发股份有限公司**：5,135.71  
+9. **杭州百诚医药科技股份有限公司**：-5,274.28（亏损）  
+10. **迪安诊断技术集团股份有限公司**：-35,727.77（亏损）
+
+**说明**：  
+- 以上数据直接来源于提供的财务数据，排名基于数值大小（正数从高到低，负数按绝对值大小排列）。  
+- 第9和第10家公司为负值，表示2024年归母净利润为亏损。  
+- 未提供额外计算或年报引用，因此仅陈述数据事实，不涉及投资建议。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+ranking_03,ranking,auto_draft_requires_human_review,查询2024年十家公司扣非净利润排名,,["net_profit_excl_non_recurring"],["financial_query"],null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询2024年十家公司扣非净利润排名"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""},{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""},{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""},{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""},{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""},{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""},{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""},{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""},{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""},{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""net_profit_excl_non_recurring""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""ranking"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据提供的财务数据，2024年这十家公司的扣非净利润排名如下（单位：万元）：
+
+| 排名 | 公司名称 | 扣非净利润（万元） |
+|------|----------|-------------------|
+| 1 | 无锡药明康德新药开发股份有限公司 | 998,810.28 |
+| 2 | 杭州泰格医药科技股份有限公司 | 85,489.54 |
+| 3 | 凯莱英医药集团（天津）股份有限公司 | 84,953.72 |
+| 4 | 长春百克生物科技股份公司 | 22,981.04 |
+| 5 | 北京百普赛斯生物科技股份有限公司 | 11,911.57 |
+| 6 | 迈普医学股份有限公司 | 6,811.33 |
+| 7 | 成都先导药物开发股份有限公司 | 5,743.72 |
+| 8 | 北京昭衍新药研究中心股份有限公司 | 2,357.34 |
+| 9 | 杭州百诚医药科技股份有限公司 | -7,263.18 |
+| 10 | 迪安诊断技术集团股份有限公司 | -38,010.82 |
+
+**说明**：
+- 以上排名基于数据中“rank”字段，数值为“归属于上市公司股东的扣除非经常性损益的净利润”。
+- 排名第9和第10的公司扣非净利润为负值，表示亏损。
+- 此数据为直接引用，未进行额外计算或解释。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+ranking_04,ranking,auto_draft_requires_human_review,查询2024年十家公司经营活动现金流排名,,["operating_cash_flow"],["financial_query"],null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询2024年十家公司经营活动现金流排名"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""},{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""},{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""},{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""},{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""},{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""},{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""},{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""},{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""},{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""operating_cash_flow""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""ranking"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据提供的财务数据，2024年这十家公司的经营活动现金流净额排名如下（单位：万元）：
+
+1. **无锡药明康德新药开发股份有限公司**：1,240,651.48万元  
+2. **凯莱英医药集团（天津）股份有限公司**：125,433.70万元  
+3. **迪安诊断技术集团股份有限公司**：120,739.56万元  
+4. **杭州泰格医药科技股份有限公司**：109,700.19万元  
+5. **长春百克生物科技股份公司**：40,650.22万元  
+6. **北京昭衍新药研究中心股份有限公司**：33,892.87万元  
+7. **成都先导药物开发股份有限公司**：12,800.99万元  
+8. **迈普医学股份有限公司**：11,638.44万元  
+9. **北京百普赛斯生物科技股份有限公司**：8,470.67万元  
+10. **杭州百诚医药科技股份有限公司**：-19,585.69万元（负值，排名末位）
+
+**说明**：  
+- 以上数据直接来源于提供的财务数据表，排名基于数值大小（从高到低）。  
+- 杭州百诚医药科技股份有限公司的经营活动现金流为负，表明该年度现金流出大于流入。  
+- 此排名仅为数值事实，不构成任何投资建议。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+ranking_05,ranking,auto_draft_requires_human_review,查询2024年十家公司每股收益排名,,["eps"],["financial_query"],null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询2024年十家公司每股收益排名"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""},{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""},{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""},{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""},{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""},{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""},{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""},{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""},{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""},{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""eps""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""ranking"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据提供的2024年财务数据，十家公司的基本每股收益排名如下（单位：元/股）：
+
+| 排名 | 公司名称 | 股票代码 | 基本每股收益 |
+|------|----------|----------|--------------|
+| 1 | 无锡药明康德新药开发股份有限公司 | 603259 | 3.28 |
+| 2 | 凯莱英医药集团（天津）股份有限公司 | 002821 | 2.69 |
+| 3 | 迈普医学股份有限公司 | 301033 | 1.20 |
+| 4 | 北京百普赛斯生物科技股份有限公司 | 301080 | 1.0319 |
+| 5 | 长春百克生物科技股份公司 | 688276 | 0.56 |
+| 6 | 杭州泰格医药科技股份有限公司 | 300347 | 0.47 |
+| 7 | 成都先导药物开发股份有限公司 | 688222 | 0.13 |
+| 8 | 北京昭衍新药研究中心股份有限公司 | 603127 | 0.10 |
+| 9 | 杭州百诚医药科技股份有限公司 | 301096 | -0.49 |
+| 10 | 迪安诊断技术集团股份有限公司 | 300244 | -0.579 |
+
+**说明**：
+- 以上数据直接来源于提供的财务数据，为“基本每股收益”指标，未做额外计算。
+- 排名按数值从高到低排列，其中第9和第10家公司为负值，表示亏损。
+- 此排名仅反映2024年报告期的数值，不构成投资建议。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+ranking_06,ranking,auto_draft_requires_human_review,查询2024年十家公司ROE排名,,["roe"],["financial_query"],null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询2024年十家公司ROE排名"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""},{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""},{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""},{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""},{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""},{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""},{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""},{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""},{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""},{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""roe""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""ranking"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"根据提供的2024年财务数据，十家公司的加权平均净资产收益率（ROE）排名如下（从高到低）：
+
+1. **无锡药明康德新药开发股份有限公司**（603259）：16.78%
+2. **迈普医学股份有限公司**（301033）：11.95%
+3. **长春百克生物科技股份公司**（688276）：5.63%
+4. **凯莱英医药集团（天津）股份有限公司**（002821）：5.56%
+5. **北京百普赛斯生物科技股份有限公司**（301080）：4.80%
+6. **成都先导药物开发股份有限公司**（688222）：3.74%
+7. **杭州百诚医药科技股份有限公司**（301096）：2.01%
+8. **杭州泰格医药科技股份有限公司**（300347）：1.94%
+9. **北京昭衍新药研究中心股份有限公司**（603127）：0.91%
+10. **迪安诊断技术集团股份有限公司**（300244）：-5.00%（唯一负值）
+
+**说明**：
+- 以上数据直接来源于提供的财务数据中的“加权平均净资产收益率”指标，未进行额外计算。
+- 排名基于数值大小，负值表示亏损或净资产收益为负。
+- 此排名仅为事实性数据呈现，不构成任何投资建议。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+ranking_07,ranking,auto_draft_requires_human_review,查询2024年十家公司总资产排名,,["total_assets"],["financial_query"],null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询2024年十家公司总资产排名"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""},{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""},{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""},{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""},{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""},{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""},{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""},{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""},{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""},{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""total_assets""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""ranking"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"基于提供的财务数据，2024年十家公司总资产排名如下（单位：万元）：
+
+1. **无锡药明康德新药开发股份有限公司**（603259）：8,032,582.44
+2. **杭州泰格医药科技股份有限公司**（300347）：2,867,101.58
+3. **凯莱英医药集团（天津）股份有限公司**（002821）：1,928,855.77
+4. **迪安诊断技术集团股份有限公司**（300244）：1,578,598.37
+5. **北京昭衍新药研究中心股份有限公司**（603127）：939,615.26
+6. **长春百克生物科技股份公司**（688276）：520,486.88
+7. **杭州百诚医药科技股份有限公司**（301096）：372,118.85
+8. **北京百普赛斯生物科技股份有限公司**（301080）：291,460.84
+9. **成都先导药物开发股份有限公司**（688222）：175,651.66
+10. **迈普医学股份有限公司**（301033）：79,923.03
+
+**说明**：以上排名直接依据提供的 `rank` 字段，数值为原始数据，未进行额外计算。所有数值均以“万元”为单位。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+ranking_08,ranking,auto_draft_requires_human_review,查询2024年十家公司归属于上市公司股东的净资产排名,,["net_assets"],["financial_query"],null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询2024年十家公司归属于上市公司股东的净资产排名"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""},{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""},{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""},{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""},{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""},{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""},{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""},{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""},{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""},{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""net_assets""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""ranking"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"基于提供的财务数据，2024年十家公司归属于上市公司股东的净资产排名如下（单位：万元）：
+
+1. **无锡药明康德新药开发股份有限公司**：5,863,271.52万元
+2. **杭州泰格医药科技股份有限公司**：2,067,065.34万元
+3. **凯莱英医药集团（天津）股份有限公司**：1,684,538.52万元
+4. **北京昭衍新药研究中心股份有限公司**：807,881.86万元
+5. **迪安诊断技术集团股份有限公司**：656,430.22万元
+6. **长春百克生物科技股份公司**：421,774.83万元
+7. **北京百普赛斯生物科技股份有限公司**：261,565.42万元
+8. **杭州百诚医药科技股份有限公司**：257,938.98万元
+9. **成都先导药物开发股份有限公司**：139,304.61万元
+10. **迈普医学股份有限公司**：69,966.47万元
+
+**说明**：以上排名直接依据您提供的财务数据中的“rank”字段，数值为原始数据，未进行额外计算。数据单位为万元。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+ranking_09,ranking,auto_draft_requires_human_review,查询2024年十家公司销售净利率排名,,["net_margin"],["financial_query"],null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询2024年十家公司销售净利率排名"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""},{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""},{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""},{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""},{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""},{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""},{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""},{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""},{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""},{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""net_margin""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""ranking"",""confidence"":0.95,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"基于提供的财务数据，2024年十家公司的销售净利率排名如下（计算值，单位：%）：
+
+| 排名 | 公司名称 | 净利率（%） |
+|------|----------|------------|
+| 1 | 迈普医学股份有限公司 | 28.32 |
+| 2 | 无锡药明康德新药开发股份有限公司 | 24.08 |
+| 3 | 北京百普赛斯生物科技股份有限公司 | 19.20 |
+| 4 | 长春百克生物科技股份公司 | 18.88 |
+| 5 | 凯莱英医药集团（天津）股份有限公司 | 16.35 |
+| 6 | 成都先导药物开发股份有限公司 | 12.03 |
+| 7 | 杭州泰格医药科技股份有限公司 | 6.14 |
+| 8 | 北京昭衍新药研究中心股份有限公司 | 3.67 |
+| 9 | 迪安诊断技术集团股份有限公司 | -2.93 |
+| 10 | 杭州百诚医药科技股份有限公司 | -6.58 |
+
+**说明**：
+- 以上数据为“净利率（计算）”指标，即净利润除以营业收入的百分比，来源于提供的财务数据。
+- 排名基于数值从高到低排列，其中第9和第10家公司净利率为负值，表示2024年出现净亏损。
+- 此排名仅为计算结果，不构成任何投资建议。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+ranking_10,ranking,auto_draft_requires_human_review,查询2024年十家公司经营现金流率排名,,["operating_cash_margin"],["financial_query"],null,0,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""查询2024年十家公司经营现金流率排名"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""},{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""},{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""},{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""},{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""},{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""},{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""},{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""},{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""},{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2024],""period_code"":""FY""},""metrics"":[""operating_cash_margin""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":false,""needs_anomaly_detection"":false,""task_type"":""ranking"",""confidence"":0.9,""parser"":""llm-json:deepseek-v4-flash""}",["financial_query"],"基于提供的财务数据，2024年十家公司的经营现金流率（经营现金流/营业收入）排名如下（数值为计算值，单位%）：
+
+| 排名 | 公司名称 | 经营现金流率（%） |
+|------|----------|------------------|
+| 1 | 迈普医学股份有限公司 | 41.80 |
+| 2 | 长春百克生物科技股份公司 | 33.07 |
+| 3 | 无锡药明康德新药开发股份有限公司 | 31.62 |
+| 4 | 成都先导药物开发股份有限公司 | 29.98 |
+| 5 | 凯莱英医药集团（天津）股份有限公司 | 21.61 |
+| 6 | 北京昭衍新药研究中心股份有限公司 | 16.79 |
+| 7 | 杭州泰格医药科技股份有限公司 | 16.61 |
+| 8 | 北京百普赛斯生物科技股份有限公司 | 13.13 |
+| 9 | 迪安诊断技术集团股份有限公司 | 9.90 |
+| 10 | 杭州百诚医药科技股份有限公司 | -24.42 |
+
+**说明**：
+- 以上排名直接依据提供的“经营现金流/营业收入（计算）”指标值，数值为正表示经营现金流为正，数值为负（如百诚医药）表示经营现金流为负。
+- 该指标为计算值，反映每单位营业收入产生的经营现金流，不构成投资建议。",[],[],success,FALSE,1,1,1,NA,NA,NA,5,5,5,approved,李,无
+rag_01,rag_explanation,auto_draft_requires_human_review,分析凯莱英2022—2024年营业收入异常变化，并结合年报解释原因和依据,002821,["revenue"],"[""financial_query"",""financial_analysis"",""annual_report_search""]",null,1,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析凯莱英2022—2024年营业收入异常变化，并结合年报解释原因和依据"",""companies"":[{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":true,""needs_chart"":false,""needs_anomaly_detection"":true,""task_type"":""trend_analysis"",""confidence"":0.9,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""annual_report_search""]","# 凯莱英（002821）2022—2024年营业收入变化分析
+
+## 一、营业收入数据（事实）
+
+| 年份 | 营业收入（万元） | 同比变化 |
+|------|-----------------|----------|
+| 2022 | 1,025,532.54 | — |
+| 2023 | 782,519.03 | **-23.70%** |
+| 2024 | 580,465.73 | **-25.82%** |
+
+**计算指标**：2022—2024年营业收入复合年增长率（CAGR）为 **-24.77%**，连续两年出现超过20%的大幅下滑，构成显著异常变动。
+
+## 二、年报解释的原因（原文引用与解释）
+
+根据凯莱英2024年年度报告，收入下降的主要原因如下：
+
+1. **大订单消失（核心原因）**：年报第31页明确说明——“吉林凯莱英医药化学有限公司收入及利润变动较大主要原因系**上年同期有大订单收入，今年不再有相关订单**所致。”年报第13页进一步指出：“**去年同期交付的大订单盈利较高，今年已无相关收入**。”
+
+2. **新兴业务爬坡期**：年报第13页提到——“新兴业务处于爬坡期，产能利用率相对较低，加上国内市场竞争较为激烈，导致新兴业务毛利率较低。”
+
+3. **海外新基地爬坡**：年报第13页指出——“公司UK Sandwich site下半年投入使用后尚处于爬坡期，波士顿研发中心投入运营尚未完成爬坡。”
+
+4. **研发投入持续增加**：年报第13页提到——“公司继续保持新技术研发投入和新业务培育，研发费用投入较多。”
+
+## 三、结构性亮点（年报原文引用）
+
+尽管总收入连续下滑，年报第13页显示公司剔除大订单影响后的业务仍保持增长：
+
+- 来自**大制药公司**收入26.91亿元，剔除大订单影响后**同比增长4.78%**；
+- 来自**中小制药公司**收入31.14亿元，**同比增长9.78%**；
+- 来自**美国市场**客户收入33.71亿元，剔除大订单影响后**同比增长18.41%**；
+- 来自**欧洲市场**客户收入7.35亿元，**同比增长101.33%**；
+- 来自**境内市场**客户收入15.20亿元，**同比增长2.63%**。
+
+## 四、综合判断
+
+**事实层面**：2022—2024年营业收入从约102.55亿元降至58.05亿元，累计下降约43.4%，连续两年同比降幅超过20%。
+
+**年报解释层面**：收入下滑的核心原因是**2022年高基数的大订单在2023年和2024年不再存在**，叠加新兴业务和海外新基地尚处爬坡期、产能利用率偏低、研发投入持续加大等因素。剔除大订单影响后，公司常规业务（大客户、中小客户、海外市场）仍保持正增长。
+
+**说明**：以上分析仅基于财务数据和年报披露信息，不构成任何投资建议。","[{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司"",""report_year"":2024,""source_file"":""凯莱英：2024年年度报告.pdf"",""page_number"":31,""chunk_id"":1828},{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司"",""report_year"":2024,""source_file"":""凯莱英：2024年年度报告.pdf"",""page_number"":67,""chunk_id"":1911},{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司"",""report_year"":2024,""source_file"":""凯莱英：2024年年度报告.pdf"",""page_number"":13,""chunk_id"":1786},{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司"",""report_year"":2024,""source_file"":""凯莱英：2024年年度报告.pdf"",""page_number"":45,""chunk_id"":1861}]",[],success,FALSE,1,1,1,5,1,NA,5,5,5,approved,李,无
+rag_02,rag_explanation,auto_draft_requires_human_review,分析迪安诊断2022—2024年营业收入异常变化，并结合年报解释原因和依据,300244,["revenue"],"[""financial_query"",""financial_analysis"",""annual_report_search""]",null,1,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析迪安诊断2022—2024年营业收入异常变化，并结合年报解释原因和依据"",""companies"":[{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":true,""needs_chart"":false,""needs_anomaly_detection"":true,""task_type"":""comprehensive_analysis"",""confidence"":0.9,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""annual_report_search""]","基于您提供的财务数据和年报引用，我对迪安诊断2022—2024年营业收入变化分析如下：
+
+### 一、营业收入变化事实与计算
+
+根据财务数据（单位：万元）：
+
+| 年份 | 营业收入 | 同比变化 |
+|------|----------|----------|
+| 2022 | 2,028,246.93 | — |
+| 2023 | 1,340,831.98 | **-33.89%** |
+| 2024 | 1,219,622.37 | **-9.04%** |
+
+- 2022年至2024年复合年增长率（CAGR）：**-22.46%**
+- 异常点：2023年营业收入同比大幅下降33.89%，触发异常检测规则（阈值20%）。
+
+### 二、年报原文解释（基于提供的引用内容）
+
+**重要说明**：您提供的年报引用片段（第110、111、149、177页）主要涉及子公司名单、税收优惠政策、资本公积变动等财务附注内容，**未直接包含营业收入变动原因的经营分析段落**（如“管理层讨论与分析”部分）。因此，我无法从现有引用中提取公司对收入下降的官方解释。
+
+### 三、基于现有信息的合理推断（非年报原文）
+
+根据行业背景和财务数据特征，2023年收入大幅下滑可能与以下因素相关（**此为推断，非年报原文**）：
+1. **新冠检测业务退潮**：2022年公司收入中包含大量新冠核酸检测业务，2023年该业务需求骤减，导致收入基数大幅回落。
+2. **业务结构调整**：公司可能主动收缩低毛利或一次性业务，聚焦常规医学检验和诊断服务。
+
+### 四、结论与建议
+
+- **事实**：2023年收入同比下降33.89%，2024年继续下降9.04%，三年累计下降约40%。
+- **年报依据**：现有引用未提供官方原因解释，需查阅年报“管理层讨论与分析”章节（通常在第10-30页）获取详细说明。
+- **建议**：如需完整原因分析，请提供年报中“经营情况讨论与分析”或“董事会报告”部分的引用内容。
+
+> ?? 以上分析仅基于数据计算和现有引用，不构成投资建议。","[{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司"",""report_year"":2024,""source_file"":""迪安诊断：2024年年度报告.pdf"",""page_number"":149,""chunk_id"":4022},{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司"",""report_year"":2024,""source_file"":""迪安诊断：2024年年度报告.pdf"",""page_number"":111,""chunk_id"":3944},{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司"",""report_year"":2024,""source_file"":""迪安诊断：2024年年度报告.pdf"",""page_number"":177,""chunk_id"":4076},{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司"",""report_year"":2024,""source_file"":""迪安诊断：2024年年度报告.pdf"",""page_number"":110,""chunk_id"":3943}]",[],success,FALSE,1,1,1,5,1,NA,5,5,5,approved,李,无
+rag_03,rag_explanation,auto_draft_requires_human_review,分析泰格医药2022—2024年营业收入异常变化，并结合年报解释原因和依据,300347,["revenue"],"[""financial_query"",""financial_analysis"",""annual_report_search""]",null,1,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析泰格医药2022—2024年营业收入异常变化，并结合年报解释原因和依据"",""companies"":[{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":true,""needs_chart"":false,""needs_anomaly_detection"":true,""task_type"":""comprehensive_analysis"",""confidence"":0.9,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""annual_report_search""]","基于您提供的财务数据和年报引用，我对泰格医药2022—2024年营业收入变化分析如下：
+
+### 一、营业收入数据及变化趋势（计算事实）
+
+根据财务数据，泰格医药近三年营业收入（单位：万元）如下：
+
+| 年份 | 营业收入（万元） | 同比变化 |
+|------|------------------|----------|
+| 2022 | 708,547.15 | — |
+| 2023 | 738,403.95 | +4.21% |
+| 2024 | 660,312.02 | **-10.58%** |
+
+- 2022年至2023年：营业收入小幅增长4.21%。
+- 2023年至2024年：营业收入出现明显下滑，同比下降10.58%。
+- 三年复合年增长率（CAGR）为 **-3.46%**，整体呈下降趋势。
+
+**异常点判断**：2024年同比降幅达10.58%，超过系统设定的20%异常阈值吗？未超过（10.58% < 20%），因此系统未标记为异常。但该降幅在近三年中属于显著变化，值得关注。
+
+---
+
+### 二、年报解释的原因（原文引用与解释）
+
+根据2024年年报（第21页）的主营业务经营情况说明，收入下降的主要原因如下：
+
+1. **临床试验技术服务收入大幅下滑**：
+   - 2024年临床试验技术服务收入为317,813.99万元，上年同期416,812.83万元，**同比下降23.75%**。
+   - 原因包括：
+     - **特定疫苗项目收入影响**：2023年板块内有部分特定疫苗项目相关收入，2024年该部分收入不再产生，导致同比基数较高。
+     - **国内创新药临床运营业务收入下滑**：主要因为行业周期和结构性变化，2023年国内创新药临床运营新签订单金额同比下降，导致2024年上半年相关收入减少。
+
+2. **临床试验相关服务及实验室服务收入增长**：
+   - 2024年该板块收入329,594.52万元，上年同期312,098.30万元，**同比增长5.61%**，部分抵消了临床试验技术服务收入的下降。
+
+3. **地域维度**：
+   - 境内主营业务收入345,026.16万元，同比下降17.11%，主要受临床试验技术服务板块境内收入下滑拖累。
+   - 境外主营业务收入302,382.35万元，同比下降3.29%，但剔除特定疫苗项目后，境外收入实际实现了同比增长。
+
+---
+
+### 三、其他相关因素（年报引用）
+
+2024年年报（第196页）还披露了**终止2022年A股限制性股票激励计划**的事项：
+- 公司因经营环境变化，预期经营情况与激励方案考核指标存在偏差，决定终止该激励计划。
+- 已授予但尚未归属的607.9784万股第二类限制性股票全部作废。
+- 根据准则，剩余未确认的股份支付金额一次性确认在当期损益，影响金额为34,508,177.28元（约3,450.82万元）。
+
+**说明**：该事项属于一次性费用确认，对2024年净利润有负面影响，但**不直接影响营业收入**，仅作为经营环境变化的佐证。
+
+---
+
+### 四、总结
+
+| 维度 | 结论 |
+|------|------|
+| 数据事实 | 2024年营业收入同比下降10.58%，主要因临床试验技术服务收入下降23.75% |
+| 年报解释 | ①2023年特定疫苗项目收入基数高；②国内创新药临床运营新签订单下滑传导至2024年收入 |
+| 其他因素 | 终止股权激励计划反映经营环境变化，但不直接影响收入 |
+| 判断 | 2024年收入下滑属于结构性变化（行业周期+订单传导），非单一偶发因素所致 |
+
+以上分析仅基于您提供的财务数据和年报引用，不构成投资建议。","[{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司"",""report_year"":2024,""source_file"":""泰格医药：2024年年度报告.pdf"",""page_number"":196,""chunk_id"":2540},{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司"",""report_year"":2024,""source_file"":""泰格医药：2024年年度报告.pdf"",""page_number"":60,""chunk_id"":2260},{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司"",""report_year"":2024,""source_file"":""泰格医药：2024年年度报告.pdf"",""page_number"":21,""chunk_id"":2177},{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司"",""report_year"":2024,""source_file"":""泰格医药：2024年年度报告.pdf"",""page_number"":45,""chunk_id"":2235}]",[],success,FALSE,1,1,1,5,1,NA,5,5,5,approved,李,无
+rag_04,rag_explanation,auto_draft_requires_human_review,分析迈普医学2022—2024年营业收入异常变化，并结合年报解释原因和依据,301033,["revenue"],"[""financial_query"",""financial_analysis"",""annual_report_search""]",null,1,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析迈普医学2022—2024年营业收入异常变化，并结合年报解释原因和依据"",""companies"":[{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":true,""needs_chart"":false,""needs_anomaly_detection"":true,""task_type"":""comprehensive_analysis"",""confidence"":0.9,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""annual_report_search""]","基于您提供的财务数据和年报引用，我对迈普医学2022—2024年营业收入变化分析如下：
+
+### 一、营业收入数据与计算（事实）
+根据财务数据（来源：迈普医学2024年年度报告第9页）：
+- **2022年**：营业收入 19,525.24 万元
+- **2023年**：营业收入 23,086.97 万元，同比增长 **18.24%**
+- **2024年**：营业收入 27,844.21 万元，同比增长 **20.61%**
+- **2022—2024年复合增长率（CAGR）**：**19.42%**
+
+### 二、异常变化识别（计算）
+系统根据规则（同比变化阈值20%）标记出：
+- **2024年**营业收入同比变化 **20.61%**，超过20%阈值，被识别为“大额同比变化”异常项（共1项异常）。
+
+### 三、年报解释与依据（原文引用）
+您提供的年报引用中，**未直接包含**对营业收入增长原因的具体文字说明（如分产品、分地区销售增长等）。现有引用内容主要涉及：
+- 现金流量与净利润差异原因（政府补助、折旧摊销增加）；
+- 非主营业务情况（投资收益、政府补助等）；
+- 公司治理、关联方关系、合并范围变动（未发生合并范围变动）。
+
+因此，**无法从现有引用中提取到关于营业收入增长的具体原因解释**。
+
+### 四、结论与说明
+1. **事实层面**：2022—2024年营业收入连续增长，2023年、2024年同比增速分别为18.24%和20.61%，2024年增速超过20%被系统标记为异常变化。
+2. **计算层面**：三年复合增长率19.42%，增长趋势稳定。
+3. **年报解释**：现有提供的年报引用内容未包含营业收入增长原因的直接说明，无法据此进行原因分析。如需深入解释，建议查阅年报中“管理层讨论与分析”或“主营业务分析”章节。
+
+**提示**：以上仅为数据事实和计算结果的呈现，不构成任何投资建议。","[{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司"",""report_year"":2024,""source_file"":""迈普医学：2024年年度报告.pdf"",""page_number"":25,""chunk_id"":3391},{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司"",""report_year"":2024,""source_file"":""迈普医学：2024年年度报告.pdf"",""page_number"":202,""chunk_id"":3701},{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司"",""report_year"":2024,""source_file"":""迈普医学：2024年年度报告.pdf"",""page_number"":36,""chunk_id"":3410},{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司"",""report_year"":2024,""source_file"":""迈普医学：2024年年度报告.pdf"",""page_number"":196,""chunk_id"":3692}]",[],success,FALSE,1,1,1,5,1,NA,5,5,5,approved,李,无
+rag_05,rag_explanation,auto_draft_requires_human_review,分析百普赛斯2022—2024年营业收入异常变化，并结合年报解释原因和依据,301080,["revenue"],"[""financial_query"",""financial_analysis"",""annual_report_search""]",null,1,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析百普赛斯2022—2024年营业收入异常变化，并结合年报解释原因和依据"",""companies"":[{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":true,""needs_chart"":false,""needs_anomaly_detection"":true,""task_type"":""trend_analysis"",""confidence"":0.9,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""annual_report_search""]","基于您提供的财务数据和年报引用，我对百普赛斯2022—2024年营业收入变化分析如下：
+
+### 一、营业收入数据及计算（事实）
+
+根据财务数据（来源：百普赛斯2024年年度报告第7页）：
+
+| 年份 | 营业收入（万元） | 同比增长率 |
+|------|------------------|------------|
+| 2022 | 47,443.09 | — |
+| 2023 | 54,365.33 | +14.59% |
+| 2024 | 64,502.19 | +18.65% |
+
+**计算得出的复合年增长率（CAGR）**：16.6%（2022—2024年）。
+
+### 二、异常变化判断（计算）
+
+根据设定的异常检测规则（同比增长率阈值20%），2023年（+14.59%）和2024年（+18.65%）的同比增速均未超过20%的阈值，因此**未检测到营业收入异常变化**（异常数量为0）。营业收入呈现**持续、平稳的两位数增长**，增速逐年小幅提升，属于正常增长趋势，而非异常波动。
+
+### 三、年报原文解释（引用）
+
+您提供的年报引用内容中，**未包含直接解释营业收入变动原因的具体段落**。现有引用主要涉及：
+- 公允价值计量的金融资产（第192页）
+- 关联方交易及担保情况（第85页）
+- 收入确认政策（第144页，仅说明服务收入确认条件，未涉及具体变动原因）
+
+因此，**无法从当前提供的年报引用中获取营业收入增长的具体原因解释**（如产品线扩展、市场开拓、客户需求变化等）。
+
+### 四、结论与说明
+
+1. **事实层面**：2022—2024年营业收入从4.74亿元增长至6.45亿元，年复合增速16.6%，2023年和2024年同比增速分别为14.59%和18.65%。
+2. **计算层面**：未触发异常检测规则，营业收入变化属于正常增长区间。
+3. **年报解释**：现有引用材料未包含营业收入变动的具体原因说明，如需深入分析增长驱动因素，建议查阅年报中“管理层讨论与分析”或“经营情况讨论与分析”章节。
+
+以上分析仅基于您提供的数据和引用，不构成任何投资建议。","[{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司"",""report_year"":2024,""source_file"":""百普赛斯：2024年年度报告.pdf"",""page_number"":192,""chunk_id"":2940},{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司"",""report_year"":2024,""source_file"":""百普赛斯：2024年年度报告.pdf"",""page_number"":85,""chunk_id"":2740},{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司"",""report_year"":2024,""source_file"":""百普赛斯：2024年年度报告.pdf"",""page_number"":192,""chunk_id"":2939},{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司"",""report_year"":2024,""source_file"":""百普赛斯：2024年年度报告.pdf"",""page_number"":144,""chunk_id"":2851}]",[],success,FALSE,1,1,1,5,1,NA,5,5,5,approved,李,无
+rag_06,rag_explanation,auto_draft_requires_human_review,分析百诚医药2022—2024年营业收入异常变化，并结合年报解释原因和依据,301096,["revenue"],"[""financial_query"",""financial_analysis"",""annual_report_search""]",null,1,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析百诚医药2022—2024年营业收入异常变化，并结合年报解释原因和依据"",""companies"":[{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":true,""needs_chart"":false,""needs_anomaly_detection"":true,""task_type"":""comprehensive_analysis"",""confidence"":0.9,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""annual_report_search""]","基于您提供的财务数据和年报引用，我对百诚医药2022—2024年营业收入的变化分析如下：
+
+### 一、营业收入数据与变化趋势（事实）
+
+根据财务数据，百诚医药近三年的营业收入（单位：万元）及同比变化如下：
+
+| 年份 | 营业收入（万元） | 同比变化 |
+| :--- | :--- | :--- |
+| 2022年 | 60,741.05 | - |
+| 2023年 | 101,744.81 | **+67.51%** |
+| 2024年 | 80,192.32 | **-21.18%** |
+
+**计算结论**：
+- 2023年营业收入出现大幅增长，同比增幅达 **67.51%**，属于异常波动。
+- 2024年营业收入转为大幅下降，同比降幅为 **-21.18%**，同样属于异常波动。
+- 三年间的复合年均增长率（CAGR）为 **14.9%**。
+
+### 二、异常变化原因分析（依据年报原文）
+
+**1. 2024年营业收入下降的原因（年报明确解释）**
+
+根据《百诚医药：2024年年度报告》第32页的“营业收入变动原因说明”，公司明确指出：
+
+> **“主要系公司仿制药业务受集采、MAH制度等政策的影响营业收入下降。”**
+
+这是年报中直接给出的官方解释，属于**原文引用**。即2024年收入下滑的核心原因是**仿制药业务受国家药品集中采购（集采）和药品上市许可持有人（MAH）制度等政策影响**。
+
+**2. 2023年营业收入大幅增长的原因（年报未直接解释）**
+
+在提供的年报引用片段中，**未找到**关于2023年营业收入大幅增长（+67.51%）的直接原因说明。因此，对于2023年的高增长，目前**缺乏年报原文的直接依据**，无法从现有资料中给出官方解释。
+
+### 三、补充信息（年报其他相关说明）
+
+年报第32页还提供了其他与收入相关的背景信息，可作为理解收入变化的辅助参考（非直接解释收入变动原因）：
+- **营业成本变动**：主要系公司开始商业化生产，相应产线转固，折旧成本较高，营业成本相应增加。
+- **经营活动现金流量净额变动**：主要系本期公司收入、收到的与经营活动相关的政府补助较上期下降；同时本期人员薪酬支付较上期大幅增加所致。
+
+### 四、总结
+
+| 年份 | 变化幅度 | 年报解释依据 |
+| :--- | :--- | :--- |
+| 2023年 | +67.51% | **无直接年报解释**（现有资料未提供） |
+| 2024年 | -21.18% | **有明确年报解释**：仿制药业务受集采、MAH制度等政策影响，营业收入下降。 |
+
+**说明**：以上分析仅基于您提供的财务数据和年报引用片段。对于2023年收入大幅增长的原因，如需进一步了解，建议查阅2023年年度报告中的管理层讨论与分析章节。本分析不构成任何投资建议。","[{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司"",""report_year"":2024,""source_file"":""百诚医药：2024年年度报告.pdf"",""page_number"":207,""chunk_id"":3304},{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司"",""report_year"":2024,""source_file"":""百诚医药：2024年年度报告.pdf"",""page_number"":32,""chunk_id"":3014},{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司"",""report_year"":2024,""source_file"":""百诚医药：2024年年度报告.pdf"",""page_number"":54,""chunk_id"":3054},{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司"",""report_year"":2024,""source_file"":""百诚医药：2024年年度报告.pdf"",""page_number"":83,""chunk_id"":3106}]",[],success,FALSE,1,1,1,5,1,NA,5,5,5,approved,李,无
+rag_07,rag_explanation,auto_draft_requires_human_review,分析昭衍新药2022—2024年营业收入异常变化，并结合年报解释原因和依据,603127,["revenue"],"[""financial_query"",""financial_analysis"",""annual_report_search""]",null,1,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析昭衍新药2022—2024年营业收入异常变化，并结合年报解释原因和依据"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":true,""needs_chart"":false,""needs_anomaly_detection"":true,""task_type"":""trend_analysis"",""confidence"":0.9,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""annual_report_search""]","基于您提供的财务数据和年报引用，我对昭衍新药2022—2024年营业收入变化分析如下：
+
+### 一、营业收入变化事实（基于财务数据计算）
+- **2022年**：营业收入为 **226,797.10万元**。
+- **2023年**：营业收入为 **237,648.68万元**，同比增长 **+4.78%**。
+- **2024年**：营业收入为 **201,833.38万元**，同比下降 **-15.07%**。
+- **2022—2024年复合年增长率（CAGR）**：**-5.66%**。
+
+**结论**：营业收入在2023年小幅增长后，于2024年出现明显下滑，降幅超过15%，属于显著异常变化。
+
+### 二、年报原文解释（依据2024年年报）
+根据您提供的年报引用（2024年年度报告，第10页），公司对2024年经营环境及订单情况有如下说明：
+> “2024年，国内医药行业受到投融资放缓带来的影响，市场需求增长步伐稍显缓慢，国内行业竞争加剧。在此背景下，公司签署订单存在一定波动……在报告期内，公司整体在手订单金额约为人民币22亿元，签署订单金额约为人民币18.4亿元。”
+
+**原文解释要点**：
+1. **行业环境**：国内医药行业投融资放缓，导致市场需求增长缓慢。
+2. **竞争加剧**：国内行业竞争加剧，影响订单签署。
+3. **订单波动**：公司签署订单存在波动，2024年在手订单约22亿元，新签订单约18.4亿元（低于当年收入，表明新签订单不足以支撑收入增长）。
+
+### 三、综合判断（事实+原文解释）
+- **事实层面**：2024年收入同比下降15.07%，是三年中的显著转折点。
+- **原因层面（依据年报）**：主要归因于**医药行业投融资放缓**导致的市场需求疲软，以及**行业竞争加剧**，进而造成公司**新签订单波动**，最终反映在收入下滑上。
+
+### 四、重要提示
+- 以上分析仅基于您提供的财务数据和年报引用，未包含其他财务指标（如毛利率、费用、现金流等）的交叉验证。
+- 年报中未提供2022—2023年收入变化的直接解释，因此2023年小幅增长的原因无法从现有引用中确认。
+- 本回答不构成任何投资建议。","[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司"",""report_year"":2024,""source_file"":""603127_20250329_1BW1.pdf"",""page_number"":27,""chunk_id"":51},{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司"",""report_year"":2024,""source_file"":""603127_20250329_1BW1.pdf"",""page_number"":52,""chunk_id"":97},{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司"",""report_year"":2024,""source_file"":""603127_20250329_1BW1.pdf"",""page_number"":205,""chunk_id"":335},{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司"",""report_year"":2024,""source_file"":""603127_20250329_1BW1.pdf"",""page_number"":10,""chunk_id"":18}]",[],success,FALSE,1,1,1,5,1,NA,5,5,5,approved,李,无
+rag_08,rag_explanation,auto_draft_requires_human_review,分析药明康德2022—2024年营业收入异常变化，并结合年报解释原因和依据,603259,["revenue"],"[""financial_query"",""financial_analysis"",""annual_report_search""]",null,1,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析药明康德2022—2024年营业收入异常变化，并结合年报解释原因和依据"",""companies"":[{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":true,""needs_chart"":false,""needs_anomaly_detection"":true,""task_type"":""comprehensive_analysis"",""confidence"":0.9,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""annual_report_search""]","基于您提供的财务数据和年报引用，我对药明康德2022—2024年营业收入变化分析如下：
+
+### 一、营业收入数据及计算（事实）
+
+根据财务数据，药明康德（603259）近三年营业收入（单位：万元）及同比变化如下：
+
+- **2022年**：3,935,477.78万元
+- **2023年**：4,034,080.69万元，同比增长 **+2.51%**
+- **2024年**：3,924,143.14万元，同比下降 **-2.73%**
+
+**计算结论**：2022年至2024年三年复合增长率（CAGR）为 **-0.14%**，整体营收基本持平，略有下滑。2023年小幅增长，2024年转为负增长，但波动幅度均未超过±3%，未触发异常波动规则（±20%阈值），因此系统未标记为异常。
+
+### 二、年报解释（原文引用与解读）
+
+根据2024年年报（第三节管理层讨论与分析），公司对收入变化给出了以下解释：
+
+1. **客户与订单情况**（年报第12页）：
+   - 2024年末持续经营业务在手订单人民币493.1亿元，**同比增长47.0%**，显示未来需求强劲。
+   - 来自全球前20大制药企业收入166.4亿元，**剔除特定商业化生产项目后同比增长24.1%**。
+   - 分地区看：美国客户收入250.2亿元（剔除特定商业化生产项目后同比增长7.7%）；欧洲客户收入52.3亿元（同比增长14.4%）；中国客户收入70.7亿元（**同比下降3.5%**）；其他地区客户收入19.3亿元（同比下降11.4%）。
+
+2. **分业务板块收入**（年报第14页）：
+   - 化学业务（WuXi Chemistry）：290.52亿元，同比下降0.41%
+   - 测试业务（WuXi Testing）：56.71亿元，同比下降4.82%
+   - 生物学业务（WuXi Biology）：25.44亿元，同比下降0.34%
+   - 其他业务：6.51亿元，同比下降34.68%
+   - 终止经营业务：13.24亿元，同比下降20.40%
+
+### 三、原因分析（基于年报原文的解读）
+
+1. **2024年收入下滑的主要拖累因素**：
+   - **特定商业化生产项目**：年报多次提及“剔除特定商业化生产项目”后的增长数据，表明该项目的结束或减少是2024年收入下降的关键原因之一（例如美国客户收入剔除该项目后仍增长7.7%，但未剔除时整体收入下降）。
+   - **其他业务大幅收缩**：其他业务同比下降34.68%，终止经营业务下降20.40%，这两项合计约2.5亿元的收入减少，对整体营收造成明显拖累。
+   - **中国客户收入下降**：中国客户收入同比下降3.5%，反映国内市场需求阶段性承压。
+
+2. **2023年小幅增长的原因**：
+   - 2023年同比增长2.51%，属于温和增长，年报未单独解释2023年变化，但结合2024年数据可推断，2023年可能仍受益于特定商业化生产项目的高基数，而2024年该项目消退后增速转负。
+
+3. **整体趋势判断**：
+   - 剔除特定商业化生产项目后，公司核心业务（化学、测试、生物学）仍保持相对稳定或增长（如全球前20大药企收入增长24.1%），在手订单同比增长47%也预示未来收入有望回升。因此，2024年的下滑更多是**结构性、阶段性因素**（特定项目结束、非核心业务收缩）所致，而非需求端系统性恶化。
+
+### 四、重要提示
+
+- 以上分析仅基于您提供的财务数据和年报引用，未涵盖公司全部财务细节（如毛利率、费用变化等）。
+- 年报中“剔除特定商业化生产项目”的口径调整是理解收入变化的关键，但具体项目名称和金额未在引用片段中披露。
+- 本回答不构成任何投资建议。","[{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司"",""report_year"":2024,""source_file"":""603259_20250318_7L3V.pdf"",""page_number"":12,""chunk_id"":393},{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司"",""report_year"":2024,""source_file"":""603259_20250318_7L3V.pdf"",""page_number"":154,""chunk_id"":668},{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司"",""report_year"":2024,""source_file"":""603259_20250318_7L3V.pdf"",""page_number"":14,""chunk_id"":398},{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司"",""report_year"":2024,""source_file"":""603259_20250318_7L3V.pdf"",""page_number"":120,""chunk_id"":603}]",[],success,FALSE,1,1,1,5,1,NA,5,5,5,approved,李,无
+rag_09,rag_explanation,auto_draft_requires_human_review,分析成都先导2022—2024年营业收入异常变化，并结合年报解释原因和依据,688222,["revenue"],"[""financial_query"",""financial_analysis"",""annual_report_search""]",null,1,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析成都先导2022—2024年营业收入异常变化，并结合年报解释原因和依据"",""companies"":[{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":true,""needs_chart"":false,""needs_anomaly_detection"":true,""task_type"":""comprehensive_analysis"",""confidence"":0.9,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""annual_report_search""]","### 营业收入变化分析（2022—2024年）
+
+#### 一、数据事实（基于SQL数值）
+| 年份 | 营业收入（万元） | 同比增速 |
+|------|------------------|----------|
+| 2022 | 32,965.00 | — |
+| 2023 | 37,132.49 | +12.64% |
+| 2024 | 42,698.69 | +14.99% |
+
+- **三年复合增长率（CAGR）**：13.81%（计算值）。
+- **异常检测结果**：系统未识别出超过阈值（±20%）的同比波动，`anomaly_count = 0`，即**无统计意义上的异常变化**。
+
+#### 二、年报原文解释（基于RAG引用）
+1. **2024年增长原因**（年报第38页）：
+   - 公司明确披露：2024年营业收入42,698.69万元，同比增长14.99%，归属于母公司净利润同比增长26.13%，扣非净利润同比增长1,563.94%。
+   - 年报将增长归因于**业务重心适度转向商业项目**（研发投入占营收比例下降5.67个百分点至15.77%），同时保持核心技术平台及新药管线投入。
+
+2. **业务结构说明**（年报第14页）：
+   - 2024年**BioSer服务（生物学服务）** 收入1,837.06万元，同比增长15.71%，显示细分业务同步增长。
+   - 公司强调DEL技术（DNA编码化合物库）不涉及人源基因序列分析，与《生物安全法案》草案限制范围无关，表明外部政策风险未对收入造成实质影响。
+
+#### 三、综合判断
+- **事实层面**：营业收入连续三年增长，增速稳定在12%—15%区间，无异常波动。
+- **计算层面**：CAGR 13.81%与各年同比增速一致，验证数据连贯性。
+- **年报解释**：增长主要源于商业项目增加及技术平台商业化推进，而非偶发因素。
+
+#### 四、风险提示
+- 本分析仅基于财务数据和年报披露，不构成投资建议。若需深入评估，建议结合现金流、毛利率及行业对比进一步分析。","[{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司"",""report_year"":2024,""source_file"":""688222_20250426_NOJZ.pdf"",""page_number"":38,""chunk_id"":985},{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司"",""report_year"":2024,""source_file"":""688222_20250426_NOJZ.pdf"",""page_number"":89,""chunk_id"":1081},{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司"",""report_year"":2024,""source_file"":""688222_20250426_NOJZ.pdf"",""page_number"":14,""chunk_id"":918},{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司"",""report_year"":2024,""source_file"":""688222_20250426_NOJZ.pdf"",""page_number"":118,""chunk_id"":1119}]",[],success,FALSE,1,1,1,5,1,NA,5,5,5,approved,李,无
+rag_10,rag_explanation,auto_draft_requires_human_review,分析百克生物2022—2024年营业收入异常变化，并结合年报解释原因和依据,688276,["revenue"],"[""financial_query"",""financial_analysis"",""annual_report_search""]",null,1,0,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""分析百克生物2022—2024年营业收入异常变化，并结合年报解释原因和依据"",""companies"":[{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":true,""needs_chart"":false,""needs_anomaly_detection"":true,""task_type"":""trend_analysis"",""confidence"":0.9,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""annual_report_search""]","# 百克生物（688276）2022—2024年营业收入变化分析
+
+## 一、营业收入数据（事实）
+
+| 年份 | 营业收入（万元） | 同比变化 |
+|------|-----------------|----------|
+| 2022 | 107,144.60 | — |
+| 2023 | 182,468.88 | **+70.30%** |
+| 2024 | 122,908.41 | **?32.64%** |
+
+- 三年复合增长率（CAGR）：**+7.1%**
+- 系统标记异常：2023年同比增幅70.30%、2024年同比降幅32.64%，均超过±20%的预警阈值，共识别2项异常。
+
+## 二、异常特征（计算结论）
+
+1. **2023年**：营业收入从约10.71亿元跃升至约18.25亿元，增幅达70.30%，属于大幅跳升。
+2. **2024年**：营业收入回落至约12.29亿元，同比下降32.64%，几乎回吐2023年增量的三分之二。
+3. 三年整体呈“**急升—急降**”的倒V型走势，2024年收入仍高于2022年约14.7%，但远低于2023年峰值。
+
+## 三、年报原文解释（引用说明）
+
+> ?? **重要说明**：本次检索到的年报引用片段（2024年年报第286页、第58页、第107页、第70页）**均未包含**关于营业收入变动原因的直接解释。相关片段仅涉及合并范围变动说明（无适用）、公司治理制度修订、稳定股价预案及高管任职情况，与收入波动的因果关系无法从现有引用中确认。
+
+**因此，基于当前可获得的年报引用材料，无法提供公司官方对2023年收入大增和2024年收入下滑的具体原因解释。**
+
+## 四、基于数据的推断（非年报原文，仅供参考）
+
+从数据本身可观察到的特征：
+
+- 2023年收入大幅增长后，2024年出现明显回落，提示可能存在**一次性或阶段性因素**（如特定产品放量后回落、渠道备货节奏变化、行业政策调整等）推动的收入波动。
+- 2024年收入仍高于2022年水平，说明并非完全回退至原点，部分增长可能具有持续性。
+
+> 以上推断仅为基于数值模式的合理推测，**不构成投资建议**。如需确认具体原因（如分产品收入明细、销售政策变化、行业事件影响等），建议查阅年报中“管理层讨论与分析”章节的原文表述。","[{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司"",""report_year"":2024,""source_file"":""688276_20250421_23A9.pdf"",""page_number"":286,""chunk_id"":1724},{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司"",""report_year"":2024,""source_file"":""688276_20250421_23A9.pdf"",""page_number"":58,""chunk_id"":1423},{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司"",""report_year"":2024,""source_file"":""688276_20250421_23A9.pdf"",""page_number"":107,""chunk_id"":1496},{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司"",""report_year"":2024,""source_file"":""688276_20250421_23A9.pdf"",""page_number"":70,""chunk_id"":1441}]",[],success,FALSE,1,1,1,5,1,NA,5,5,5,approved,李,无
+chart_01,chart,auto_draft_requires_human_review,绘制凯莱英2022—2024年ROE趋势图,002821,["roe"],"[""financial_query"",""financial_analysis"",""chart_generation""]",null,0,1,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""绘制凯莱英2022—2024年ROE趋势图"",""companies"":[{""stock_code"":""002821"",""company_name"":""凯莱英医药集团（天津）股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""roe""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","根据你提供的财务数据，凯莱英2022—2024年加权平均净资产收益率（ROE）趋势如下：
+
+| 年份 | ROE（%） | 同比变化 |
+|------|----------|----------|
+| 2022 | 23.56 | — |
+| 2023 | 13.66 | -42.02% |
+| 2024 | 5.56 | -59.30% |
+
+**趋势描述（基于计算）**：
+- ROE从2022年的23.56%逐年下降至2024年的5.56%，三年间累计降幅明显。
+- 2023年同比下降42.02%，2024年同比下降59.30%，降幅扩大。
+- 2022—2024年复合年增长率（CAGR）为-51.42%，反映整体下行趋势。
+
+**数据来源**：所有数值均来自《凯莱英：2024年年度报告》第9页，质量状态为“候选待审核”，未发现异常值。
+
+**说明**：以上仅为数据趋势描述，不构成投资建议。如需进一步分析原因，可结合年报中的利润、净资产变动等细节。",[],["data/artifacts/e18f30ce-f4ef-45d6-9a88-25787ec4a672_002821_roe.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+chart_02,chart,auto_draft_requires_human_review,绘制迪安诊断2022—2024年总资产趋势图,300244,["total_assets"],"[""financial_query"",""financial_analysis"",""chart_generation""]",null,0,1,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""绘制迪安诊断2022—2024年总资产趋势图"",""companies"":[{""stock_code"":""300244"",""company_name"":""迪安诊断技术集团股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""total_assets""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","根据你提供的数据，我绘制了迪安诊断2022—2024年总资产趋势图（基于数值计算，单位为万元）：
+
+**总资产趋势（2022—2024年）**
+
+| 年份 | 总资产（万元） | 同比变化 |
+|------|----------------|----------|
+| 2022 | 2,105,596.94 | — |
+| 2023 | 1,793,931.13 | -14.8% |
+| 2024 | 1,578,598.37 | -12.0% |
+
+**趋势描述（基于计算）**：
+- 总资产从2022年的约210.56亿元下降至2024年的约157.86亿元，累计下降约25.0%。
+- 2023年同比下降14.8%，2024年同比下降12.0%，降幅略有收窄。
+- 2022—2024年复合年增长率（CAGR）为-13.41%，呈持续收缩趋势。
+
+**数据来源说明**：
+- 所有数值均来自《迪安诊断：2024年年度报告》第10页，质量状态为“候选待审核”，未发现异常值（异常数：0）。
+
+**图表说明**：由于当前环境无法直接生成图像，以上表格和描述即为趋势的可视化替代。如需图形，可将上述数据点（年份、总资产）绘制为折线图，横轴为年份，纵轴为总资产（万元），可直观显示下降趋势。
+
+**注意**：以上仅为数据事实和计算结果，不构成任何投资建议。",[],["data/artifacts/0b90acd2-0ce5-434c-ad22-c57671e7463c_300244_total_assets.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+chart_03,chart,auto_draft_requires_human_review,绘制泰格医药2022—2024年归属于上市公司股东的净资产趋势图,300347,["net_assets"],"[""financial_query"",""financial_analysis"",""chart_generation""]",null,0,1,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""绘制泰格医药2022—2024年归属于上市公司股东的净资产趋势图"",""companies"":[{""stock_code"":""300347"",""company_name"":""杭州泰格医药科技股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""net_assets""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","基于你提供的数据，泰格医药2022—2024年归属于上市公司股东的净资产趋势如下：
+
+**数据点（单位：万元）**
+- 2022年：1,958,302.23
+- 2023年：2,102,677.47（同比增长 7.37%）
+- 2024年：2,067,065.34（同比下降 1.69%）
+
+**趋势描述（基于计算）**
+- 2022年至2023年：净资产上升，增加约144,375.24万元。
+- 2023年至2024年：净资产下降，减少约35,612.13万元。
+- 2022年至2024年整体复合增长率（CAGR）为 2.74%，呈先升后降的波动趋势。
+
+**图表说明**
+由于当前环境无法直接生成图像，趋势可概括为：从2022年低点上升至2023年高点，随后在2024年小幅回落，但仍高于2022年水平。
+
+**数据来源**
+- 所有数值均来自《泰格医药：2024年年度报告》第11页，质量状态为“待复核候选数据”，未发现异常值。
+
+如需绘制具体图表，建议使用上述数据点自行生成折线图。",[],["data/artifacts/b92c1a56-e9b9-41b3-8065-e2ee7ae9af94_300347_net_assets.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+chart_04,chart,auto_draft_requires_human_review,绘制迈普医学2022—2024年销售净利率趋势图,301033,["net_margin"],"[""financial_query"",""financial_analysis"",""chart_generation""]",null,0,1,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""绘制迈普医学2022—2024年销售净利率趋势图"",""companies"":[{""stock_code"":""301033"",""company_name"":""迈普医学股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""net_margin""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","根据提供的财务数据，迈普医学2022—2024年销售净利率趋势如下：
+
+| 年份 | 净利率（%） | 同比变化 |
+|------|------------|----------|
+| 2022 | 18.38 | — |
+| 2023 | 17.71 | -3.68% |
+| 2024 | 28.32 | +59.95% |
+
+**趋势描述（基于计算）：**
+- 2022年至2023年，净利率小幅下降约0.68个百分点（从18.38%降至17.71%）。
+- 2023年至2024年，净利率显著上升约10.61个百分点（从17.71%升至28.32%），同比增幅达59.95%。
+- 2022—2024年复合年增长率（CAGR）为24.12%。
+
+**数据说明：**
+- 所有数值均为“净利率（计算）”指标，来源于迈普医学2024年年度报告第9页，质量状态为“derived_pending_review”（派生待审核）。
+- 未发现异常数据点（异常数量为0）。
+
+**原文解释：** 以上净利率为基于年报数据计算得出的派生指标，非年报直接披露值。趋势显示2024年盈利能力显著增强，但具体原因需结合年报其他财务科目（如收入、成本、费用等）进一步分析。本回答不构成投资建议。",[],["data/artifacts/a4c81770-f878-4069-91fe-e55791cc7cb2_301033_net_margin.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+chart_05,chart,auto_draft_requires_human_review,绘制百普赛斯2022—2024年经营现金流率趋势图,301080,["operating_cash_margin"],"[""financial_query"",""financial_analysis"",""chart_generation""]",null,0,1,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""绘制百普赛斯2022—2024年经营现金流率趋势图"",""companies"":[{""stock_code"":""301080"",""company_name"":""北京百普赛斯生物科技股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""operating_cash_margin""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","根据提供的财务数据，百普赛斯（301080）2022—2024年经营现金流率（经营现金流/营业收入）趋势如下：
+
+| 年份 | 经营现金流率（%） | 同比变化 |
+|------|------------------|----------|
+| 2022 | 42.62 | — |
+| 2023 | 20.45 | -52.01% |
+| 2024 | 13.13 | -35.80% |
+
+**趋势图（文字描述）**：  
+- 2022年至2024年，经营现金流率呈持续下降趋势。  
+- 2023年较2022年大幅下降（约52个百分点），2024年继续下降（约36个百分点）。  
+- 三年复合年增长率（CAGR）为 **-44.49%**（计算值）。
+
+**数据说明**：  
+- 所有数值均为“经营现金流/营业收入”的计算结果，来源于百普赛斯2024年年度报告（第7页），标记为“derived_pending_review”（派生数据，待审核）。  
+- 同比变化和CAGR为基于上述数值的Python计算结果。  
+- 未提供年报原文引用（rag_chunks为空），因此无法补充管理层解释或具体现金流构成分析。
+
+**注意**：以上仅为数据趋势描述，不构成投资建议。",[],["data/artifacts/1b0d7c18-f8c4-48d4-ae28-153bfc15a6b6_301080_operating_cash_margin.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+chart_06,chart,auto_draft_requires_human_review,绘制百诚医药2022—2024年营业收入趋势图,301096,["revenue"],"[""financial_query"",""financial_analysis"",""chart_generation""]",null,0,1,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""绘制百诚医药2022—2024年营业收入趋势图"",""companies"":[{""stock_code"":""301096"",""company_name"":""杭州百诚医药科技股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""revenue""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","根据您提供的数据，百诚医药（301096）2022—2024年营业收入趋势如下：
+
+**营业收入数据（单位：万元）**
+- 2022年：60,741.05万元
+- 2023年：101,744.81万元（同比增长67.51%）
+- 2024年：80,192.32万元（同比下降21.18%）
+
+**趋势描述（基于计算）**
+- 2022年至2023年：营业收入显著增长，增幅达67.51%。
+- 2023年至2024年：营业收入出现回落，降幅为21.18%。
+- 2022年至2024年复合年增长率（CAGR）为14.9%。
+
+**图表说明**：由于当前环境无法直接生成图片，趋势可概括为“先升后降”——2023年达到峰值，2024年回落但仍高于2022年水平。
+
+**数据来源**：所有数值均来自百诚医药2024年年度报告（第10页），质量状态为“待复核候选数据”。",[],["data/artifacts/9ea6eaff-5561-4da9-b2ae-eac6e33d797b_301096_revenue.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+chart_07,chart,auto_draft_requires_human_review,绘制昭衍新药2022—2024年归母净利润趋势图,603127,["net_profit_attributable"],"[""financial_query"",""financial_analysis"",""chart_generation""]",null,0,1,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""绘制昭衍新药2022—2024年归母净利润趋势图"",""companies"":[{""stock_code"":""603127"",""company_name"":""北京昭衍新药研究中心股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""net_profit_attributable""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","基于财务数据，昭衍新药（603127）2022—2024年归属于上市公司股东的净利润趋势如下：
+
+**数值（单位：万元）**
+- 2022年：107,425.72万元
+- 2023年：39,699.26万元（同比下降63.04%）
+- 2024年：7,407.54万元（同比下降81.34%）
+
+**趋势图（文本示意）**
+
+```
+金额（万元）
+120,000 |  ● 2022年（107,425.72）
+100,000 |
+ 80,000 |
+ 60,000 |
+ 40,000 |        ● 2023年（39,699.26）
+ 20,000 |
+      0 |________________________● 2024年（7,407.54）
+         2022          2023          2024
+```
+
+**计算说明**
+- 2022—2024年复合年增长率（CAGR）为 **-73.74%**（基于首尾两年数值计算）。
+- 三年间净利润持续大幅下滑，2023年较2022年减少约63%，2024年较2023年减少约81%。
+
+**数据来源**：年报文件（603127_20250329_1BW1.pdf）第7页，数据状态为待复核候选值。以上仅为数值与计算结果呈现，不构成任何投资建议。",[],["data/artifacts/a5efd5db-90f1-4624-abc4-9d080da0b055_603127_net_profit_attributable.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+chart_08,chart,auto_draft_requires_human_review,绘制药明康德2022—2024年扣非净利润趋势图,603259,["net_profit_excl_non_recurring"],"[""financial_query"",""financial_analysis"",""chart_generation""]",null,0,1,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""绘制药明康德2022—2024年扣非净利润趋势图"",""companies"":[{""stock_code"":""603259"",""company_name"":""无锡药明康德新药开发股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""net_profit_excl_non_recurring""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","基于提供的财务数据，药明康德（603259）2022—2024年扣非净利润趋势如下：
+
+**数值与计算（单位：万元）**
+- **2022年**：834,474.38万元
+- **2023年**：974,758.78万元（同比增长 **16.81%**）
+- **2024年**：998,810.28万元（同比增长 **2.47%**）
+- **2022—2024年复合年增长率（CAGR）**：**9.4%**
+
+**趋势描述（基于计算）**
+- 扣非净利润在2022至2024年间持续增长，但增速明显放缓：2023年同比增速为16.81%，2024年降至2.47%。
+- 三年累计增长约19.7%（从83.45亿增至99.88亿元），整体呈上升但趋于平稳的态势。
+
+**图表说明**
+由于当前仅提供文本数据，无法直接生成图形。若需趋势图，可将上述三年数值（83.45亿、97.48亿、99.88亿元）绘制为折线图或柱状图，即可直观显示增长放缓的趋势。
+
+**数据来源**：年报（603259_20250318_7L3V.pdf）第8页，数据状态为“候选待审核”，未发现异常值。
+
+**注意**：以上仅为数值计算和趋势描述，不构成任何投资建议。",[],["data/artifacts/71def1ef-bae9-4e91-a8ed-7d3c6518d368_603259_net_profit_excl_non_recurring.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+chart_09,chart,auto_draft_requires_human_review,绘制成都先导2022—2024年经营活动现金流趋势图,688222,["operating_cash_flow"],"[""financial_query"",""financial_analysis"",""chart_generation""]",null,0,1,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""绘制成都先导2022—2024年经营活动现金流趋势图"",""companies"":[{""stock_code"":""688222"",""company_name"":""成都先导药物开发股份有限公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""operating_cash_flow""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","基于你提供的财务数据，成都先导（688222）2022—2024年经营活动现金流趋势如下：
+
+**数值与计算（单位：万元）**
+- 2022年：5,273.71
+- 2023年：12,520.86（同比增长 **137.42%**）
+- 2024年：12,800.99（同比增长 **2.24%**）
+- 2022—2024年复合年增长率（CAGR）：**55.8%**
+
+**趋势描述**
+- 经营活动现金流净额在2023年出现大幅跃升（从约5,274万元增至约12,521万元），增幅超过一倍。
+- 2024年继续小幅增长，但增速明显放缓（仅增长约2.24%），整体趋于平稳。
+
+**数据来源说明**
+- 以上数值均来自公司年报（来源文件：688222_20250426_NOJZ.pdf，第10页），属于原始财务数据，非估算值。
+- 同比和CAGR为基于上述数值的计算结果。
+
+**注意**
+- 本回答仅陈述数据事实和计算结果，不构成任何投资建议。如需深入分析原因，建议查阅年报中管理层讨论或现金流量表附注。",[],["data/artifacts/9088745b-5687-43d9-b032-19892bfbc438_688222_operating_cash_flow.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
+chart_10,chart,auto_draft_requires_human_review,绘制百克生物2022—2024年每股收益趋势图,688276,["eps"],"[""financial_query"",""financial_analysis"",""chart_generation""]",null,0,1,TRUE,TRUE,TRUE,TRUE,TRUE,"{""question"":""绘制百克生物2022—2024年每股收益趋势图"",""companies"":[{""stock_code"":""688276"",""company_name"":""长春百克生物科技股份公司""}],""period"":{""years"":[2022,2023,2024],""period_code"":""FY""},""metrics"":[""eps""],""needs_sql"":true,""needs_calculation"":false,""needs_rag"":false,""needs_chart"":true,""needs_anomaly_detection"":false,""task_type"":""trend_analysis"",""confidence"":1.0,""parser"":""llm-json:deepseek-v4-flash""}","[""financial_query"",""financial_analysis"",""chart_generation""]","基于你提供的财务数据，百克生物（688276）2022—2024年基本每股收益趋势如下：
+
+**数据点（单位：元/股）**
+- 2022年：0.44
+- 2023年：1.21
+- 2024年：0.56
+
+**趋势描述（基于计算）**
+- 2023年同比上升175.0%（从0.44升至1.21）
+- 2024年同比下降53.72%（从1.21降至0.56）
+- 2022—2024年复合年增长率（CAGR）为12.82%
+
+**图表说明（文字模拟）**
+```
+每股收益（元/股）
+1.40 |                    ● 1.21
+1.20 |                   /|
+1.00 |                  / |
+0.80 |                 /  |
+0.60 |                /   ● 0.56
+0.40 | ● 0.44        /   /
+0.20 | |            /   /
+0.00 |_|___________/___/______
+     2022        2023  2024
+```
+（注：以上为示意折线，实际绘图请以数值为准）
+
+**数据来源说明**
+- 所有数值均来自年报（源文件：688276_20250421_23A9.pdf，第10页），质量状态为“待复核候选数据”。
+- 未提供年报原文引用片段，因此上述趋势仅基于数值计算，不涉及原文解释。
+
+如需进一步分析（如与行业对比、驱动因素等），请提供更多数据或年报引用。",[],["data/artifacts/a31775e9-c325-4227-a505-a83074245920_688276_eps.png"],success,FALSE,1,1,1,NA,NA,5,5,5,5,approved,李,无
