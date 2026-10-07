@@ -1,0 +1,3 @@
+include src/finance_insight/web/*.html
+include src/finance_insight/web/*.css
+include src/finance_insight/web/*.js

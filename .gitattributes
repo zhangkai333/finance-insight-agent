@@ -1,0 +1,10 @@
+* text=auto
+
+# Linux/container entrypoints must keep LF even when the repository is used on Windows.
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Native Windows helper scripts remain convenient in PowerShell.
+*.ps1 text eol=crlf
