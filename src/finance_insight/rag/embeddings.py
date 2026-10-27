@@ -27,7 +27,9 @@ class HashingEmbedding:
         vector = [0.0] * self.dimension
         grams = []
         for size in (1, 2, 3):
-            grams.extend(compact[index:index + size] for index in range(max(0, len(compact) - size + 1)))
+            grams.extend(
+                compact[index : index + size] for index in range(max(0, len(compact) - size + 1))
+            )
         for gram in grams:
             digest = hashlib.blake2b(gram.encode("utf-8"), digest_size=8).digest()
             value = int.from_bytes(digest, "little")
@@ -40,3 +42,6 @@ class HashingEmbedding:
     def serialize(self, text: str) -> bytes:
         values = self.embed(text)
         return struct.pack(f"{len(values)}f", *values)
+
+    def embed_many(self, texts: list[str]) -> list[list[float]]:
+        return [self.embed(text) for text in texts]

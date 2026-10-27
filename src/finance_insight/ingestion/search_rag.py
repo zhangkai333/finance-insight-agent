@@ -1,4 +1,5 @@
 """Search the Phase 3 local RAG index and return citation metadata."""
+
 from __future__ import annotations
 
 import argparse

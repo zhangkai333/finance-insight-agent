@@ -60,9 +60,9 @@ class HybridRetriever:
                        WHERE document_chunks_fts MATCH ?
                          AND d.stock_code IN ({codes}) AND d.report_year IN ({years})
                        ORDER BY score LIMIT ?""".format(
-                           codes=",".join("?" for _ in stock_codes),
-                           years=",".join("?" for _ in years),
-                       ),
+                        codes=",".join("?" for _ in stock_codes),
+                        years=",".join("?" for _ in years),
+                    ),
                     [fts_query or query, *stock_codes, *years, top_k * 4],
                 ).fetchall()
             except sqlite3.OperationalError:
@@ -83,7 +83,8 @@ class HybridRetriever:
                     years=",".join("?" for _ in years),
                 )
                 allowed_vector_ids = {
-                    row[0] for row in con.execute(sql, [*vector_ids, *stock_codes, *years]).fetchall()
+                    row[0]
+                    for row in con.execute(sql, [*vector_ids, *stock_codes, *years]).fetchall()
                 }
 
             fused: dict[int, float] = defaultdict(float)
@@ -92,7 +93,10 @@ class HybridRetriever:
             filtered_vectors = [row for row in vector_rows if row["chunk_id"] in allowed_vector_ids]
             for rank, row in enumerate(filtered_vectors, start=1):
                 fused[row["chunk_id"]] += 0.6 / (60 + rank)
-            ids = [item[0] for item in sorted(fused.items(), key=lambda item: item[1], reverse=True)[:top_k]]
+            ids = [
+                item[0]
+                for item in sorted(fused.items(), key=lambda item: item[1], reverse=True)[:top_k]
+            ]
             if not ids:
                 return []
             details = con.execute(

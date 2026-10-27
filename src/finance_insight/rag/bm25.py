@@ -11,7 +11,11 @@ def tokenize(text: str) -> list[str]:
         import jieba
     except ImportError as exc:  # pragma: no cover - optional production dependency
         raise RuntimeError("jieba 未安装，无法启用 production BM25") from exc
-    return [token.strip().lower() for token in jieba.cut(text) if token.strip() and not re.fullmatch(r"\W+", token)]
+    return [
+        token.strip().lower()
+        for token in jieba.cut(text)
+        if token.strip() and not re.fullmatch(r"\W+", token)
+    ]
 
 
 def bm25_search(
@@ -36,7 +40,9 @@ def bm25_search(
             document_frequency = frequencies[term]
             if not document_frequency:
                 continue
-            inverse_frequency = math.log(1 + (len(documents) - document_frequency + 0.5) / (document_frequency + 0.5))
+            inverse_frequency = math.log(
+                1 + (len(documents) - document_frequency + 0.5) / (document_frequency + 0.5)
+            )
             frequency = counts[term]
             denominator = frequency + k1 * (1 - b + b * len(terms) / max(1.0, average_length))
             score += inverse_frequency * frequency * (k1 + 1) / denominator

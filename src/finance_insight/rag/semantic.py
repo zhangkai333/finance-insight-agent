@@ -49,7 +49,10 @@ class OpenAICompatibleEmbedding:
         return self._request_batch([text])[0]
 
     def embed_many(self, texts: list[str]) -> list[list[float]]:
-        batches = [texts[index:index + self.batch_size] for index in range(0, len(texts), self.batch_size)]
+        batches = [
+            texts[index : index + self.batch_size]
+            for index in range(0, len(texts), self.batch_size)
+        ]
         if not batches:
             return []
         with ThreadPoolExecutor(max_workers=self.concurrency) as executor:

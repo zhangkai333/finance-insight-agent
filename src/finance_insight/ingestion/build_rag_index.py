@@ -1,12 +1,13 @@
 """Build a local, citation-preserving lexical RAG index from selected annual reports."""
+
 from __future__ import annotations
 
 import argparse
 import csv
-import sys
 import json
 import re
 import sqlite3
+import sys
 from pathlib import Path
 
 from pypdf import PdfReader
@@ -66,7 +67,14 @@ def index_document(
            ON CONFLICT(stock_code, document_type, report_year, source_file) DO UPDATE SET
              company_name = excluded.company_name, title = excluded.title,
              source_path = excluded.source_path, page_count = excluded.page_count, parser = excluded.parser""",
-        (stock_code, company_name, title, source_path.name, str(source_path.resolve()), len(reader.pages)),
+        (
+            stock_code,
+            company_name,
+            title,
+            source_path.name,
+            str(source_path.resolve()),
+            len(reader.pages),
+        ),
     )
     document_id = connection.execute(
         """SELECT document_id FROM documents
@@ -74,11 +82,16 @@ def index_document(
              AND report_year = 2024 AND source_file = ?""",
         (stock_code, source_path.name),
     ).fetchone()[0]
-    old_chunk_ids = [row[0] for row in connection.execute(
-        "SELECT chunk_id FROM document_chunks WHERE document_id = ?", (document_id,)
-    ).fetchall()]
+    old_chunk_ids = [
+        row[0]
+        for row in connection.execute(
+            "SELECT chunk_id FROM document_chunks WHERE document_id = ?", (document_id,)
+        ).fetchall()
+    ]
     if old_chunk_ids:
-        connection.executemany("DELETE FROM document_chunks_fts WHERE chunk_id = ?", [(cid,) for cid in old_chunk_ids])
+        connection.executemany(
+            "DELETE FROM document_chunks_fts WHERE chunk_id = ?", [(cid,) for cid in old_chunk_ids]
+        )
     connection.execute("DELETE FROM document_chunks WHERE document_id = ?", (document_id,))
 
     chunks_written = 0
@@ -121,23 +134,45 @@ def main() -> None:
             setup_db(connection, args.schema)
             for key, raw_path in sorted(audit["annual_documents_selected"].items()):
                 source_path = Path(raw_path)
-                stock_code = key if key.isdigit() else {
-                    "凯莱英": "002821", "百普赛斯": "301080", "迈普医学": "301033",
-                    "百诚医药": "301096", "泰格医药": "300347", "迪安诊断": "300244",
-                }[key]
+                stock_code = (
+                    key
+                    if key.isdigit()
+                    else {
+                        "凯莱英": "002821",
+                        "百普赛斯": "301080",
+                        "迈普医学": "301033",
+                        "百诚医药": "301096",
+                        "泰格医药": "300347",
+                        "迪安诊断": "300244",
+                    }[key]
+                )
                 try:
                     pages, chunks = index_document(
-                        connection, stock_code=stock_code, company_name=names[stock_code],
-                        source_path=source_path, chunk_size=args.chunk_size, overlap=args.overlap,
+                        connection,
+                        stock_code=stock_code,
+                        company_name=names[stock_code],
+                        source_path=source_path,
+                        chunk_size=args.chunk_size,
+                        overlap=args.overlap,
                     )
                     summary["documents"] += 1
                     summary["pages"] += pages
                     summary["chunks"] += chunks
                     print(f"indexed {stock_code}: pages={pages}, chunks={chunks}", flush=True)
                 except Exception as exc:
-                    summary["errors"].append({"stock_code": stock_code, "source_path": str(source_path), "error": str(exc)})
-            summary["db_documents"] = connection.execute("SELECT COUNT(*) FROM documents").fetchone()[0]
-            summary["db_chunks"] = connection.execute("SELECT COUNT(*) FROM document_chunks").fetchone()[0]
+                    summary["errors"].append(
+                        {
+                            "stock_code": stock_code,
+                            "source_path": str(source_path),
+                            "error": str(exc),
+                        }
+                    )
+            summary["db_documents"] = connection.execute(
+                "SELECT COUNT(*) FROM documents"
+            ).fetchone()[0]
+            summary["db_chunks"] = connection.execute(
+                "SELECT COUNT(*) FROM document_chunks"
+            ).fetchone()[0]
     finally:
         connection.close()
     print(json.dumps(summary, ensure_ascii=False, indent=2))

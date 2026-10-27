@@ -85,8 +85,10 @@ def sentence_chunks(markdown: str, *, size: int = 800, overlap: int = 200) -> li
         if not match:
             continue
         page = int(match.group(1))
-        body = section[match.end():].strip()
-        sentences = [item.strip() for item in re.split(r"(?<=[。！？.!?；;])\s*|\n+", body) if item.strip()]
+        body = section[match.end() :].strip()
+        sentences = [
+            item.strip() for item in re.split(r"(?<=[。！？.!?；;])\s*|\n+", body) if item.strip()
+        ]
         current = ""
         page_chunks: list[str] = []
         for sentence in sentences:
@@ -162,5 +164,7 @@ class DocumentCache:
             "parser": parsed.parser,
         }
         self.root.mkdir(parents=True, exist_ok=True)
-        self.manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+        self.manifest_path.write_text(
+            json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
         return parsed, chunks, digest

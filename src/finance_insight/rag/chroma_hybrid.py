@@ -6,6 +6,7 @@ from typing import Any
 
 from finance_insight.config import Settings, settings
 from finance_insight.rag.bm25 import bm25_search
+from finance_insight.rag.embeddings import HashingEmbedding
 from finance_insight.rag.semantic import OpenAICompatibleEmbedding
 
 
@@ -19,10 +20,17 @@ class ChromaHybridRetriever:
         except ImportError as exc:  # pragma: no cover - optional production dependency
             raise RuntimeError("production RAG 需要安装 chromadb 和 jieba") from exc
         self.config = config
-        self.embedding = OpenAICompatibleEmbedding(config)
+        self.embedding_fallback = False
+        try:
+            self.embedding = OpenAICompatibleEmbedding(config)
+            collection_name = config.chroma_collection
+        except ValueError:
+            self.embedding = HashingEmbedding()
+            self.embedding_fallback = True
+            collection_name = f"{config.chroma_collection}_hashing"
         self.client = chromadb.PersistentClient(path=str(config.chroma_path))
         self.collection = self.client.get_or_create_collection(
-            name=config.chroma_collection,
+            name=collection_name,
             metadata={"hnsw:space": "cosine"},
         )
 
@@ -99,10 +107,9 @@ class ChromaHybridRetriever:
         normalised_bm25 = self._normalise(bm25_scores)
         fused: dict[int, float] = defaultdict(float)
         for chunk_id in candidates:
-            fused[chunk_id] = (
-                self.config.rag_vector_weight * normalised_vector.get(chunk_id, 0.0)
-                + self.config.rag_bm25_weight * normalised_bm25.get(chunk_id, 0.0)
-            )
+            fused[chunk_id] = self.config.rag_vector_weight * normalised_vector.get(
+                chunk_id, 0.0
+            ) + self.config.rag_bm25_weight * normalised_bm25.get(chunk_id, 0.0)
         output = []
         for chunk_id in sorted(fused, key=fused.get, reverse=True)[:top_k]:
             item = dict(candidates[chunk_id])
@@ -110,11 +117,25 @@ class ChromaHybridRetriever:
                 chunk_id=chunk_id,
                 score=fused[chunk_id],
                 fusion_score=fused[chunk_id],
-                retrieval_mode="chroma_bge_m3_bm25",
+                retrieval_mode=(
+                    "chroma_hashing_bm25" if self.embedding_fallback else "chroma_bge_m3_bm25"
+                ),
                 embedding_provider=self.embedding.name,
             )
             output.append(item)
         return output
+
+    def index_sqlite(self) -> int:
+        with sqlite3.connect(self.config.rag_db) as connection:
+            connection.row_factory = sqlite3.Row
+            rows = connection.execute(
+                """SELECT d.stock_code, d.company_name, d.report_year, d.source_file,
+                          c.page_number, c.chunk_id, c.content
+                   FROM document_chunks c
+                   JOIN documents d ON d.document_id = c.document_id
+                   ORDER BY c.chunk_id"""
+            ).fetchall()
+        return self.index([dict(row) for row in rows])
 
     def index(self, rows: list[dict[str, Any]]) -> int:
         if not rows:

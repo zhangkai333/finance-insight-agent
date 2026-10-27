@@ -1,10 +1,20 @@
 """Validate the Phase 3 annual-report index and citation fields."""
+
 from __future__ import annotations
-import argparse, json, sqlite3
+
+import argparse
+import json
+import sqlite3
 from pathlib import Path
 
 
-def search(con: sqlite3.Connection, query: str, stock_code: str | None = None, year: int | None = None, top_k: int = 5):
+def search(
+    con: sqlite3.Connection,
+    query: str,
+    stock_code: str | None = None,
+    year: int | None = None,
+    top_k: int = 5,
+):
     sql = """SELECT d.stock_code, d.company_name, d.report_year, d.source_file,
                      c.page_number, c.chunk_id, c.content
               FROM document_chunks_fts f
@@ -27,6 +37,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--db", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--expected-documents", type=int)
+    parser.add_argument("--expected-pages", type=int)
+    parser.add_argument("--expected-chunks", type=int)
     args = parser.parse_args()
     con = sqlite3.connect(args.db)
     con.row_factory = sqlite3.Row
@@ -44,8 +57,22 @@ def main() -> None:
         }
     finally:
         con.close()
-    if counts != {"documents": 10, "pages_indexed": 2385, "chunks": 4178, "fts_rows": 4178}:
-        raise SystemExit(f"索引计数不符合预期: {counts}")
+    expectations = {
+        "documents": args.expected_documents,
+        "pages_indexed": args.expected_pages,
+        "chunks": args.expected_chunks,
+    }
+    mismatches = {
+        key: (counts[key], expected)
+        for key, expected in expectations.items()
+        if expected is not None and counts[key] != expected
+    }
+    if mismatches:
+        raise SystemExit(f"索引计数不符合预期: {mismatches}")
+    if any(counts[key] <= 0 for key in ("documents", "pages_indexed", "chunks")):
+        raise SystemExit(f"索引为空: {counts}")
+    if counts["chunks"] != counts["fts_rows"]:
+        raise SystemExit(f"FTS 与 chunk 数量不一致: {counts}")
     for test_name, rows in tests.items():
         if not rows:
             raise SystemExit(f"检索无命中: {test_name}")
@@ -57,7 +84,17 @@ def main() -> None:
     payload = {"counts": counts, "tests": tests, "status": "PASS"}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({"counts": counts, "test_hit_counts": {k: len(v) for k, v in tests.items()}, "status": "PASS"}, ensure_ascii=False, indent=2))
+    print(
+        json.dumps(
+            {
+                "counts": counts,
+                "test_hit_counts": {k: len(v) for k, v in tests.items()},
+                "status": "PASS",
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":
