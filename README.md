@@ -269,7 +269,7 @@ python -m ruff check src tests scripts
 .\scripts\evaluate-demo.ps1
 ```
 
-提交记录按 `feat`、`fix`、`test`、`docs`、`chore` 拆分，便于查看从数据、RAG、Agent、API 到部署的演进过程。
+提交记录按 `feat`、`fix`、`test`、`style`、`docs`、`chore` 拆分，便于查看从数据、RAG、Agent、API 到部署的演进过程。
 
 ## 可选扩展
 
