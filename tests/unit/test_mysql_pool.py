@@ -1,4 +1,3 @@
-
 from finance_insight.config import Settings
 from finance_insight.tools.sql_tool import FinancialQueryTool
 
