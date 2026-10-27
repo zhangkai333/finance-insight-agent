@@ -65,15 +65,11 @@ gh repo create <仓库名> --private --source=. --remote=origin --push
 git clone https://github.com/<你的用户名>/<仓库名>.git
 cd <仓库名>
 py -3.12 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-python -m pip install -e ".[dev,mysql]"
-python scripts/init_demo_data.py
-python -m pytest -q tests/integration/test_demo_data_initializer.py
-python -m uvicorn finance_insight.api:app --host 127.0.0.1 --port 8000
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\scripts\start-demo.ps1
 ```
 
-Docker 会在挂载的 `./data` 中缺少两个数据库时自动执行相同初始化，因此无需先手工生成：
+Docker 会在命名卷中缺少两个数据库时自动执行相同初始化，因此无需先手工生成：
 
 ```powershell
 Copy-Item .env.example .env
@@ -86,14 +82,14 @@ Invoke-RestMethod http://127.0.0.1:8000/health
 
 ## 5. GitHub Actions
 
-`.github/workflows/ci.yml` 在 push/PR 时运行数据库独立单元测试，并在临时目录生成合成 Demo，验证问数、趋势、RAG、图表和“拒绝覆盖已有数据库”行为。CI 不读取维护者的真实数据库或 Key。
+`.github/workflows/ci.yml` 在 push/PR 时安装锁定范围内的依赖、执行 Ruff、初始化合成 Demo，并运行完整测试集。测试自身还会在临时目录创建隔离 Demo，不读取维护者的真实数据库或 Key。
 
 ## 6. 发布版本
 
 首个公开版本建议打 `v0.1.0` 标签，并在 Release Notes 中明确：
 
 - 这是工程化 MVP，不是投资建议系统；
-- 当前在线查询仍使用 SQLite，MySQL 已导入验证但尚未切换 runtime；
+- Docker Compose 已验证 MySQL runtime、Redis 会话、MCP stdio、SQLite 向量 RAG 和 Chroma hashing/BM25；
 - 哪些数据包含在发布中、其许可证是什么；
 - DeepSeek Key 由用户自行提供；
 - 已知限制与下一阶段路线。
