@@ -1,4 +1,5 @@
 """Load the Phase 1 MVP financial facts into a local SQLite database."""
+
 from __future__ import annotations
 
 import argparse
@@ -9,16 +10,76 @@ import sqlite3
 from pathlib import Path
 
 METRIC_METADATA: dict[str, dict[str, str]] = {
-    "revenue": {"name": "营业收入", "category": "规模", "unit": "万元", "value_type": "reported", "formula": ""},
-    "net_profit_attributable": {"name": "归属于上市公司股东的净利润", "category": "盈利", "unit": "万元", "value_type": "reported", "formula": ""},
-    "net_profit_excl_non_recurring": {"name": "归属于上市公司股东的扣除非经常性损益的净利润", "category": "盈利", "unit": "万元", "value_type": "reported", "formula": ""},
-    "operating_cash_flow": {"name": "经营活动产生的现金流量净额", "category": "现金流", "unit": "万元", "value_type": "reported", "formula": ""},
-    "eps": {"name": "基本每股收益", "category": "每股指标", "unit": "元/股", "value_type": "reported", "formula": ""},
-    "roe": {"name": "加权平均净资产收益率", "category": "盈利能力", "unit": "%", "value_type": "reported", "formula": ""},
-    "total_assets": {"name": "总资产", "category": "规模", "unit": "万元", "value_type": "reported", "formula": ""},
-    "net_assets": {"name": "归属于上市公司股东的净资产", "category": "规模", "unit": "万元", "value_type": "reported", "formula": ""},
-    "net_margin": {"name": "净利率（计算）", "category": "盈利能力", "unit": "%", "value_type": "derived", "formula": "net_profit_attributable / revenue * 100"},
-    "operating_cash_margin": {"name": "经营现金流/营业收入（计算）", "category": "现金流", "unit": "%", "value_type": "derived", "formula": "operating_cash_flow / revenue * 100"},
+    "revenue": {
+        "name": "营业收入",
+        "category": "规模",
+        "unit": "万元",
+        "value_type": "reported",
+        "formula": "",
+    },
+    "net_profit_attributable": {
+        "name": "归属于上市公司股东的净利润",
+        "category": "盈利",
+        "unit": "万元",
+        "value_type": "reported",
+        "formula": "",
+    },
+    "net_profit_excl_non_recurring": {
+        "name": "归属于上市公司股东的扣除非经常性损益的净利润",
+        "category": "盈利",
+        "unit": "万元",
+        "value_type": "reported",
+        "formula": "",
+    },
+    "operating_cash_flow": {
+        "name": "经营活动产生的现金流量净额",
+        "category": "现金流",
+        "unit": "万元",
+        "value_type": "reported",
+        "formula": "",
+    },
+    "eps": {
+        "name": "基本每股收益",
+        "category": "每股指标",
+        "unit": "元/股",
+        "value_type": "reported",
+        "formula": "",
+    },
+    "roe": {
+        "name": "加权平均净资产收益率",
+        "category": "盈利能力",
+        "unit": "%",
+        "value_type": "reported",
+        "formula": "",
+    },
+    "total_assets": {
+        "name": "总资产",
+        "category": "规模",
+        "unit": "万元",
+        "value_type": "reported",
+        "formula": "",
+    },
+    "net_assets": {
+        "name": "归属于上市公司股东的净资产",
+        "category": "规模",
+        "unit": "万元",
+        "value_type": "reported",
+        "formula": "",
+    },
+    "net_margin": {
+        "name": "净利率（计算）",
+        "category": "盈利能力",
+        "unit": "%",
+        "value_type": "derived",
+        "formula": "net_profit_attributable / revenue * 100",
+    },
+    "operating_cash_margin": {
+        "name": "经营现金流/营业收入（计算）",
+        "category": "现金流",
+        "unit": "%",
+        "value_type": "derived",
+        "formula": "operating_cash_flow / revenue * 100",
+    },
 }
 
 
@@ -84,7 +145,7 @@ def load_csv(connection: sqlite3.Connection, csv_path: Path) -> dict[str, int]:
                ON CONFLICT(stock_code) DO UPDATE SET company_name = excluded.company_name""",
             (row["stock_code"], row["company_name"]),
         )
-    for stock_code, company_name in connection.execute(
+    for stock_code, _company_name in connection.execute(
         "SELECT stock_code, company_name FROM companies ORDER BY stock_code"
     ):
         companies[stock_code] = connection.execute(
@@ -121,7 +182,14 @@ def load_csv(connection: sqlite3.Connection, csv_path: Path) -> dict[str, int]:
                  default_unit = excluded.default_unit,
                  value_type = excluded.value_type,
                  formula = excluded.formula""",
-            (metric_code, meta["name"], meta["category"], meta["unit"], meta["value_type"], meta["formula"] or None),
+            (
+                metric_code,
+                meta["name"],
+                meta["category"],
+                meta["unit"],
+                meta["value_type"],
+                meta["formula"] or None,
+            ),
         )
     metric_ids = {
         metric_code: metric_id

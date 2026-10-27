@@ -170,4 +170,3 @@ def _decode(content: bytes) -> str:
         except UnicodeDecodeError:
             continue
     raise ValueError("Unable to decode text; use UTF-8 or GB18030 encoding")
-

@@ -7,7 +7,9 @@ from finance_insight.structured_output import validate_structured
 
 
 def test_parse_comprehensive_intent():
-    intent = parse_intent("分析凯莱英2022—2024年营业收入、净利润和ROE的变化，如果发现异常年份，结合年报分析原因，并生成趋势图")
+    intent = parse_intent(
+        "分析凯莱英2022—2024年营业收入、净利润和ROE的变化，如果发现异常年份，结合年报分析原因，并生成趋势图"
+    )
     assert intent.companies[0].stock_code == "002821"
     assert intent.period.years == [2022, 2023, 2024]
     assert set(intent.metrics) == {"revenue", "net_profit_attributable", "roe"}
@@ -29,7 +31,7 @@ def test_parse_intent_uses_mvp_aliases_when_finance_database_is_missing(tmp_path
 
 
 def test_structured_output_repairs_code_fence_and_trailing_comma():
-    raw = "```json\n{\"question\":\"查询凯莱英2024年营业收入\",\"companies\":[{\"stock_code\":\"002821\",\"company_name\":\"凯莱英\"}],\"period\":{\"years\":[2024]},\"metrics\":[\"revenue\"],\"needs_sql\":true,\"needs_calculation\":false,\"needs_rag\":false,\"needs_chart\":false,\"needs_anomaly_detection\":false,\"task_type\":\"query\",\"confidence\":0.9,}\n```"
+    raw = '```json\n{"question":"查询凯莱英2024年营业收入","companies":[{"stock_code":"002821","company_name":"凯莱英"}],"period":{"years":[2024]},"metrics":["revenue"],"needs_sql":true,"needs_calculation":false,"needs_rag":false,"needs_chart":false,"needs_anomaly_detection":false,"task_type":"query","confidence":0.9,}\n```'
     result = validate_structured(raw, QueryIntent)
     assert result.metrics == ["revenue"]
 

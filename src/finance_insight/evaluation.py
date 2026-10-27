@@ -42,7 +42,9 @@ def run(dataset_path: Path, output_path: Path, *, use_llm: bool = False) -> dict
             and bool(result.intent.companies)
             and result.intent.companies[0].stock_code == case["expected_company"]
         )
-        metric_ok = result.intent is not None and set(result.intent.metrics) == set(case["expected_metrics"])
+        metric_ok = result.intent is not None and set(result.intent.metrics) == set(
+            case["expected_metrics"]
+        )
         if not case.get("expected_metrics"):
             metric_ok = result.intent is None or not result.intent.metrics
         tool_ok = actual_tools == case["expected_tools"]
@@ -70,13 +72,28 @@ def run(dataset_path: Path, output_path: Path, *, use_llm: bool = False) -> dict
                 for row in records
                 if row["report_year"] == expected["year"]
                 and row["metric_code"] == expected["metric"]
-                and (expected.get("stock_code") is None or row["stock_code"] == expected["stock_code"])
+                and (
+                    expected.get("stock_code") is None
+                    or row["stock_code"] == expected["stock_code"]
+                )
             ]
-            numeric_ok = bool(matches) and abs(float(matches[0]["metric_value"]) - expected["value"]) <= expected["tolerance"]
+            numeric_ok = (
+                bool(matches)
+                and abs(float(matches[0]["metric_value"]) - expected["value"])
+                <= expected["tolerance"]
+            )
         success = all(
             (
-                status_ok, company_ok, metric_ok, tool_ok, citation_ok, chart_ok,
-                numeric_ok, strategy_ok, validation_ok, clarification_ok,
+                status_ok,
+                company_ok,
+                metric_ok,
+                tool_ok,
+                citation_ok,
+                chart_ok,
+                numeric_ok,
+                strategy_ok,
+                validation_ok,
+                clarification_ok,
             )
         )
         rows.append(
@@ -117,7 +134,11 @@ def run(dataset_path: Path, output_path: Path, *, use_llm: bool = False) -> dict
         "intent_accuracy": mean(1 if row["company_ok"] and row["metric_ok"] else 0 for row in rows),
         "tool_selection_accuracy": mean(1 if row["tool_selection_ok"] else 0 for row in rows),
         "citation_coverage": mean(1 if row["citation_ok"] else 0 for row in rows),
-        "sql_numeric_exact_match": mean(1 if row["numeric_exact_match"] else 0 for row in numeric_rows) if numeric_rows else 1.0,
+        "sql_numeric_exact_match": mean(
+            1 if row["numeric_exact_match"] else 0 for row in numeric_rows
+        )
+        if numeric_rows
+        else 1.0,
         "task_success_rate": mean(1 if row["task_success"] else 0 for row in rows),
         "latency_ms": {
             "average": round(mean(latencies), 2),
@@ -144,11 +165,17 @@ def run(dataset_path: Path, output_path: Path, *, use_llm: bool = False) -> dict
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", type=Path, default=Path("evals/dataset.json"))
+    parser.add_argument("--dataset", type=Path, default=Path("evals/dataset_demo.json"))
     parser.add_argument("--output", type=Path, default=Path("data/evaluation/report.json"))
-    parser.add_argument("--use-llm", action="store_true", help="使用真实 LLM；默认用确定性模式避免批量消耗")
+    parser.add_argument(
+        "--use-llm", action="store_true", help="使用真实 LLM；默认用确定性模式避免批量消耗"
+    )
     args = parser.parse_args()
-    print(json.dumps(run(args.dataset, args.output, use_llm=args.use_llm), ensure_ascii=False, indent=2))
+    print(
+        json.dumps(
+            run(args.dataset, args.output, use_llm=args.use_llm), ensure_ascii=False, indent=2
+        )
+    )
 
 
 if __name__ == "__main__":

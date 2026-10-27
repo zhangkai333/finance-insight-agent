@@ -1,7 +1,7 @@
-# Phase 2.1 数据库模型设计
+# Database Design
 
-> 状态：设计完成，建表 SQL 已执行 SQLite 冒烟验证。  
-> 日期：2026-08-26
+The relational model separates company, reporting period, metric definition and
+financial fact. SQLite and MySQL use equivalent schemas.
 
 ## 1. 设计目标
 
@@ -68,7 +68,9 @@ report_periods 1 ─── N financial_facts
 
 ## 4. 溯源与质量策略
 
-当前 Phase 2 先保留 `source_file` 和 `source_page`，因为 Phase 1 还没有正式的 documents 主表。Phase 3 建立文档层后，再将文件抽象为 `document_id`。
+财务事实保留 `source_file` 和 `source_page`，可以直接回到导入批次和原始行。RAG
+文档层使用独立的 `documents` / `document_chunks` 表，并同样保留文件、页码和
+切片编号，便于从回答引用回查证据。
 
 每条事实都保留：
 
@@ -84,14 +86,13 @@ report_periods 1 ─── N financial_facts
 
 先用 SQLite 验证模型和查询逻辑，再迁移 MySQL。两者都使用关系表和唯一约束；迁移时主要调整自增主键、精确数值类型和时间字段，而不是重做业务模型。
 
-已生成 MySQL 8 建表脚本：`db/schema.mysql.sql`，以及可配置连接参数的导入脚本：`src/finance_insight/ingestion/load_mysql.py`。当前开发环境没有安装 Docker、MySQL 客户端或 MySQL 服务，因此 MySQL 运行时回归会在具备数据库服务时执行，不能用 SQLite 冒充 MySQL 测试。
+已提供 MySQL 8 建表脚本 `db/schema.mysql.sql`、同步脚本和可配置连接参数的导入脚本。Docker Compose 已在本机完成 MySQL 同步、受控查询和 Redis 会话读取验收；SQLite 仍保留为便携数据源与故障降级后端。
 
 ## 6. 当前不在本阶段实现的内容
 
-- 原始层五张 B 题附件表；
-- `documents`、`document_chunks` 和向量库；
-- Docker Compose；
-- 数据库迁移工具；
-- 用户权限和多租户隔离。
+- 基于 Alembic 等工具的正式 Schema 迁移流水线；
+- 扫描件 OCR 与复杂财报表格的逐项人工验收；
+- 用户认证、RBAC 和多租户数据隔离；
+- 面向多副本部署的持久化任务队列与生产级审计。
 
-这些已记录在根目录 `待补充文档.md`，后续按阶段补充并实测。
+这些边界属于后续生产化工作，不影响公开合成 Demo 的复现与面试演示。

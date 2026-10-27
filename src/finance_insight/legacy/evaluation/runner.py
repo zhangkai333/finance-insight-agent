@@ -65,7 +65,9 @@ def _ensure_sample_documents(ingestor: DocumentIngestor) -> None:
     for name in ("sample_annual_report.md", "sample_financials.csv"):
         path = sample_dir / name
         if path.exists():
-            ingestor.ingest(name, path.read_bytes(), "text/csv" if path.suffix == ".csv" else "text/markdown")
+            ingestor.ingest(
+                name, path.read_bytes(), "text/csv" if path.suffix == ".csv" else "text/markdown"
+            )
 
 
 def _root_cause(state: dict, item: dict) -> str:
@@ -84,4 +86,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

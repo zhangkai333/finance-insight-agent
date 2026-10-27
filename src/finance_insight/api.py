@@ -10,6 +10,7 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from finance_insight import __version__
 from finance_insight.agent import FinanceInsightAgent
 from finance_insight.config import settings
 from finance_insight.evaluation import run as run_evaluation
@@ -42,7 +43,7 @@ settings.eval_output.parent.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(
     title="FinanceInsight Agent API",
-    version="0.2.0",
+    version=__version__,
     description="上市公司财报智能分析 Agent：MySQL + Python + RAG + 图表 + 可追踪报告",
 )
 app.mount("/static", StaticFiles(directory=WEB_DIR), name="static")
@@ -94,6 +95,7 @@ def health() -> HealthResponse:
         finance_db=settings.finance_db.exists(),
         rag_db=settings.rag_db.exists(),
         llm_configured=settings.llm_enabled,
+        demo_mode=settings.demo_mode,
         store_backend=store.backend,
         finance_backend_requested=settings.finance_backend,
         finance_backend_effective=effective,
@@ -119,8 +121,14 @@ def meta() -> dict[str, Any]:
             "结合年报解释凯莱英2024年净利润下降原因",
         ],
         "pipeline": [
-            "识别任务", "查询结构化财务库", "Python计算", "检索年报",
-            "生成图表", "生成有来源报告", "记录工具轨迹", "重试与降级",
+            "识别任务",
+            "查询结构化财务库",
+            "Python计算",
+            "检索年报",
+            "生成图表",
+            "生成有来源报告",
+            "记录工具轨迹",
+            "重试与降级",
         ],
     }
 
@@ -130,7 +138,9 @@ async def query(request: QueryRequest) -> QueryResponse:
     try:
         with request_limiter.slot(settings.request_queue_timeout_seconds):
             response = _public_response(
-                await agent.arun(request.question, session_id=request.session_id, use_llm=request.use_llm)
+                await agent.arun(
+                    request.question, session_id=request.session_id, use_llm=request.use_llm
+                )
             )
     except TimeoutError as exc:
         raise HTTPException(status_code=429, detail=str(exc)) from exc
@@ -324,7 +334,9 @@ async def legacy_query(request: LegacyQueryRequest) -> LegacyQueryResponse:
         upload_database.add_event(
             trace_id,
             TraceEvent(
-                step="request", status="error", started_at=utc_now(),
+                step="request",
+                status="error",
+                started_at=utc_now(),
                 input_summary={"question_length": len(request.question)},
                 error=type(exc).__name__,
             ),
@@ -339,14 +351,21 @@ def get_trace(trace_id: str) -> dict[str, Any]:
     if row is None:
         raise HTTPException(404, "Trace not found")
     return {
-        "id": row["id"], "question": row["question"], "session_id": row["session_id"],
-        "status": row["status"], "answer": row["answer"], "intent": row["intent"],
-        "degraded": bool(row["degraded"]), "created_at": row["created_at"],
+        "id": row["id"],
+        "question": row["question"],
+        "session_id": row["session_id"],
+        "status": row["status"],
+        "answer": row["answer"],
+        "intent": row["intent"],
+        "degraded": bool(row["degraded"]),
+        "created_at": row["created_at"],
         "completed_at": row["completed_at"],
         "events": [
             {
-                "step": event["step"], "status": event["status"],
-                "started_at": event["started_at"], "duration_ms": event["duration_ms"],
+                "step": event["step"],
+                "status": event["status"],
+                "started_at": event["started_at"],
+                "duration_ms": event["duration_ms"],
                 "input_summary": upload_database.parse_json(event["input_summary"], {}),
                 "output_summary": upload_database.parse_json(event["output_summary"], {}),
                 "error": event["error"],

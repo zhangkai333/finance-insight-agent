@@ -2,16 +2,21 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import sys
+from pathlib import Path
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 
 async def main() -> None:
+    env = dict(os.environ)
+    env["PYTHONPATH"] = str(Path.cwd() / "src")
     server = StdioServerParameters(
         command=sys.executable,
         args=["-m", "finance_insight.mcp_server"],
+        env=env,
     )
     async with stdio_client(server) as (read_stream, write_stream):
         async with ClientSession(read_stream, write_stream) as session:
@@ -29,11 +34,17 @@ async def main() -> None:
                     "top_k": 3,
                 },
             )
-    print(json.dumps({
-        "tools": [tool.name for tool in tools.tools],
-        "financial_query": query.model_dump(mode="json"),
-        "annual_report_search": search.model_dump(mode="json"),
-    }, ensure_ascii=False, indent=2))
+    print(
+        json.dumps(
+            {
+                "tools": [tool.name for tool in tools.tools],
+                "financial_query": query.model_dump(mode="json"),
+                "annual_report_search": search.model_dump(mode="json"),
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":

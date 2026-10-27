@@ -24,8 +24,12 @@ class ChartGenerationTool:
     @staticmethod
     def _font_family() -> str:
         candidates = (
-            "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei",
-            "SimHei", "WenQuanYi Zen Hei", "DejaVu Sans",
+            "Noto Sans CJK SC",
+            "Noto Sans CJK JP",
+            "Microsoft YaHei",
+            "SimHei",
+            "WenQuanYi Zen Hei",
+            "DejaVu Sans",
         )
         available = {font.name for font in font_manager.fontManager.ttflist}
         return next((name for name in candidates if name in available), "DejaVu Sans")

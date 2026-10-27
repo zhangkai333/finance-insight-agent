@@ -62,8 +62,11 @@ class Settings:
     pdf_llm_max_chars: int = int(_env("PDF_LLM_MAX_CHARS", "180000") or 180000)
     artifact_dir: Path = Path(_env("ARTIFACT_DIR", str(ROOT_DIR / "data" / "artifacts")))
     log_dir: Path = Path(_env("LOG_DIR", str(ROOT_DIR / "data" / "logs")))
-    eval_dataset: Path = Path(_env("EVAL_DATASET", str(ROOT_DIR / "evals" / "dataset.json")))
-    eval_output: Path = Path(_env("EVAL_OUTPUT", str(ROOT_DIR / "data" / "evaluation" / "report.json")))
+    eval_dataset: Path = Path(_env("EVAL_DATASET", str(ROOT_DIR / "evals" / "dataset_demo.json")))
+    eval_output: Path = Path(
+        _env("EVAL_OUTPUT", str(ROOT_DIR / "data" / "evaluation" / "report.json"))
+    )
+    demo_mode: bool = _bool_env("DEMO_MODE", False)
     finance_backend: str = (_env("FINANCE_BACKEND", "sqlite") or "sqlite").lower()
     mysql_host: str = _env("MYSQL_HOST", "127.0.0.1") or "127.0.0.1"
     mysql_port: int = int(_env("MYSQL_PORT", "3306") or 3306)
@@ -73,10 +76,14 @@ class Settings:
     mysql_connect_timeout_seconds: int = int(_env("MYSQL_CONNECT_TIMEOUT_SECONDS", "5") or 5)
     mysql_read_timeout_seconds: int = int(_env("MYSQL_READ_TIMEOUT_SECONDS", "10") or 10)
     mysql_pool_size: int = int(_env("MYSQL_POOL_SIZE", "4") or 4)
-    mysql_pool_acquire_timeout_seconds: float = float(_env("MYSQL_POOL_ACQUIRE_TIMEOUT_SECONDS", "5") or 5)
+    mysql_pool_acquire_timeout_seconds: float = float(
+        _env("MYSQL_POOL_ACQUIRE_TIMEOUT_SECONDS", "5") or 5
+    )
     mysql_fallback_to_sqlite: bool = _bool_env("MYSQL_FALLBACK_TO_SQLITE", True)
     llm_api_key: str | None = _env("DEEPSEEK_API_KEY") or _env("LLM_API_KEY")
-    llm_base_url: str = _env("LLM_BASE_URL", "https://api.deepseek.com") or "https://api.deepseek.com"
+    llm_base_url: str = (
+        _env("LLM_BASE_URL", "https://api.deepseek.com") or "https://api.deepseek.com"
+    )
     llm_model: str = _env("LLM_MODEL", "deepseek-chat") or "deepseek-chat"
     llm_timeout_seconds: float = float(_env("LLM_TIMEOUT_SECONDS", "30") or 30)
     llm_temperature: float = float(_env("LLM_TEMPERATURE", "0.2") or 0.2)
@@ -89,9 +96,7 @@ class Settings:
     embedding_model: str = _env("EMBEDDING_MODEL", "BAAI/bge-m3") or "BAAI/bge-m3"
     embedding_batch_size: int = int(_env("EMBEDDING_BATCH_SIZE", "20") or 20)
     embedding_concurrency: int = int(_env("EMBEDDING_CONCURRENCY", "8") or 8)
-    chroma_path: Path = Path(
-        _env("CHROMA_PATH", str(ROOT_DIR / "data" / ".cache" / "chroma_db"))
-    )
+    chroma_path: Path = Path(_env("CHROMA_PATH", str(ROOT_DIR / "data" / ".cache" / "chroma_db")))
     chroma_collection: str = _env("CHROMA_COLLECTION", "report_knowledge") or "report_knowledge"
     bm25_k1: float = float(_env("BM25_K1", "1.5") or 1.5)
     bm25_b: float = float(_env("BM25_B", "0.75") or 0.75)
@@ -99,9 +104,7 @@ class Settings:
     rag_bm25_weight: float = float(_env("RAG_BM25_WEIGHT", "0.4") or 0.4)
     rag_max_retrieval_rounds: int = int(_env("RAG_MAX_RETRIEVAL_ROUNDS", "2") or 2)
     rerank_max_chars: int = int(_env("RERANK_MAX_CHARS", "200") or 200)
-    rag_chunk_max_chars_for_llm: int = int(
-        _env("RAG_CHUNK_MAX_CHARS_FOR_LLM", "500") or 500
-    )
+    rag_chunk_max_chars_for_llm: int = int(_env("RAG_CHUNK_MAX_CHARS_FOR_LLM", "500") or 500)
     max_concurrent_requests: int = int(_env("MAX_CONCURRENT_REQUESTS", "2") or 2)
     request_queue_timeout_seconds: float = float(_env("REQUEST_QUEUE_TIMEOUT_SECONDS", "15") or 15)
     redis_url: str | None = _env("REDIS_URL")

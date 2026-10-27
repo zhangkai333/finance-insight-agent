@@ -95,4 +95,3 @@ class SafeAnalytics:
                 params,
             ).fetchall()
         return [json.loads(record["data"]) for record in records]
-

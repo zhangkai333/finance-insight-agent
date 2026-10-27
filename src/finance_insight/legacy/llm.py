@@ -120,4 +120,3 @@ class LLMClient:
             return StructuredIntent.model_validate(payload)
         except (json.JSONDecodeError, ValidationError):
             return None
-

@@ -112,4 +112,3 @@ class BadCase(BaseModel):
     answer: str
     root_cause: RootCause
     created_at: datetime
-

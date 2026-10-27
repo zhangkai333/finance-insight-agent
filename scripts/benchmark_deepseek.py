@@ -9,10 +9,19 @@ from statistics import mean
 
 from finance_insight.llm import build_llm_client
 
-
 PRICING_CNY_PER_MILLION = {
-    "deepseek-v4-flash": {"cache_hit_input": 0.02, "cache_miss_input": 1.0, "output": 2.0, "concurrency_limit": 2500},
-    "deepseek-v4-pro": {"cache_hit_input": 0.025, "cache_miss_input": 3.0, "output": 6.0, "concurrency_limit": 500},
+    "deepseek-v4-flash": {
+        "cache_hit_input": 0.02,
+        "cache_miss_input": 1.0,
+        "output": 2.0,
+        "concurrency_limit": 2500,
+    },
+    "deepseek-v4-pro": {
+        "cache_hit_input": 0.025,
+        "cache_miss_input": 3.0,
+        "output": 6.0,
+        "concurrency_limit": 500,
+    },
 }
 
 
@@ -48,7 +57,9 @@ def run(requests: int) -> dict:
     for index in range(requests):
         started = time.perf_counter()
         try:
-            response = client.chat([{"role": "user", "content": f"这是第{index + 1}次连通性测试，请只回复OK"}])
+            response = client.chat(
+                [{"role": "user", "content": f"这是第{index + 1}次连通性测试，请只回复OK"}]
+            )
             latency_ms = (time.perf_counter() - started) * 1000
             rows.append(
                 {
@@ -75,7 +86,13 @@ def run(requests: int) -> dict:
     models = sorted({row["model"] for row in successful})
     total_usage = {
         key: sum(int(row["usage"].get(key, 0) or 0) for row in successful)
-        for key in ("prompt_tokens", "completion_tokens", "total_tokens", "prompt_cache_hit_tokens", "prompt_cache_miss_tokens")
+        for key in (
+            "prompt_tokens",
+            "completion_tokens",
+            "total_tokens",
+            "prompt_cache_hit_tokens",
+            "prompt_cache_miss_tokens",
+        )
     }
     total_cost = sum(row["estimated_cost_cny"] or 0 for row in successful)
     return {
@@ -100,16 +117,21 @@ def run(requests: int) -> dict:
             "note": "估算值；实际账单与峰谷定价以 DeepSeek 控制台为准。",
         },
         "rate_limit_basis": {
-            model: PRICING_CNY_PER_MILLION.get(model, {}).get("concurrency_limit") for model in models
+            model: PRICING_CNY_PER_MILLION.get(model, {}).get("concurrency_limit")
+            for model in models
         },
         "results": rows,
     }
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="真实 DeepSeek 延迟、token、成本和失败率小样本基准")
+    parser = argparse.ArgumentParser(
+        description="真实 DeepSeek 延迟、token、成本和失败率小样本基准"
+    )
     parser.add_argument("--requests", type=int, default=5)
-    parser.add_argument("--output", type=Path, default=Path("data/evaluation/deepseek_benchmark.json"))
+    parser.add_argument(
+        "--output", type=Path, default=Path("data/evaluation/deepseek_benchmark.json")
+    )
     args = parser.parse_args()
     if args.requests < 1:
         raise SystemExit("--requests 必须大于 0")

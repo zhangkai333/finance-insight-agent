@@ -14,7 +14,10 @@ def test_langgraph_agent_e2e():
     )
     assert result.status == "success"
     assert [event["tool_name"] for event in result.tool_events] == [
-        "financial_query", "financial_analysis", "annual_report_search", "chart_generation"
+        "financial_query",
+        "financial_analysis",
+        "annual_report_search",
+        "chart_generation",
     ]
     assert len(result.charts) == 3 and all(Path(path).exists() for path in result.charts)
     assert result.citations and "年报依据" in result.answer
@@ -36,11 +39,15 @@ def test_session_context_resolves_follow_up():
 def test_api_sync_async_and_session():
     client = TestClient(app)
     assert client.get("/health").json()["status"] == "ok"
-    response = client.post("/v1/query", json={"question": "查询凯莱英2022到2024年营业收入趋势", "use_llm": False})
+    response = client.post(
+        "/v1/query", json={"question": "查询凯莱英2022到2024年营业收入趋势", "use_llm": False}
+    )
     assert response.status_code == 200 and response.json()["status"] == "success"
     session_id = response.json()["session_id"]
     assert client.get(f"/v1/sessions/{session_id}").status_code == 200
-    task = client.post("/v1/tasks", json={"question": "查询2024年营业收入排名", "use_llm": False}).json()
+    task = client.post(
+        "/v1/tasks", json={"question": "查询2024年营业收入排名", "use_llm": False}
+    ).json()
     state = {}
     for _ in range(30):
         state = client.get(f"/v1/tasks/{task['task_id']}").json()
@@ -50,7 +57,6 @@ def test_api_sync_async_and_session():
     assert state["status"] == "completed" and state["result"]["status"] == "success"
 
 
-
 def test_workspace_static_health_and_browser_artifacts():
     client = TestClient(app)
 
@@ -58,12 +64,14 @@ def test_workspace_static_health_and_browser_artifacts():
     assert workspace.status_code == 200
     assert "FinanceInsight · 财报分析工作台" in workspace.text
     assert "输入问题后，这里将展示完整分析结果" in workspace.text
+    assert "合成演示数据" in workspace.text
 
     script = client.get("/static/app.js")
     assert script.status_code == 200
     assert "javascript" in script.headers["content-type"]
 
     health = client.get("/health").json()
+    assert health["demo_mode"] is True
     assert health["finance_backend_requested"] in {"sqlite", "mysql"}
     assert health["finance_backend_effective"] in {"sqlite", "mysql"}
     assert isinstance(health["finance_backend_ready"], bool)

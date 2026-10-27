@@ -7,6 +7,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      PYTHONUTF8: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -16,18 +18,30 @@ jobs:
       - name: Install package
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e ".[dev,mysql]"
+          python -m pip install -e ".[dev,production-rag]"
       - name: Compile
         run: python -m compileall -q src scripts tests
-      - name: Run database-independent tests
-        run: >-
-          python -m pytest -q
-          tests/unit/test_intent_and_structured.py
-          tests/unit/test_llm.py
-          tests/unit/test_resilience_and_stores.py
-          tests/unit/test_dataset_and_mysql_loader.py
-          tests/unit/test_chart_audit.py
-          tests/unit/test_concurrency.py
-          tests/unit/test_human_review_summary.py
-          tests/unit/test_mysql_pool.py
-          tests/integration/test_demo_data_initializer.py
+      - name: Bootstrap synthetic demo
+        run: python scripts/init_demo_data.py --data-dir .demo-data
+      - name: Verify optional Chroma path
+        run: python scripts/index_demo_chroma.py
+      - name: Lint
+        run: python -m ruff check src tests scripts
+      - name: Run full test suite
+        run: python -m pytest -q
+      - name: Run public demo evaluation
+        env:
+          DEMO_MODE: "true"
+          FINANCE_DB: .demo-data/finance_insight.sqlite3
+          RAG_DB: .demo-data/rag.sqlite3
+          ARTIFACT_DIR: .demo-data/artifacts
+          LOG_DIR: .demo-data/logs
+          EVAL_DATASET: evals/dataset_demo.json
+          EVAL_OUTPUT: .demo-data/evaluation/report.json
+        run: python -m finance_insight.evaluation --dataset evals/dataset_demo.json --output .demo-data/evaluation/report.json
+      - name: Upload public demo evaluation
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-demo-evaluation
+          path: .demo-data/evaluation/report.json
+          if-no-files-found: error

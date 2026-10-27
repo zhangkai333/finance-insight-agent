@@ -26,20 +26,27 @@ from finance_insight.structured_output import validate_structured
 METRIC_CATALOG: dict[str, dict[str, str]] = {
     "revenue": {"name": "营业收入", "unit": "万元", "value_type": "reported"},
     "net_profit_attributable": {
-        "name": "归属于上市公司股东的净利润", "unit": "万元", "value_type": "reported",
+        "name": "归属于上市公司股东的净利润",
+        "unit": "万元",
+        "value_type": "reported",
     },
     "net_profit_excl_non_recurring": {
         "name": "归属于上市公司股东的扣除非经常性损益的净利润",
-        "unit": "万元", "value_type": "reported",
+        "unit": "万元",
+        "value_type": "reported",
     },
     "operating_cash_flow": {
-        "name": "经营活动产生的现金流量净额", "unit": "万元", "value_type": "reported",
+        "name": "经营活动产生的现金流量净额",
+        "unit": "万元",
+        "value_type": "reported",
     },
     "eps": {"name": "基本每股收益", "unit": "元/股", "value_type": "reported"},
     "roe": {"name": "加权平均净资产收益率", "unit": "%", "value_type": "reported"},
     "total_assets": {"name": "总资产", "unit": "万元", "value_type": "reported"},
     "net_assets": {
-        "name": "归属于上市公司股东的净资产", "unit": "万元", "value_type": "reported",
+        "name": "归属于上市公司股东的净资产",
+        "unit": "万元",
+        "value_type": "reported",
     },
 }
 
@@ -63,7 +70,10 @@ STRUCTURED_OUTPUT_SCHEMA = {
             "items": {
                 "type": "object",
                 "required": [
-                    "report_year", "metric_code", "metric_value", "normalized_unit",
+                    "report_year",
+                    "metric_code",
+                    "metric_value",
+                    "normalized_unit",
                     "source_page",
                 ],
                 "properties": {
@@ -141,7 +151,10 @@ def _select_extraction_markdown(markdown: str, max_chars: int) -> str:
         selected_text = markdown
     if len(selected_text) <= max_chars:
         return selected_text
-    return selected_text[:max_chars] + "\n\n[后续页已保存至 Markdown/RAG，但未发送给本次结构化抽取模型]"
+    return (
+        selected_text[:max_chars]
+        + "\n\n[后续页已保存至 Markdown/RAG，但未发送给本次结构化抽取模型]"
+    )
 
 
 def _normalise_output(payload: dict[str, Any], filename: str, pages: int) -> dict[str, Any]:
@@ -215,7 +228,16 @@ class PdfFinancialIngestor:
                 (digest,),
             ).fetchone()
         if row and markdown_path.exists() and json_path.exists():
-            return PdfIngestionResult("already_ingested", f"pdf_{digest[:24]}", digest, str(markdown_path), str(json_path), 0, 0, ["相同 PDF 已入库，未重复写入。"])
+            return PdfIngestionResult(
+                "already_ingested",
+                f"pdf_{digest[:24]}",
+                digest,
+                str(markdown_path),
+                str(json_path),
+                0,
+                0,
+                ["相同 PDF 已入库，未重复写入。"],
+            )
 
         parsed, prepared_chunks, cache_digest = self.cache.prepare(content, filename)
         if cache_digest != digest:
@@ -226,11 +248,14 @@ class PdfFinancialIngestor:
         markdown_path.write_text(markdown, encoding="utf-8")
         messages = [
             {"role": "system", "content": "你负责财报事实抽取。严格输出符合 schema 的 JSON。"},
-            {"role": "user", "content": EXTRACTION_PROMPT.format(
-                catalog=json.dumps(METRIC_CATALOG, ensure_ascii=False),
-                schema=json.dumps(STRUCTURED_OUTPUT_SCHEMA, ensure_ascii=False),
-                markdown=_select_extraction_markdown(markdown, self.config.pdf_llm_max_chars),
-            )},
+            {
+                "role": "user",
+                "content": EXTRACTION_PROMPT.format(
+                    catalog=json.dumps(METRIC_CATALOG, ensure_ascii=False),
+                    schema=json.dumps(STRUCTURED_OUTPUT_SCHEMA, ensure_ascii=False),
+                    markdown=_select_extraction_markdown(markdown, self.config.pdf_llm_max_chars),
+                ),
+            },
         ]
         response = self.llm.chat(messages, response_format={"type": "json_object"})
         structured = validate_structured(response.content, _LooseStructuredPayload)
@@ -254,7 +279,16 @@ class PdfFinancialIngestor:
                 warnings.append(
                     f"production RAG 索引未完成，SQLite RAG 仍可用：{type(exc).__name__}: {exc}"
                 )
-        return PdfIngestionResult("ingested", document_id, digest, str(markdown_path), str(json_path), facts_written, chunks_written, warnings)
+        return PdfIngestionResult(
+            "ingested",
+            document_id,
+            digest,
+            str(markdown_path),
+            str(json_path),
+            facts_written,
+            chunks_written,
+            warnings,
+        )
 
     def _persist(
         self,
@@ -276,38 +310,107 @@ class PdfFinancialIngestor:
         with sqlite3.connect(finance_db) as con:
             con.execute("PRAGMA foreign_keys=ON")
             con.executescript(Path(self.config.finance_schema).read_text(encoding="utf-8"))
-            con.execute("INSERT OR IGNORE INTO companies(stock_code, company_name) VALUES (?, ?)", (document["stock_code"], document["company_name"]))
-            company_id = con.execute("SELECT company_id FROM companies WHERE stock_code=?", (document["stock_code"],)).fetchone()[0]
+            con.execute(
+                "INSERT OR IGNORE INTO companies(stock_code, company_name) VALUES (?, ?)",
+                (document["stock_code"], document["company_name"]),
+            )
+            company_id = con.execute(
+                "SELECT company_id FROM companies WHERE stock_code=?", (document["stock_code"],)
+            ).fetchone()[0]
             metric_ids: dict[str, int] = {}
             for code, meta in METRIC_CATALOG.items():
-                con.execute("INSERT OR IGNORE INTO metric_definitions(metric_code, metric_name, category, default_unit, value_type) VALUES (?, ?, ?, ?, ?)", (code, meta["name"], "财务指标", meta["unit"], meta["value_type"]))
-                metric_ids[code] = con.execute("SELECT metric_id FROM metric_definitions WHERE metric_code=?", (code,)).fetchone()[0]
+                con.execute(
+                    "INSERT OR IGNORE INTO metric_definitions(metric_code, metric_name, category, default_unit, value_type) VALUES (?, ?, ?, ?, ?)",
+                    (code, meta["name"], "财务指标", meta["unit"], meta["value_type"]),
+                )
+                metric_ids[code] = con.execute(
+                    "SELECT metric_id FROM metric_definitions WHERE metric_code=?", (code,)
+                ).fetchone()[0]
             for fact in payload["facts"]:
-                con.execute("INSERT OR IGNORE INTO report_periods(period_code, report_year, report_quarter, period_label) VALUES ('FY', ?, 4, ?)", (fact["report_year"], f"FY{fact['report_year']}"))
-                period_id = con.execute("SELECT report_period_id FROM report_periods WHERE period_code='FY' AND report_year=? AND report_quarter=4", (fact["report_year"],)).fetchone()[0]
-                con.execute("""INSERT INTO financial_facts(company_id, report_period_id, metric_id, metric_value, normalized_unit, raw_value, raw_unit, accounting_scope, value_type, source_file, source_page, extraction_method, quality_status)
+                con.execute(
+                    "INSERT OR IGNORE INTO report_periods(period_code, report_year, report_quarter, period_label) VALUES ('FY', ?, 4, ?)",
+                    (fact["report_year"], f"FY{fact['report_year']}"),
+                )
+                period_id = con.execute(
+                    "SELECT report_period_id FROM report_periods WHERE period_code='FY' AND report_year=? AND report_quarter=4",
+                    (fact["report_year"],),
+                ).fetchone()[0]
+                con.execute(
+                    """INSERT INTO financial_facts(company_id, report_period_id, metric_id, metric_value, normalized_unit, raw_value, raw_unit, accounting_scope, value_type, source_file, source_page, extraction_method, quality_status)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'llm_json_from_pdf', 'auto_ingested')
-                    ON CONFLICT(company_id, report_period_id, metric_id) DO UPDATE SET metric_value=excluded.metric_value, normalized_unit=excluded.normalized_unit, raw_value=excluded.raw_value, raw_unit=excluded.raw_unit, source_file=excluded.source_file, source_page=excluded.source_page, extraction_method=excluded.extraction_method, quality_status=excluded.quality_status""", (company_id, period_id, metric_ids[fact["metric_code"]], fact["metric_value"], fact["normalized_unit"], fact["raw_value"], fact["raw_unit"], fact["accounting_scope"], METRIC_CATALOG[fact["metric_code"]]["value_type"], filename, fact["source_page"]))
+                    ON CONFLICT(company_id, report_period_id, metric_id) DO UPDATE SET metric_value=excluded.metric_value, normalized_unit=excluded.normalized_unit, raw_value=excluded.raw_value, raw_unit=excluded.raw_unit, source_file=excluded.source_file, source_page=excluded.source_page, extraction_method=excluded.extraction_method, quality_status=excluded.quality_status""",
+                    (
+                        company_id,
+                        period_id,
+                        metric_ids[fact["metric_code"]],
+                        fact["metric_value"],
+                        fact["normalized_unit"],
+                        fact["raw_value"],
+                        fact["raw_unit"],
+                        fact["accounting_scope"],
+                        METRIC_CATALOG[fact["metric_code"]]["value_type"],
+                        filename,
+                        fact["source_page"],
+                    ),
+                )
             batch_id = f"pdf_{digest[:24]}"
-            con.execute("INSERT OR REPLACE INTO ingestion_batches(batch_id, source_path, source_sha256, row_count, status, error_message) VALUES (?, ?, ?, ?, 'loaded', NULL)", (batch_id, str(markdown_path), digest, len(payload["facts"])))
+            con.execute(
+                "INSERT OR REPLACE INTO ingestion_batches(batch_id, source_path, source_sha256, row_count, status, error_message) VALUES (?, ?, ?, ?, 'loaded', NULL)",
+                (batch_id, str(markdown_path), digest, len(payload["facts"])),
+            )
             document_id = f"pdf_{digest[:24]}"
 
         with sqlite3.connect(rag_db) as con:
             con.execute("PRAGMA foreign_keys=ON")
             con.executescript(Path(self.config.rag_schema).read_text(encoding="utf-8"))
-            con.execute("INSERT OR IGNORE INTO documents(stock_code, company_name, document_type, report_year, title, source_file, source_path, page_count, parser) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (document["stock_code"], document["company_name"], document["document_type"], document["report_year"], document["title"], filename, str(markdown_path), page_count, parser))
-            rag_document_id = con.execute("SELECT document_id FROM documents WHERE stock_code=? AND document_type=? AND report_year=? AND source_file=?", (document["stock_code"], document["document_type"], document["report_year"], filename)).fetchone()[0]
-            old = [row[0] for row in con.execute("SELECT chunk_id FROM document_chunks WHERE document_id=?", (rag_document_id,)).fetchall()]
+            con.execute(
+                "INSERT OR IGNORE INTO documents(stock_code, company_name, document_type, report_year, title, source_file, source_path, page_count, parser) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (
+                    document["stock_code"],
+                    document["company_name"],
+                    document["document_type"],
+                    document["report_year"],
+                    document["title"],
+                    filename,
+                    str(markdown_path),
+                    page_count,
+                    parser,
+                ),
+            )
+            rag_document_id = con.execute(
+                "SELECT document_id FROM documents WHERE stock_code=? AND document_type=? AND report_year=? AND source_file=?",
+                (
+                    document["stock_code"],
+                    document["document_type"],
+                    document["report_year"],
+                    filename,
+                ),
+            ).fetchone()[0]
+            old = [
+                row[0]
+                for row in con.execute(
+                    "SELECT chunk_id FROM document_chunks WHERE document_id=?", (rag_document_id,)
+                ).fetchall()
+            ]
             if old:
-                con.executemany("DELETE FROM document_chunks_fts WHERE chunk_id=?", [(item,) for item in old])
+                con.executemany(
+                    "DELETE FROM document_chunks_fts WHERE chunk_id=?", [(item,) for item in old]
+                )
             con.execute("DELETE FROM document_chunks WHERE document_id=?", (rag_document_id,))
-            chunks = [
-                (int(item["page_number"]), str(item["content"]))
-                for item in prepared_chunks
-            ] if prepared_chunks is not None else _chunks(markdown)
+            chunks = (
+                [(int(item["page_number"]), str(item["content"])) for item in prepared_chunks]
+                if prepared_chunks is not None
+                else _chunks(markdown)
+            )
             for index, (page, content) in enumerate(chunks):
-                cursor = con.execute("INSERT INTO document_chunks(document_id, page_number, chunk_index, content, char_count, section_hint) VALUES (?, ?, ?, ?, ?, ?)", (rag_document_id, page, index, content, len(content), "pdf_markdown"))
-                con.execute("INSERT INTO document_chunks_fts(chunk_id, document_id, content, page_number) VALUES (?, ?, ?, ?)", (cursor.lastrowid, rag_document_id, content, page))
+                cursor = con.execute(
+                    "INSERT INTO document_chunks(document_id, page_number, chunk_index, content, char_count, section_hint) VALUES (?, ?, ?, ?, ?, ?)",
+                    (rag_document_id, page, index, content, len(content), "pdf_markdown"),
+                )
+                con.execute(
+                    "INSERT INTO document_chunks_fts(chunk_id, document_id, content, page_number) VALUES (?, ?, ?, ?)",
+                    (cursor.lastrowid, rag_document_id, content, page),
+                )
         return len(payload["facts"]), len(chunks), str(document_id)
 
     def _index_production_rag(self, filename: str, document: dict[str, Any]) -> int:

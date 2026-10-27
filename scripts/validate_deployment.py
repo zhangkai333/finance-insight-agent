@@ -6,7 +6,6 @@ from pathlib import Path
 
 import yaml
 
-
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "processed" / "mvp_dataset" / "deployment_static_validation.json"
 
@@ -22,7 +21,9 @@ def main() -> None:
         "env_example_exists": env_example_path.exists(),
     }
 
-    compose = yaml.safe_load(compose_path.read_text(encoding="utf-8")) if compose_path.exists() else {}
+    compose = (
+        yaml.safe_load(compose_path.read_text(encoding="utf-8")) if compose_path.exists() else {}
+    )
     services = compose.get("services", {}) if isinstance(compose, dict) else {}
     checks["compose_has_api_mysql_redis"] = {"api", "mysql", "redis"}.issubset(services)
     checks["all_services_have_healthcheck"] = all(
@@ -41,12 +42,19 @@ def main() -> None:
         re.search(pattern, env_example, re.IGNORECASE) for pattern in secret_patterns
     )
     checks["dockerfile_has_healthcheck"] = "HEALTHCHECK" in dockerfile
-    checks["compose_api_mounts_data"] = "./data:/app/data" in str(services.get("api", {}).get("volumes", []))
+    checks["compose_api_uses_persistent_volume"] = "finagent_data:/app/data" in str(
+        services.get("api", {}).get("volumes", [])
+    )
+    checks["compose_runs_api_with_mysql_and_redis"] = (
+        services.get("api", {}).get("environment", {}).get("FINANCE_BACKEND") == "mysql"
+        and services.get("api", {}).get("environment", {}).get("REDIS_URL")
+        == "redis://redis:6379/0"
+    )
 
     result = {
         "status": "STATIC_PASS" if all(checks.values()) else "STATIC_FAIL",
-        "scope": "Dockerfile/Compose 静态验证；未执行容器运行时测试",
-        "docker_runtime_available": False,
+        "scope": "Dockerfile/Compose static validation",
+        "docker_runtime_available": None,
         "services": sorted(services),
         "checks": checks,
     }

@@ -27,10 +27,20 @@ def validate_evidence(
             warnings=["信息不足，已进入澄清分支，未执行数据工具。"],
         )
 
-    expected = {(company.stock_code, year, metric) for company in intent.companies for year in intent.period.years for metric in intent.metrics}
-    actual = {(row.get("stock_code"), row.get("report_year"), row.get("metric_code")) for row in financial_data}
+    expected = {
+        (company.stock_code, year, metric)
+        for company in intent.companies
+        for year in intent.period.years
+        for metric in intent.metrics
+    }
+    actual = {
+        (row.get("stock_code"), row.get("report_year"), row.get("metric_code"))
+        for row in financial_data
+    }
     coverage = len(expected & actual) / len(expected) if expected else 0.0
-    checks.append({"name": "fact_coverage", "passed": coverage >= 1.0, "coverage": round(coverage, 3)})
+    checks.append(
+        {"name": "fact_coverage", "passed": coverage >= 1.0, "coverage": round(coverage, 3)}
+    )
     if expected and coverage < 1.0:
         warnings.append(f"结构化事实覆盖率不足：{coverage:.0%}")
 
@@ -41,26 +51,30 @@ def validate_evidence(
 
     series = calculations.get("series", []) if calculations else []
     calc_ok = all(
-        all(point.get("value") is not None for point in item.get("points", []))
-        for item in series
+        all(point.get("value") is not None for point in item.get("points", [])) for item in series
     )
     checks.append({"name": "calculation_trace", "passed": calc_ok, "series_count": len(series)})
     if (intent.needs_calculation or intent.needs_anomaly_detection) and not series:
         warnings.append("用户要求计算或异常分析，但没有生成可复核序列")
 
     covered_metrics = {
-        metric for citation in citations
+        metric
+        for citation in citations
         for metric in intent.metrics
         if citation.get("matched_metric") == metric
-        and has_metric_evidence(
-            citation.get("snippet", ""), METRIC_EVIDENCE_TERMS.get(metric, ())
-        )
+        and has_metric_evidence(citation.get("snippet", ""), METRIC_EVIDENCE_TERMS.get(metric, ()))
     }
     missing_metrics = sorted(set(intent.metrics) - covered_metrics) if intent.needs_rag else []
     citation_ok = not missing_metrics
-    checks.append({"name": "citation_coverage", "passed": citation_ok,
-                   "citation_count": len(citations), "covered_metrics": sorted(covered_metrics),
-                   "missing_metrics": missing_metrics})
+    checks.append(
+        {
+            "name": "citation_coverage",
+            "passed": citation_ok,
+            "citation_count": len(citations),
+            "covered_metrics": sorted(covered_metrics),
+            "missing_metrics": missing_metrics,
+        }
+    )
     if intent.needs_rag and not citations:
         warnings.append("归因/解释问题没有返回原文引用")
     elif missing_metrics:
@@ -78,14 +92,22 @@ def validate_evidence(
     }
     missing_cause = sorted(set(intent.metrics) - cause_metrics) if needs_cause else []
     if needs_cause:
-        checks.append({
-            "name": "cause_evidence",
-            "passed": not missing_cause,
-            "covered_metrics": sorted(cause_metrics),
-            "missing_metrics": missing_cause,
-        })
+        checks.append(
+            {
+                "name": "cause_evidence",
+                "passed": not missing_cause,
+                "covered_metrics": sorted(cause_metrics),
+                "missing_metrics": missing_cause,
+            }
+        )
         if missing_cause:
             warnings.append(f"部分指标缺少明确的原因原文证据：{', '.join(missing_cause)}")
 
-    status = "failed" if any(not check["passed"] for check in checks if check["name"] == "numeric_facts") else "warning" if warnings else "passed"
+    status = (
+        "failed"
+        if any(not check["passed"] for check in checks if check["name"] == "numeric_facts")
+        else "warning"
+        if warnings
+        else "passed"
+    )
     return ValidationReport(status=status, checks=checks, warnings=warnings)

@@ -2,7 +2,12 @@
 
 ## 1. 这次人工评测在评什么
 
-`evals/dataset_extended_draft.json` 的 60 条问题是自动生成初稿。程序回归 60/60 只说明“代码与自动标签一致”，不能证明标签本身正确，也不能证明答案忠实、引用充分或问题自然。因此人工评测要同时审核：
+The public repository contains `evals/dataset_demo.json`, which is a small
+deterministic regression set. It is not a human gold set and does not prove
+answer faithfulness or real-user generalization. A future private evaluation
+set should be reviewed by financial analysts before use.
+
+人工评测要同时审核：
 
 1. **题目与标签**：公司、年份、指标、期望工具是否标对；
 2. **结构化结果**：意图、工具调用、数值和排序是否正确；
@@ -28,8 +33,8 @@ python scripts/export_human_review.py --run-agent --use-llm
 
 输出：
 
-- `evals/human_review_round1.csv`：Excel/WPS 可直接打开；文件采用 UTF-8 BOM；
-- `evals/human_review_round1.evidence.jsonl`：仅在 `--run-agent` 时生成，保留完整原始响应，便于追溯。
+- `.demo-data/evaluation/human_review_demo.csv`：Excel/WPS 可直接打开；文件采用 UTF-8 BOM；
+- `.demo-data/evaluation/human_review_demo.evidence.jsonl`：仅在 `--run-agent` 时生成，保留完整原始响应，便于追溯。
 
 建议先复制一份 CSV 再标注，避免重新导出覆盖人工结果。首轮可按类别分批处理：20 条 point query、10 条 trend、10 条 ranking、10 条 RAG、10 条 chart。`actual_charts` 使用项目相对路径，可从仓库根目录定位 PNG。
 

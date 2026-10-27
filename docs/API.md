@@ -19,14 +19,18 @@ API 响应中的 `charts` 和确定性报告中的图表地址均为 `/artifacts
   "status": "ok",
   "finance_db": true,
   "rag_db": true,
-  "llm_configured": true,
-  "store_backend": "redis",
-  "finance_backend_requested": "mysql",
-  "finance_backend_effective": "mysql",
+  "llm_configured": false,
+  "demo_mode": true,
+  "store_backend": "memory",
+  "finance_backend_requested": "sqlite",
+  "finance_backend_effective": "sqlite",
   "finance_backend_ready": true,
   "finance_backend_fallback_reason": null
 }
 ```
+
+`demo_mode=true` indicates the public synthetic dataset. The workbench uses this
+field to display the synthetic-data notice.
 
 `requested` 与 `effective` 不同时代表 MySQL 故障后使用了 SQLite fallback；原因同时写入 `finance_backend_fallback_reason`。
 

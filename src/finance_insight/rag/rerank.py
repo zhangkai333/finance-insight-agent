@@ -58,12 +58,7 @@ class LexicalMetadataReranker:
 def evidence_sufficiency(rows: list[dict[str, Any]], terms: list[str]) -> tuple[float, bool]:
     if not rows:
         return 0.0, False
-    covered = {
-        term
-        for row in rows
-        for term in terms
-        if term in str(row.get("content", ""))
-    }
+    covered = {term for row in rows for term in terms if term in str(row.get("content", ""))}
     coverage = len(covered) / max(1, len(terms))
     source_bonus = min(0.2, len({row.get("page_number") for row in rows}) * 0.05)
     score = round(min(1.0, coverage + source_bonus), 4)

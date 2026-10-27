@@ -86,7 +86,10 @@ def _metrics(question: str) -> list[str]:
     accepted: list[tuple[int, int, str, int]] = []
     for candidate in sorted(matches, key=lambda item: (-(item[1] - item[0]), item[0], item[3])):
         start, end, _, _ = candidate
-        if any(start < accepted_end and accepted_start < end for accepted_start, accepted_end, _, _ in accepted):
+        if any(
+            start < accepted_end and accepted_start < end
+            for accepted_start, accepted_end, _, _ in accepted
+        ):
             continue
         accepted.append(candidate)
 
@@ -111,7 +114,9 @@ def parse_intent(question: str, config: Settings = settings) -> QueryIntent:
     if not companies and ranking:
         companies = [aliases[code] for code in sorted({ref.stock_code for ref in aliases.values()})]
     if not companies:
-        raise ValueError("未识别到可查询公司。当前 MVP 支持 10 家医药上市公司，请使用公司简称或股票代码。")
+        raise ValueError(
+            "未识别到可查询公司。当前 MVP 支持 10 家医药上市公司，请使用公司简称或股票代码。"
+        )
     low = question.lower()
     metrics = _metrics(question)
     if not metrics:
@@ -119,25 +124,42 @@ def parse_intent(question: str, config: Settings = settings) -> QueryIntent:
     needs_rag = any(word in question for word in ("原因", "解释", "年报", "依据", "为什么", "研报"))
     anomaly = any(word in question for word in ("异常", "波动", "大幅", "显著变化", "下滑", "下降"))
     chart = _needs_chart(question)
-    calculation = anomaly or any(word in low for word in ("同比", "cagr", "增速", "利润率", "平均")) or len(_years(question)) > 1
-    task_type = "ranking" if ranking else (
-        "comprehensive_analysis" if needs_rag or anomaly or chart else
-        ("trend_analysis" if calculation else "query")
+    calculation = (
+        anomaly
+        or any(word in low for word in ("同比", "cagr", "增速", "利润率", "平均"))
+        or len(_years(question)) > 1
+    )
+    task_type = (
+        "ranking"
+        if ranking
+        else (
+            "comprehensive_analysis"
+            if needs_rag or anomaly or chart
+            else ("trend_analysis" if calculation else "query")
+        )
     )
     return QueryIntent(
-        question=question, companies=companies, period=PeriodRange(years=_years(question)),
-        metrics=metrics, needs_sql=True, needs_calculation=calculation,
-        needs_rag=needs_rag, needs_chart=chart, needs_anomaly_detection=anomaly,
-        task_type=task_type, confidence=0.92, parser="deterministic-rule-v1",
+        question=question,
+        companies=companies,
+        period=PeriodRange(years=_years(question)),
+        metrics=metrics,
+        needs_sql=True,
+        needs_calculation=calculation,
+        needs_rag=needs_rag,
+        needs_chart=chart,
+        needs_anomaly_detection=anomaly,
+        task_type=task_type,
+        confidence=0.92,
+        parser="deterministic-rule-v1",
     )
 
 
-def parse_intent_with_llm(question: str, llm: LLMClient, config: Settings = settings) -> QueryIntent:
+def parse_intent_with_llm(
+    question: str, llm: LLMClient, config: Settings = settings
+) -> QueryIntent:
     """用 JSON mode 解析意图，再用 Pydantic 和业务白名单做二次校验。"""
     aliases = _company_aliases(config.finance_db)
-    allowed_companies = {
-        ref.stock_code: ref.company_name for ref in aliases.values()
-    }
+    allowed_companies = {ref.stock_code: ref.company_name for ref in aliases.values()}
     prompt = {
         "question": question,
         "allowed_companies": allowed_companies,
@@ -145,8 +167,10 @@ def parse_intent_with_llm(question: str, llm: LLMClient, config: Settings = sett
         "available_years": [2022, 2023, 2024],
         "required_schema": QueryIntent.model_json_schema(),
         "rules": [
-            "只输出 JSON 对象", "公司必须来自 allowed_companies",
-            "指标必须来自 allowed_metrics", "不做数值计算",
+            "只输出 JSON 对象",
+            "公司必须来自 allowed_companies",
+            "指标必须来自 allowed_metrics",
+            "不做数值计算",
         ],
     }
     response = llm.chat(

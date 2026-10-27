@@ -1,6 +1,10 @@
 """Run the first three acceptance queries against the Phase 2 SQLite database."""
+
 from __future__ import annotations
-import argparse, json, sqlite3
+
+import argparse
+import json
+import sqlite3
 from pathlib import Path
 
 
@@ -28,10 +32,14 @@ def main() -> None:
             "periods": con.execute("SELECT COUNT(*) FROM report_periods").fetchone()[0],
             "metrics": con.execute("SELECT COUNT(*) FROM metric_definitions").fetchone()[0],
             "facts": con.execute("SELECT COUNT(*) FROM financial_facts").fetchone()[0],
-            "ingestion_batches": con.execute("SELECT COUNT(*) FROM ingestion_batches").fetchone()[0],
+            "ingestion_batches": con.execute("SELECT COUNT(*) FROM ingestion_batches").fetchone()[
+                0
+            ],
             "raw_rows": con.execute("SELECT COUNT(*) FROM raw_financial_rows").fetchone()[0],
             "quality_issues": con.execute("SELECT COUNT(*) FROM data_quality_issues").fetchone()[0],
-            "annual_summary_rows": con.execute("SELECT COUNT(*) FROM v_annual_financial_summary").fetchone()[0],
+            "annual_summary_rows": con.execute(
+                "SELECT COUNT(*) FROM v_annual_financial_summary"
+            ).fetchone()[0],
         }
     finally:
         con.close()
@@ -41,7 +49,16 @@ def main() -> None:
         raise SystemExit("凯莱英 ROE 趋势应有 3 行")
     if len(result["revenue_ranking_2024"]) != 10:
         raise SystemExit("2024 年公司收入排名应有 10 行")
-    expected = {"companies": 10, "periods": 3, "metrics": 10, "facts": 300, "ingestion_batches": 1, "raw_rows": 300, "quality_issues": 0, "annual_summary_rows": 30}
+    expected = {
+        "companies": 10,
+        "periods": 3,
+        "metrics": 10,
+        "facts": 300,
+        "ingestion_batches": 1,
+        "raw_rows": 300,
+        "quality_issues": 0,
+        "annual_summary_rows": 30,
+    }
     if counts != expected:
         raise SystemExit(f"数据库计数不符合预期: {counts}")
     payload = {"counts": counts, "queries": result, "status": "PASS"}

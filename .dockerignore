@@ -1,5 +1,9 @@
 .git
+.venv
+.demo-data
 .pytest_cache
+.pytest-tmp
+.ruff_cache
 __pycache__
 资料待放入
 data/*.sqlite3

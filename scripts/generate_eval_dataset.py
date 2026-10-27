@@ -5,10 +5,9 @@ import json
 import sqlite3
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_DB = ROOT / "data" / "finance_insight.sqlite3"
-DEFAULT_OUTPUT = ROOT / "evals" / "dataset_extended_draft.json"
+DEFAULT_DB = ROOT / ".demo-data" / "finance_insight.sqlite3"
+DEFAULT_OUTPUT = ROOT / ".demo-data" / "evaluation" / "dataset_extended_draft.json"
 
 COMPANIES = [
     ("002821", "凯莱英"),
@@ -37,7 +36,9 @@ METRICS = [
 ]
 
 
-def numeric_expectation(connection: sqlite3.Connection, stock_code: str, year: int, metric: str) -> dict:
+def numeric_expectation(
+    connection: sqlite3.Connection, stock_code: str, year: int, metric: str
+) -> dict:
     row = connection.execute(
         """SELECT ff.metric_value
            FROM financial_facts ff
@@ -59,7 +60,14 @@ def numeric_expectation(connection: sqlite3.Connection, stock_code: str, year: i
     }
 
 
-def base_case(case_id: str, category: str, question: str, tools: list[str], company: str | None, metrics: list[str]) -> dict:
+def base_case(
+    case_id: str,
+    category: str,
+    question: str,
+    tools: list[str],
+    company: str | None,
+    metrics: list[str],
+) -> dict:
     return {
         "id": case_id,
         "category": category,
@@ -90,7 +98,9 @@ def generate(db_path: Path) -> list[dict]:
                     stock_code,
                     [metric_code],
                 )
-                case["expected_numeric"] = numeric_expectation(connection, stock_code, year, metric_code)
+                case["expected_numeric"] = numeric_expectation(
+                    connection, stock_code, year, metric_code
+                )
                 cases.append(case)
 
         # 10 个跨年度趋势问题。
@@ -162,7 +172,16 @@ def main() -> None:
     cases = generate(args.db)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(cases, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({"output": str(args.output), "cases": len(cases), "label_status": "auto_draft_requires_human_review"}, ensure_ascii=False))
+    print(
+        json.dumps(
+            {
+                "output": str(args.output),
+                "cases": len(cases),
+                "label_status": "auto_draft_requires_human_review",
+            },
+            ensure_ascii=False,
+        )
+    )
 
 
 if __name__ == "__main__":

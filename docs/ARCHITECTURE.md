@@ -6,7 +6,7 @@
 2. **先结构化、后编排**：问题先落到 `QueryIntent`，再由 `needs_sql`、`needs_rag`、`needs_calculation` 和 `needs_chart` 决定路径。
 3. **每一步可观察**：每个工具调用都记录 `trace_id`、状态、耗时、错误和重试次数到 JSONL。
 4. **可降级而不编造**：LLM、Redis、向量索引等外围能力失败时，系统回退到确定性解析、内存存储或 FTS5，但不伪造数据。
-5. **MVP 数据边界显式化**：仅覆盖当前入库的 10 家公司、FY 2022—2024 和 10 份 2024 年报。
+5. **MVP 数据边界显式化**：公开 Demo 仅覆盖 10 家虚构公司和 FY 2022—2024 的合成财务事实与合成经营说明。
 
 ## 2. 运行时组件
 
@@ -92,7 +92,7 @@ sequenceDiagram
 
 ## 6. RAG 检索设计
 
-默认 `RAG_BACKEND=sqlite`：SQLite FTS5 词法召回、公司/报告年度过滤、词法与元数据重排，返回文件、页码、chunk 和实际检索模式。可选本地 hashing embedding + `sqlite-vec` + RRF；可选 `RAG_BACKEND=chroma`：OpenAI-compatible/BGE-M3 embedding、Chroma 向量召回、jieba BM25 融合。后两种路径依赖环境与索引，本机本轮未完成外部依赖的实测。缺依赖或索引时降级 FTS5/LIKE，并在响应和 trace 标明原因。最多两轮检索，记录候选数和证据分数；证据分数不等于引用真实性人工评审。
+默认 `RAG_BACKEND=sqlite`：SQLite FTS5 与 `sqlite-vec` hashing embedding 双路召回、公司/报告年度过滤、词法与元数据重排，并返回文件、页码、chunk 和实际检索模式。可选 `RAG_BACKEND=chroma`：Chroma 向量库、jieba BM25 融合；未配置 embedding Key 时使用可复现 hashing embedding，配置后使用 OpenAI-compatible/BGE-M3。SQLite hybrid 与 Chroma hashing/BM25 均已在公开 Demo 实测。缺依赖或索引时降级 FTS5/LIKE，并在响应和 trace 标明原因。最多两轮检索，记录候选数和证据分数；证据分数不等于引用真实性人工评审。
 
 新 PDF 链路：文本解析/表格提取 → 按页 Markdown → 缓存和切片 → LLM 提议结构化 JSON → schema、白名单、单位/页码校验 → 财务 SQLite 与 RAG SQLite；Chroma 增量写入为可选步骤。扫描件 OCR、复杂表格的逐项核对及真实 DeepSeek happy path 尚未在当前机器验收。
 
@@ -118,4 +118,4 @@ sequenceDiagram
 
 ## 9. 数据后端与故障降级
 
-本地默认财务查询使用 SQLite；Compose 配置支持 `portable SQLite → 启动同步 → MySQL 8 → FinancialQueryTool`，但本轮未运行 Docker/MySQL。`ping()` 与 SQL tool event 记录 requested/effective backend；允许回退时明确展示原因。RAG 使用独立 SQLite 检索库，默认实际路径是 FTS5；它不是财务事实查询后端。
+本地默认财务查询使用 SQLite；Compose 使用 `portable SQLite → 启动同步 → MySQL 8 → FinancialQueryTool`，并已在本机完成 API、MySQL 和 Redis 三服务运行态验收。`ping()` 与 SQL tool event 记录 requested/effective backend；允许回退时明确展示原因。RAG 使用独立 SQLite 检索库，默认实际路径是 FTS5；它不是财务事实查询后端。

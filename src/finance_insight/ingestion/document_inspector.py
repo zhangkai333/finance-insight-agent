@@ -1,4 +1,5 @@
 """Inspect a small, explicit document manifest without scanning the whole dataset."""
+
 from __future__ import annotations
 
 import argparse
@@ -60,8 +61,8 @@ def inspect_markdown(path: Path) -> tuple[dict, list[dict]]:
 
 def main() -> None:
     # Windows PowerShell may expose a GBK stdout; document names can contain Unicode.
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser()
     parser.add_argument("manifest", type=Path)
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -111,5 +112,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-

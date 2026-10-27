@@ -220,4 +220,3 @@ def _classify_root_cause(comment: str) -> RootCause:
     if any(term in lower for term in ("模型", "幻觉", "上下文")):
         return RootCause.MODEL_LIMIT
     return RootCause.UNKNOWN
-

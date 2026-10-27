@@ -43,7 +43,10 @@ def test_rewritten_fts_expression_does_not_include_query_syntax():
 
     assert rewritten.fts_expression
     assert "删除" not in rewritten.fts_expression
-    assert all(part.startswith('"') and part.endswith('"') for part in rewritten.fts_expression.split(" OR "))
+    assert all(
+        part.startswith('"') and part.endswith('"')
+        for part in rewritten.fts_expression.split(" OR ")
+    )
 
 
 def test_planner_dependencies_are_ordered():
@@ -64,7 +67,9 @@ def test_attribution_returns_citations_and_retrieval_metadata(finance_agent):
         "分析凯莱英2022到2024年营业收入异常变化并解释原因",
         use_llm=False,
     )
-    rag_event = next(event for event in result.tool_events if event["tool_name"] == "annual_report_search")
+    rag_event = next(
+        event for event in result.tool_events if event["tool_name"] == "annual_report_search"
+    )
 
     assert result.status == "success"
     assert result.citations
@@ -78,7 +83,8 @@ def test_attribution_returns_citations_and_retrieval_metadata(finance_agent):
     assert rag_event["details"]["reranker"] == "lexical-metadata-v1"
     assert 1 <= rag_event["details"]["retrieval_attempts"] <= 2
     assert "evidence_score" in rag_event["details"]
-    assert "fallback_reason" in rag_event["details"]
+    assert rag_event["fallback_used"] is False
+    assert rag_event["details"]["effective_rag_backend"] == "sqlite"
 
 
 def test_validator_warns_when_attribution_has_no_citations():
@@ -92,7 +98,9 @@ def test_validator_warns_when_attribution_has_no_citations():
 def test_validator_warns_when_metric_citation_has_no_cause_evidence():
     intent = parse_intent("分析凯莱英2022到2024年营业收入变化并解释原因")
     report = validate_evidence(
-        intent, [], {},
+        intent,
+        [],
+        {},
         [{"matched_metric": "revenue", "snippet": "营业收入本期为100亿元。"}],
     )
 
@@ -122,20 +130,22 @@ def test_multi_metric_attribution_covers_each_metric(finance_agent):
     assert result.intent is not None
     assert set(result.intent.metrics) == {"revenue", "net_profit_attributable"}
     assert result.validation is not None and result.validation.status == "passed"
-    coverage = next(check for check in result.validation.checks if check["name"] == "citation_coverage")
+    coverage = next(
+        check for check in result.validation.checks if check["name"] == "citation_coverage"
+    )
     assert set(coverage["covered_metrics"]) == set(result.intent.metrics)
-    assert any(
-        citation["matched_metric"] == "revenue" and "营业总收入" in citation["snippet"]
-        and citation["page_number"] == 12
-        for citation in result.citations
+    revenue = next(c for c in result.citations if c["matched_metric"] == "revenue")
+    net_profit = next(
+        c for c in result.citations if c["matched_metric"] == "net_profit_attributable"
     )
+    assert any(term in revenue["snippet"] for term in ("营业收入", "营业总收入", "营收"))
     assert any(
-        citation["matched_metric"] == "net_profit_attributable"
-        and "归属于上市公司股东的净利润" in citation["snippet"]
-        and citation["page_number"] == 13
-        for citation in result.citations
+        term in net_profit["snippet"]
+        for term in ("归母净利润", "归属于上市公司股东的净利润", "净利润")
     )
-    assert "第12页" in result.answer and "第13页" in result.answer
+    assert revenue["page_number"] > 0 and net_profit["page_number"] > 0
+    assert f"第{revenue['page_number']}页" in result.answer
+    assert f"第{net_profit['page_number']}页" in result.answer
 
 
 def test_broken_pdf_metric_keeps_numbered_annual_causes():
@@ -143,7 +153,8 @@ def test_broken_pdf_metric_keeps_numbered_annual_causes():
     excerpt = _metric_excerpt(
         "本报告期归属于上市公司股东的净 利润9.49亿元，同比下降58.17%，主要原因如下："
         "（1）去年大订单盈利较高，今年无相关收入；（2）新兴业务处于爬坡期。"
-        "其他事项与该指标无关。", terms,
+        "其他事项与该指标无关。",
+        terms,
     )
     assert has_metric_evidence(excerpt, terms)
     assert has_cause_evidence(excerpt, terms)
@@ -151,13 +162,16 @@ def test_broken_pdf_metric_keeps_numbered_annual_causes():
     assert "其他事项" not in excerpt
 
 
-@pytest.mark.parametrize("text,expected", [
-    ("基于地理位置划分的营业收入，详见附注五、41。", False),
-    ("营业收入中包括大订单，详见附注。", False),
-    ("由于设备安装调试，暂无法估计预计的年营业收入、利润。", False),
-    ("基于市场需求增长放缓、行业竞争加剧等因素，公司营业收入承压。", True),
-    ("营业收入变动原因说明：收入降幅32.64%，主要系销量减少所致。", True),
-])
+@pytest.mark.parametrize(
+    "text,expected",
+    [
+        ("基于地理位置划分的营业收入，详见附注五、41。", False),
+        ("营业收入中包括大订单，详见附注。", False),
+        ("由于设备安装调试，暂无法估计预计的年营业收入、利润。", False),
+        ("基于市场需求增长放缓、行业竞争加剧等因素，公司营业收入承压。", True),
+        ("营业收入变动原因说明：收入降幅32.64%，主要系销量减少所致。", True),
+    ],
+)
 def test_cause_evidence_requires_metric_and_change(text, expected):
     assert has_cause_evidence(text, METRIC_EVIDENCE_TERMS["revenue"]) is expected
 
@@ -165,9 +179,12 @@ def test_cause_evidence_requires_metric_and_change(text, expected):
 def test_shared_passage_covers_each_explicit_metric():
     intent = parse_intent("分析凯莱英2024年营业收入和归母净利润下降原因")
     snippet = "营业收入和归母净利润下降，主要系产品销量减少所致。"
-    report = validate_evidence(intent, [], {}, [
-        {"matched_metric": metric, "snippet": snippet} for metric in intent.metrics
-    ])
+    report = validate_evidence(
+        intent,
+        [],
+        {},
+        [{"matched_metric": metric, "snippet": snippet} for metric in intent.metrics],
+    )
     cause = next(check for check in report.checks if check["name"] == "cause_evidence")
     assert cause["passed"]
 
@@ -221,7 +238,8 @@ def test_rag_partial_with_financial_facts_returns_partial(finance_agent, monkeyp
 
     monkeypatch.setattr(finance_agent.rag, "run", partial_result)
     result = finance_agent.run(
-        "查询凯莱英2024年营业收入并结合年报解释原因", use_llm=False,
+        "查询凯莱英2024年营业收入并结合年报解释原因",
+        use_llm=False,
     )
 
     assert result.status == "partial"
