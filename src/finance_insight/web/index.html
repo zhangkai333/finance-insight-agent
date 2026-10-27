@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="FinanceInsight Agent 财报智能分析工作台">
   <title>FinanceInsight · 财报分析工作台</title>
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
@@ -24,6 +25,9 @@
         <div class="eyebrow">ANALYSIS REQUEST</div>
         <h1>把复杂财报问题<br>交给可追踪的 Agent</h1>
         <p class="lead">每个结论都经过结构化查询、Python 计算与文档检索，并保留来源和工具轨迹。</p>
+        <div id="demoNotice" class="demo-notice hidden">
+          合成演示数据 · 不代表任何上市公司真实财务结果
+        </div>
 
         <form id="queryForm">
           <label for="question">分析问题</label>
@@ -51,7 +55,7 @@
         </section>
 
         <section class="eval-card">
-          <div><span class="section-kicker">QUALITY GATE</span><strong>6 题固定回归评测</strong></div>
+          <div><span class="section-kicker">QUALITY GATE</span><strong>6 题公开 Demo 回归</strong></div>
           <button id="evalButton" class="secondary-button" type="button">运行评测</button>
           <div id="evalSummary" class="eval-summary">尚未载入评测结果</div>
         </section>
@@ -60,7 +64,7 @@
       <section class="result-panel" aria-live="polite">
         <div id="welcomeState" class="welcome-state">
           <div class="pipeline-visual" aria-hidden="true">
-            <span>任务识别</span><i></i><span>MySQL</span><i></i><span>Python</span><i></i><span>RAG</span><i></i><span>图表与报告</span>
+            <span>任务识别</span><i></i><span>SQL</span><i></i><span>Python</span><i></i><span>RAG</span><i></i><span>图表与报告</span>
           </div>
           <div class="welcome-copy">
             <span class="eyebrow">READY FOR VERIFICATION</span>

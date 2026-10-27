@@ -1,4 +1,5 @@
 """Run a bounded SQLite/MySQL backend contract and failure-fallback check."""
+
 from __future__ import annotations
 
 import argparse
@@ -13,7 +14,12 @@ from finance_insight.tools import FinancialQueryTool
 
 def signature(result: Any) -> list[tuple[Any, ...]]:
     return [
-        (row.get("stock_code"), row.get("report_year"), row.get("metric_code"), float(row["metric_value"]))
+        (
+            row.get("stock_code"),
+            row.get("report_year"),
+            row.get("metric_code"),
+            float(row["metric_value"]),
+        )
         for row in result.data.get("records", [])
     ]
 
@@ -32,7 +38,9 @@ def result_metadata(result: Any) -> dict[str, Any]:
 
 def run(sqlite_path: Path, output: Path, mysql_host: str, mysql_port: int) -> dict[str, Any]:
     intent = parse_intent("查询凯莱英2022到2024年营业收入趋势", Settings(finance_db=sqlite_path))
-    sqlite_result = FinancialQueryTool(Settings(finance_db=sqlite_path, finance_backend="sqlite")).run(intent)
+    sqlite_result = FinancialQueryTool(
+        Settings(finance_db=sqlite_path, finance_backend="sqlite")
+    ).run(intent)
     fallback_config = Settings(
         finance_db=sqlite_path,
         finance_backend="mysql",
@@ -52,7 +60,9 @@ def run(sqlite_path: Path, output: Path, mysql_host: str, mysql_port: int) -> di
         mysql_fallback_to_sqlite=False,
     )
     mysql_result = FinancialQueryTool(mysql_config).run(intent)
-    mysql_reachable = mysql_result.status == "success" and mysql_result.data.get("backend") == "mysql"
+    mysql_reachable = (
+        mysql_result.status == "success" and mysql_result.data.get("backend") == "mysql"
+    )
     real_mysql: dict[str, Any] = {
         "status": "PASS" if mysql_reachable else "NOT_RUN",
         "result": result_metadata(mysql_result),
@@ -90,7 +100,9 @@ def run(sqlite_path: Path, output: Path, mysql_host: str, mysql_port: int) -> di
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sqlite", type=Path, default=Path("data/finance_insight.sqlite3"))
-    parser.add_argument("--output", type=Path, default=Path("data/processed/mvp_dataset/backend_validation.json"))
+    parser.add_argument(
+        "--output", type=Path, default=Path("data/processed/mvp_dataset/backend_validation.json")
+    )
     parser.add_argument("--mysql-host", default="127.0.0.1")
     parser.add_argument("--mysql-port", type=int, default=1)
     args = parser.parse_args()

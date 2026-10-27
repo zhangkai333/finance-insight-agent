@@ -92,4 +92,3 @@ def _split_long_text(text: str, size: int) -> list[str]:
     if current:
         pieces.append(current)
     return pieces
-

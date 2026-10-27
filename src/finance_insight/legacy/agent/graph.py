@@ -310,4 +310,3 @@ class FinancialAgent:
             else:
                 merged[key] = value
         return merged
-

@@ -277,4 +277,3 @@ class Database:
     @staticmethod
     def parse_datetime(value: str | None) -> datetime | None:
         return datetime.fromisoformat(value) if value else None
-

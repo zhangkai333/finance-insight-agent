@@ -1,2 +1,1 @@
 """FinAgent Insight application package."""
-

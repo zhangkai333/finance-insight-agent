@@ -216,7 +216,9 @@ async function loadHealth() {
     const data = await response.json();
     const ready = data.status === "ok";
     node.className = `system-state ${ready ? "ready" : "degraded"}`;
-    node.querySelector("span:last-child").textContent = `${data.finance_backend_effective.toUpperCase()} · ${data.store_backend.toUpperCase()} · ${data.llm_configured ? "LLM READY" : "LOCAL MODE"}`;
+    const mode = data.demo_mode ? "SYNTHETIC DEMO" : (data.llm_configured ? "LLM READY" : "LOCAL MODE");
+    node.querySelector("span:last-child").textContent = `${data.finance_backend_effective.toUpperCase()} · ${data.store_backend.toUpperCase()} · ${mode}`;
+    $("#demoNotice").classList.toggle("hidden", !data.demo_mode);
     if (data.finance_backend_fallback_reason) node.title = data.finance_backend_fallback_reason;
   } catch {
     node.className = "system-state degraded";
@@ -231,10 +233,6 @@ function showEvaluation(data) {
     return;
   }
   node.textContent = `${data.cases} 题 · 成功率 ${(data.task_success_rate * 100).toFixed(1)}% · 工具选择 ${(data.tool_selection_accuracy * 100).toFixed(1)}% · P95 ${data.latency_ms?.p95 || 0} ms`;
-}
-
-async function loadLatestEvaluation() {
-  try { showEvaluation(await (await fetch("/v1/evaluation/latest")).json()); } catch { /* non-blocking */ }
 }
 
 async function runEvaluation() {
@@ -275,4 +273,3 @@ document.querySelectorAll(".example").forEach((button) => button.addEventListene
 
 updateCount();
 loadHealth();
-loadLatestEvaluation();

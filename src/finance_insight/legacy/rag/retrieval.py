@@ -116,4 +116,3 @@ class HybridRetriever:
                 {where} ORDER BY d.created_at DESC, c.position LIMIT ?""",  # noqa: S608
                 parameters,
             ).fetchall()
-

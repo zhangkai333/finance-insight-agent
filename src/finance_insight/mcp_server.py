@@ -27,4 +27,3 @@ def annual_report_search(question: str, query: str = "主要原因", top_k: int 
 
 if __name__ == "__main__":
     server.run(transport="stdio")
-

@@ -1,4 +1,5 @@
 """Audit chart-task evidence and PNG artifacts without emitting private content."""
+
 from __future__ import annotations
 
 import argparse
@@ -7,7 +8,6 @@ from pathlib import Path
 from typing import Any
 
 from PIL import Image, ImageChops
-
 
 METRIC_UNITS = {
     "revenue": "万元",
@@ -75,16 +75,19 @@ def inspect_png(path: Path) -> dict[str, Any]:
             bbox = ImageChops.difference(rgb, background).getbbox()
             pixels = rgb.load()
             nonwhite = sum(
-                pixels[x, y] != (255, 255, 255)
-                for y in range(height)
-                for x in range(width)
+                pixels[x, y] != (255, 255, 255) for y in range(height) for x in range(width)
             )
             result.update(
                 {
                     "png_status": "PASS" if bbox else "BLANK",
                     "dimensions": [width, height],
-                    "nonwhite_fraction": round(nonwhite / (width * height), 6) if width and height else 0.0,
-                    "edge_touch": bool(bbox and (bbox[0] == 0 or bbox[1] == 0 or bbox[2] >= width or bbox[3] >= height)),
+                    "nonwhite_fraction": round(nonwhite / (width * height), 6)
+                    if width and height
+                    else 0.0,
+                    "edge_touch": bool(
+                        bbox
+                        and (bbox[0] == 0 or bbox[1] == 0 or bbox[2] >= width or bbox[3] >= height)
+                    ),
                 }
             )
     except (OSError, ValueError):
@@ -92,7 +95,9 @@ def inspect_png(path: Path) -> dict[str, Any]:
     return result
 
 
-def audit_case(case: dict[str, Any], evidence: dict[str, Any], artifact_dir: Path) -> dict[str, Any]:
+def audit_case(
+    case: dict[str, Any], evidence: dict[str, Any], artifact_dir: Path
+) -> dict[str, Any]:
     expected_metrics = case.get("expected_metrics") or []
     metric = expected_metrics[0] if len(expected_metrics) == 1 else ""
     response = evidence.get("response") or {}
@@ -112,14 +117,23 @@ def audit_case(case: dict[str, Any], evidence: dict[str, Any], artifact_dir: Pat
     if not metric or metric not in METRIC_UNITS:
         findings.append("unsupported_metric_contract")
 
-    resolved_paths = [resolve_chart_path(str(value), artifact_dir, stock_code, metric) for value in charts]
+    resolved_paths = [
+        resolve_chart_path(str(value), artifact_dir, stock_code, metric) for value in charts
+    ]
     matching_paths = [path for path in resolved_paths if path is not None]
     if len(matching_paths) != 1:
         findings.append("expected_company_or_metric_not_in_chart_path")
 
-    png = inspect_png(matching_paths[0]) if len(matching_paths) == 1 else {
-        "png_status": "MISSING", "dimensions": None, "nonwhite_fraction": 0.0, "edge_touch": False,
-    }
+    png = (
+        inspect_png(matching_paths[0])
+        if len(matching_paths) == 1
+        else {
+            "png_status": "MISSING",
+            "dimensions": None,
+            "nonwhite_fraction": 0.0,
+            "edge_touch": False,
+        }
+    )
     if png["png_status"] != "PASS":
         findings.append(f"png_{str(png['png_status']).lower()}")
     if png["edge_touch"]:
@@ -128,7 +142,11 @@ def audit_case(case: dict[str, Any], evidence: dict[str, Any], artifact_dir: Pat
     years = ((response.get("intent") or {}).get("period") or {}).get("years") or []
     if years != EXPECTED_YEARS:
         findings.append("year_axis_contract_mismatch")
-    result_status = "PASS" if not [item for item in findings if item != "low_risk_edge_margin_review"] else "FAIL"
+    result_status = (
+        "PASS"
+        if not [item for item in findings if item != "low_risk_edge_margin_review"]
+        else "FAIL"
+    )
     return {
         "id": case.get("id", ""),
         "expected_company": stock_code,
@@ -162,21 +180,35 @@ def audit(dataset_path: Path, evidence_path: Path, artifact_dir: Path) -> dict[s
         "cases": len(results),
         "passed": len(results) - len(failures),
         "failed": len(failures),
-        "low_risk_warnings": sum("low_risk_edge_margin_review" in item.get("findings", []) for item in results),
+        "low_risk_warnings": sum(
+            "low_risk_edge_margin_review" in item.get("findings", []) for item in results
+        ),
         "results": results,
     }
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--dataset", type=Path, default=Path("evals/dataset_extended_draft.json"))
-    parser.add_argument("--evidence", type=Path, default=Path("evals/human_review_round1.evidence.jsonl"))
-    parser.add_argument("--artifacts", type=Path, default=Path("data/artifacts"))
-    parser.add_argument("--output", type=Path, default=Path("data/evaluation/chart_audit.json"))
+    parser.add_argument(
+        "--dataset",
+        type=Path,
+        default=Path(".demo-data/evaluation/dataset_extended_draft.json"),
+    )
+    parser.add_argument(
+        "--evidence",
+        type=Path,
+        default=Path(".demo-data/evaluation/human_review_demo.evidence.jsonl"),
+    )
+    parser.add_argument("--artifacts", type=Path, default=Path(".demo-data/artifacts"))
+    parser.add_argument(
+        "--output", type=Path, default=Path(".demo-data/evaluation/chart_audit.json")
+    )
     args = parser.parse_args()
     result = audit(args.dataset, args.evidence, args.artifacts)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    args.output.write_text(
+        json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if result["failed"]:
         raise SystemExit(2)
