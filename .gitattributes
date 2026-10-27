@@ -1,4 +1,10 @@
 * text=auto
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
 
 # Linux/container entrypoints must keep LF even when the repository is used on Windows.
 *.sh text eol=lf

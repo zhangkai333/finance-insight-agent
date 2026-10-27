@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "finance-insight-agent"
-version = "0.1.0"
+version = "0.2.0"
 description = "Traceable financial research agent with hybrid RAG, safe analytics, and bad-case evaluation."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -18,7 +18,7 @@ dependencies = [
   "Pillow>=10",
   "langgraph>=1.0,<2.0",
   "redis>=5",
-  "mcp>=2",
+  "mcp>=1,<2",
   "sqlite-vec>=0.1.9",
   "pymysql>=1.1",
   "python-multipart>=0.0.12,<1.0",
