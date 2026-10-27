@@ -28,7 +28,6 @@ def test_extended_evaluation_draft_has_60_unique_cases(tmp_path):
     assert {case["label_status"] for case in cases} == {"auto_draft_requires_human_review"}
 
 
-
 def test_mysql_sync_snapshot_reads_all_portable_demo_rows(tmp_path):
     _initialize_demo_data(tmp_path)
 

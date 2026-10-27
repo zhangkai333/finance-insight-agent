@@ -1,8 +1,8 @@
 """Produce a privacy-safe aggregate for the 60-row human review workflow."""
+
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -10,7 +10,12 @@ from statistics import mean
 from typing import Any
 
 try:
-    from validate_human_review import SCORE_FIELDS, TRI_STATE_FIELDS, read_review_rows, validate_rows
+    from validate_human_review import (
+        SCORE_FIELDS,
+        TRI_STATE_FIELDS,
+        read_review_rows,
+        validate_rows,
+    )
 except ModuleNotFoundError:
     import importlib.util
     import sys
@@ -63,7 +68,9 @@ def summarize(rows: list[dict[str, str]]) -> dict[str, Any]:
                 "cases": len(items),
                 "approved_rate": round(
                     sum(_value(row, "review_status") == "approved" for row in items) / len(items), 4
-                ) if items else 0,
+                )
+                if items
+                else 0,
                 "numeric_correct_rate": rate(items, "numeric_correct"),
                 "citation_supports_claim_rate": rate(items, "citation_supports_claim"),
                 "answer_faithfulness_mean": score(items, "answer_faithfulness_1_to_5"),
@@ -79,12 +86,18 @@ def summarize(rows: list[dict[str, str]]) -> dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--review", type=Path, default=Path("evals/human_review_round1.csv"))
-    parser.add_argument("--output", type=Path, default=Path("data/evaluation/human_review_summary.json"))
+    parser.add_argument(
+        "--review", type=Path, default=Path(".demo-data/evaluation/human_review_demo.csv")
+    )
+    parser.add_argument(
+        "--output", type=Path, default=Path("data/evaluation/human_review_summary.json")
+    )
     args = parser.parse_args()
     result = summarize(read_review_rows(args.review))
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    args.output.write_text(
+        json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if result["status"] != "READY_TO_FREEZE":
         raise SystemExit(2)

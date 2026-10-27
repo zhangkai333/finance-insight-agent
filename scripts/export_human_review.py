@@ -6,8 +6,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-
-
 REVIEW_FIELDS = [
     "intent_correct",
     "tool_correct",
@@ -113,9 +111,19 @@ def prepare_rows(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="导出 60 条评测问题的人工审核表")
-    parser.add_argument("--dataset", type=Path, default=Path("evals/dataset_extended_draft.json"))
-    parser.add_argument("--report", type=Path, default=Path("data/evaluation/report_extended_draft.json"))
-    parser.add_argument("--output", type=Path, default=Path("evals/human_review_round1.csv"))
+    parser.add_argument(
+        "--dataset",
+        type=Path,
+        default=Path(".demo-data/evaluation/dataset_extended_draft.json"),
+    )
+    parser.add_argument(
+        "--report",
+        type=Path,
+        default=Path(".demo-data/evaluation/report_extended_draft.json"),
+    )
+    parser.add_argument(
+        "--output", type=Path, default=Path(".demo-data/evaluation/human_review_demo.csv")
+    )
     parser.add_argument(
         "--run-agent",
         action="store_true",
@@ -129,7 +137,9 @@ def main() -> None:
     args = parser.parse_args()
 
     dataset = json.loads(args.dataset.read_text(encoding="utf-8-sig"))
-    report = json.loads(args.report.read_text(encoding="utf-8-sig")) if args.report.exists() else None
+    report = (
+        json.loads(args.report.read_text(encoding="utf-8-sig")) if args.report.exists() else None
+    )
     rows, evidence = prepare_rows(dataset, report, run_agent=args.run_agent, use_llm=args.use_llm)
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -150,5 +160,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-

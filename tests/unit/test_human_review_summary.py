@@ -13,12 +13,20 @@ def _load_module():
 
 def _row(**updates):
     values = {
-        "id": "case_01", "category": "point_query",
-        "intent_correct": "1", "tool_correct": "1", "numeric_correct": "1",
-        "citation_relevant_1_to_5": "NA", "citation_supports_claim": "NA", "chart_correct": "NA",
-        "answer_faithfulness_1_to_5": "5", "answer_completeness_1_to_5": "5",
-        "question_naturalness_1_to_5": "5", "review_status": "approved",
-        "reviewer": "reviewer-a", "review_notes": "numbers checked",
+        "id": "case_01",
+        "category": "point_query",
+        "intent_correct": "1",
+        "tool_correct": "1",
+        "numeric_correct": "1",
+        "citation_relevant_1_to_5": "NA",
+        "citation_supports_claim": "NA",
+        "chart_correct": "NA",
+        "answer_faithfulness_1_to_5": "5",
+        "answer_completeness_1_to_5": "5",
+        "question_naturalness_1_to_5": "5",
+        "review_status": "approved",
+        "reviewer": "reviewer-a",
+        "review_notes": "numbers checked",
     }
     values.update(updates)
     return values

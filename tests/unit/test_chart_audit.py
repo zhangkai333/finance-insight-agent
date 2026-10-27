@@ -20,7 +20,12 @@ def test_audit_rejects_chart_path_with_wrong_metric(tmp_path):
     artifact.mkdir()
     png = artifact / "trace_002821_roe.png"
     Image.new("RGB", (20, 20), "white").save(png)
-    case = {"id": "chart_01", "expected_company": "002821", "expected_metrics": ["revenue"], "min_charts": 1}
+    case = {
+        "id": "chart_01",
+        "expected_company": "002821",
+        "expected_metrics": ["revenue"],
+        "min_charts": 1,
+    }
     evidence = {
         "response": {
             "status": "success",
@@ -42,17 +47,37 @@ def test_audit_result_does_not_include_private_text(tmp_path):
     artifact.mkdir()
     png = artifact / "trace_002821_roe.png"
     Image.new("RGB", (20, 20), "black").save(png)
-    dataset.write_text(json.dumps([{
-        "id": "chart_01", "expected_company": "002821", "expected_metrics": ["roe"],
-        "min_charts": 1, "question": "private question",
-    }]), encoding="utf-8")
-    evidence.write_text(json.dumps({
-        "id": "chart_01", "question": "private question", "response": {
-            "status": "success", "answer": "private answer", "charts": [str(png)],
-            "intent": {"period": {"years": [2022, 2023, 2024]}},
-            "tool_events": [{"tool_name": name} for name in module.EXPECTED_TOOLS],
-        }
-    }) + "\n", encoding="utf-8")
+    dataset.write_text(
+        json.dumps(
+            [
+                {
+                    "id": "chart_01",
+                    "expected_company": "002821",
+                    "expected_metrics": ["roe"],
+                    "min_charts": 1,
+                    "question": "private question",
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+    evidence.write_text(
+        json.dumps(
+            {
+                "id": "chart_01",
+                "question": "private question",
+                "response": {
+                    "status": "success",
+                    "answer": "private answer",
+                    "charts": [str(png)],
+                    "intent": {"period": {"years": [2022, 2023, 2024]}},
+                    "tool_events": [{"tool_name": name} for name in module.EXPECTED_TOOLS],
+                },
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     result = module.audit(dataset, evidence, artifact)
     serialized = json.dumps(result, ensure_ascii=False)
     assert "private question" not in serialized

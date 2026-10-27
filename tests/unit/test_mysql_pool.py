@@ -1,4 +1,3 @@
-from pathlib import Path
 
 from finance_insight.config import Settings
 from finance_insight.tools.sql_tool import FinancialQueryTool
@@ -16,6 +15,7 @@ def test_mysql_connection_creation_error_is_preserved(tmp_path):
         raise ConnectionError("injected mysql connection failure")
 
     tool._mysql_connection = fail
+
     class Dummy:
         companies = []
         metrics = []
@@ -40,6 +40,7 @@ def test_mysql_and_sqlite_failures_are_both_observable(tmp_path):
         raise ConnectionError("injected mysql outage")
 
     tool._mysql_connection = fail
+
     class Dummy:
         companies = []
         metrics = []

@@ -28,15 +28,21 @@ def test_demo_initializer_builds_complete_portable_runtime(tmp_path):
     assert summary["rag"]["vectors"] == 20
 
     with sqlite3.connect(finance_db) as con:
-        assert con.execute(
-            "SELECT COUNT(*) FROM financial_facts WHERE quality_status='synthetic_demo_only'"
-        ).fetchone()[0] == 300
-        assert con.execute(
-            "SELECT COUNT(DISTINCT source_file) FROM financial_facts"
-        ).fetchone()[0] == 1
+        assert (
+            con.execute(
+                "SELECT COUNT(*) FROM financial_facts WHERE quality_status='synthetic_demo_only'"
+            ).fetchone()[0]
+            == 300
+        )
+        assert (
+            con.execute("SELECT COUNT(DISTINCT source_file) FROM financial_facts").fetchone()[0]
+            == 1
+        )
 
     with sqlite3.connect(rag_db) as con:
-        content = con.execute("SELECT content FROM document_chunks ORDER BY chunk_id LIMIT 1").fetchone()[0]
+        content = con.execute(
+            "SELECT content FROM document_chunks ORDER BY chunk_id LIMIT 1"
+        ).fetchone()[0]
         assert "合成演示材料" in content and "不是真实年报" in content
     assert HybridRetriever(rag_db).available()
 
@@ -72,5 +78,3 @@ def test_demo_initializer_refuses_to_overwrite_existing_database(tmp_path):
         assert "拒绝覆盖" in str(exc)
     else:
         raise AssertionError("initializer should refuse to overwrite existing databases")
-
-

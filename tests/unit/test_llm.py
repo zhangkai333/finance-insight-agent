@@ -11,7 +11,9 @@ class FakeIntentLLM:
     def chat(self, messages, *, response_format=None):
         payload = {
             "question": "查询凯莱英2024年营业收入",
-            "companies": [{"stock_code": "002821", "company_name": "凯莱英医药集团（天津）股份有限公司"}],
+            "companies": [
+                {"stock_code": "002821", "company_name": "凯莱英医药集团（天津）股份有限公司"}
+            ],
             "period": {"years": [2024], "period_code": "FY"},
             "metrics": ["revenue"],
             "needs_sql": True,
@@ -23,7 +25,9 @@ class FakeIntentLLM:
             "confidence": 0.95,
             "parser": "fake",
         }
-        return LLMResponse(content=json.dumps(payload, ensure_ascii=False), model="fake-json", usage={})
+        return LLMResponse(
+            content=json.dumps(payload, ensure_ascii=False), model="fake-json", usage={}
+        )
 
 
 class FakeOvereagerChartLLM(FakeIntentLLM):
@@ -31,7 +35,9 @@ class FakeOvereagerChartLLM(FakeIntentLLM):
         response = super().chat(messages, response_format=response_format)
         payload = json.loads(response.content)
         payload["needs_chart"] = True
-        return LLMResponse(content=json.dumps(payload, ensure_ascii=False), model="fake-json", usage={})
+        return LLMResponse(
+            content=json.dumps(payload, ensure_ascii=False), model="fake-json", usage={}
+        )
 
 
 def test_structured_intent_uses_json_mode_and_whitelist():
@@ -58,10 +64,18 @@ def test_openai_compatible_client_retries_and_sends_deepseek_shape():
         return httpx.Response(
             200,
             request=request,
-            json={"model": "deepseek-chat", "choices": [{"message": {"content": "OK"}}], "usage": {"total_tokens": 3}},
+            json={
+                "model": "deepseek-chat",
+                "choices": [{"message": {"content": "OK"}}],
+                "usage": {"total_tokens": 3},
+            },
         )
 
-    config = Settings(llm_api_key="test-secret", llm_base_url="https://api.deepseek.com", llm_model="deepseek-chat")
+    config = Settings(
+        llm_api_key="test-secret",
+        llm_base_url="https://api.deepseek.com",
+        llm_model="deepseek-chat",
+    )
     client = OpenAICompatibleLLMClient(config, transport=httpx.MockTransport(handler))
     result = client.chat([{"role": "user", "content": "ping"}])
     assert result.content == "OK" and len(calls) == 2
