@@ -28,7 +28,9 @@ RANKING_QUERY = """SELECT c.stock_code,c.company_name,rp.report_year,md.metric_c
 
 class FinancialQueryTool:
     name = "financial_query"
-    description = "从结构化财务事实库安全查询年度财务指标；只接受白名单参数，不接受模型生成的自由 SQL。"
+    description = (
+        "从结构化财务事实库安全查询年度财务指标；只接受白名单参数，不接受模型生成的自由 SQL。"
+    )
 
     def __init__(self, config: Settings = settings):
         self.config = config
@@ -226,7 +228,9 @@ class FinancialQueryTool:
                 "scope": "FY 2022-2024 MVP",
                 "backend": effective_backend,
                 "requested_backend": backend,
-                "connection_pool": "mysql_bounded_pool" if effective_backend == "mysql" else "not_applicable",
+                "connection_pool": "mysql_bounded_pool"
+                if effective_backend == "mysql"
+                else "not_applicable",
             }
             if fallback_reason:
                 data["fallback_reason"] = fallback_reason
@@ -266,4 +270,8 @@ class FinancialQueryTool:
                 if self.config.mysql_fallback_to_sqlite and self.db_path.exists():
                     return True, "sqlite", f"mysql_unavailable: {exc}"
                 return False, "mysql", str(exc)
-        return self.db_path.exists(), "sqlite", None if self.db_path.exists() else "database file missing"
+        return (
+            self.db_path.exists(),
+            "sqlite",
+            None if self.db_path.exists() else "database file missing",
+        )

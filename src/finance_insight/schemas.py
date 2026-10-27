@@ -36,8 +36,12 @@ class SubTask(BaseModel):
 
     id: str
     kind: Literal[
-        "financial_query", "financial_analysis", "annual_report_search",
-        "chart_generation", "validation", "clarification",
+        "financial_query",
+        "financial_analysis",
+        "annual_report_search",
+        "chart_generation",
+        "validation",
+        "clarification",
     ]
     objective: str
     dependencies: list[str] = Field(default_factory=list)
@@ -105,6 +109,7 @@ class HealthResponse(BaseModel):
     finance_db: bool
     rag_db: bool
     llm_configured: bool
+    demo_mode: bool = False
     store_backend: str
     finance_backend_requested: str = "sqlite"
     finance_backend_effective: str = "sqlite"

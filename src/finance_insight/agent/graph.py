@@ -50,15 +50,18 @@ class FinanceInsightAgent:
         graph.add_edge(START, "parse")
         graph.add_edge("parse", "planner")
         graph.add_conditional_edges(
-            "planner", self._after_planner,
+            "planner",
+            self._after_planner,
             {"query_sql": "query_sql", "validate": "validate"},
         )
         graph.add_conditional_edges(
-            "query_sql", self._after_query,
+            "query_sql",
+            self._after_query,
             {"calculate": "calculate", "retrieve": "retrieve", "validate": "validate"},
         )
         graph.add_conditional_edges(
-            "calculate", self._after_calculate,
+            "calculate",
+            self._after_calculate,
             {"retrieve": "retrieve", "chart": "chart", "validate": "validate"},
         )
         graph.add_conditional_edges(
@@ -87,11 +90,22 @@ class FinanceInsightAgent:
             "details": {
                 key: result.data[key]
                 for key in (
-                    "backend", "requested_backend", "record_count", "scope",
-                    "retrieval_mode", "embedding_provider", "fallback_reason",
-                    "requested_rag_backend", "effective_rag_backend",
-                    "anomaly_count", "count", "connection_pool", "reranker",
-                    "retrieval_attempts", "candidate_count", "evidence_score",
+                    "backend",
+                    "requested_backend",
+                    "record_count",
+                    "scope",
+                    "retrieval_mode",
+                    "embedding_provider",
+                    "fallback_reason",
+                    "requested_rag_backend",
+                    "effective_rag_backend",
+                    "anomaly_count",
+                    "count",
+                    "connection_pool",
+                    "reranker",
+                    "retrieval_attempts",
+                    "candidate_count",
+                    "evidence_score",
                     "evidence_sufficient",
                     "cause_evidence_sufficient",
                 )
@@ -99,9 +113,12 @@ class FinanceInsightAgent:
             },
         }
         self.tracer.emit(
-            trace_id=state["trace_id"], session_id=state["session_id"],
-            event=result.tool_name, status=result.status,
-            latency_ms=event["latency_ms"], error=result.error,
+            trace_id=state["trace_id"],
+            session_id=state["session_id"],
+            event=result.tool_name,
+            status=result.status,
+            latency_ms=event["latency_ms"],
+            error=result.error,
             retry_attempts=event["retry_attempts"],
         )
         return event
@@ -117,8 +134,11 @@ class FinanceInsightAgent:
                     intent = parse_intent(state["question"], self.config)
                     parse_fallback = True
                     self.tracer.emit(
-                        trace_id=state["trace_id"], session_id=state["session_id"],
-                        event="structured_output_fallback", status="partial", error=str(exc),
+                        trace_id=state["trace_id"],
+                        session_id=state["session_id"],
+                        event="structured_output_fallback",
+                        status="partial",
+                        error=str(exc),
                     )
             else:
                 intent = parse_intent(state["question"], self.config)
@@ -126,16 +146,27 @@ class FinanceInsightAgent:
             previous = state.get("intent")
             if not previous:
                 self.tracer.emit(
-                    trace_id=state["trace_id"], session_id=state["session_id"],
-                    event="parse_intent", status="partial", error=str(exc),
+                    trace_id=state["trace_id"],
+                    session_id=state["session_id"],
+                    event="parse_intent",
+                    status="partial",
+                    error=str(exc),
                 )
                 return {
-                    "intent": None, "clarification_reason": str(exc),
-                    "tool_events": [], "errors": [],
-                    "financial_data": [], "calculations": {}, "anomalies": [],
-                    "rag_chunks": [], "chart_paths": [], "citations": [],
-                    "validation": None, "final_answer": "",
-                    "fallback_used": parse_fallback, "step_count": 1,
+                    "intent": None,
+                    "clarification_reason": str(exc),
+                    "tool_events": [],
+                    "errors": [],
+                    "financial_data": [],
+                    "calculations": {},
+                    "anomalies": [],
+                    "rag_chunks": [],
+                    "chart_paths": [],
+                    "citations": [],
+                    "validation": None,
+                    "final_answer": "",
+                    "fallback_used": parse_fallback,
+                    "step_count": 1,
                 }
             contextual_question = f"{previous.companies[0].stock_code} {state['question']}"
             intent = parse_intent(contextual_question, self.config)
@@ -143,23 +174,37 @@ class FinanceInsightAgent:
             intent.parser = "deterministic-rule-v1+session-context"
             parse_fallback = True
         self.tracer.emit(
-            trace_id=state["trace_id"], session_id=state["session_id"],
-            event="parse_intent", status="success",
-            intent=intent.model_dump(), prompt_version=PROMPT_VERSION,
+            trace_id=state["trace_id"],
+            session_id=state["session_id"],
+            event="parse_intent",
+            status="success",
+            intent=intent.model_dump(),
+            prompt_version=PROMPT_VERSION,
         )
         return {
-            "intent": intent, "tool_events": [], "errors": [],
-            "financial_data": [], "calculations": {}, "anomalies": [],
-            "rag_chunks": [], "chart_paths": [], "citations": [],
-            "validation": None, "final_answer": "",
-            "fallback_used": parse_fallback, "step_count": 1,
+            "intent": intent,
+            "tool_events": [],
+            "errors": [],
+            "financial_data": [],
+            "calculations": {},
+            "anomalies": [],
+            "rag_chunks": [],
+            "chart_paths": [],
+            "citations": [],
+            "validation": None,
+            "final_answer": "",
+            "fallback_used": parse_fallback,
+            "step_count": 1,
         }
 
     def _planner(self, state: AgentState) -> dict[str, Any]:
         plan = build_task_plan(state["question"], state.get("intent"))
         self.tracer.emit(
-            trace_id=state["trace_id"], session_id=state["session_id"],
-            event="plan_task", status="success", strategy=plan.strategy,
+            trace_id=state["trace_id"],
+            session_id=state["session_id"],
+            event="plan_task",
+            status="success",
+            strategy=plan.strategy,
             subtask_count=len(plan.subtasks),
         )
         return {"task_plan": plan, "step_count": state.get("step_count", 0) + 1}
@@ -193,7 +238,9 @@ class FinanceInsightAgent:
     def _retrieve(self, state: AgentState) -> dict[str, Any]:
         intent = state["intent"]
         metric_names = ", ".join(intent.metrics)
-        search_query = f"{state['question']} {metric_names} {' '.join(map(str, intent.period.years))}"
+        search_query = (
+            f"{state['question']} {metric_names} {' '.join(map(str, intent.period.years))}"
+        )
         if state.get("anomalies"):
             search_query += " 主要原因 经营风险 业务驱动"
         result = self._call_tool(
@@ -214,13 +261,17 @@ class FinanceInsightAgent:
 
     def _validate(self, state: AgentState) -> dict[str, Any]:
         report = validate_evidence(
-            state.get("intent"), state.get("financial_data", []),
-            state.get("calculations", {}), state.get("citations", []),
+            state.get("intent"),
+            state.get("financial_data", []),
+            state.get("calculations", {}),
+            state.get("citations", []),
             errors=state.get("errors", []),
         )
         self.tracer.emit(
-            trace_id=state["trace_id"], session_id=state["session_id"],
-            event="validate_evidence", status=report.status,
+            trace_id=state["trace_id"],
+            session_id=state["session_id"],
+            event="validate_evidence",
+            status=report.status,
             warning_count=len(report.warnings),
         )
         return {"validation": report, "step_count": state.get("step_count", 0) + 1}
@@ -246,7 +297,11 @@ class FinanceInsightAgent:
     def _after_query(self, state: AgentState) -> str:
         if not state.get("financial_data"):
             return "validate"
-        if state["intent"].needs_calculation or state["intent"].needs_anomaly_detection or state["intent"].needs_chart:
+        if (
+            state["intent"].needs_calculation
+            or state["intent"].needs_anomaly_detection
+            or state["intent"].needs_chart
+        ):
             return "calculate"
         if state["intent"].needs_rag:
             return "retrieve"
@@ -268,11 +323,17 @@ class FinanceInsightAgent:
             return f"需要补充信息：{plan.clarification_question}"
         if not state.get("financial_data"):
             return "查询失败：" + "；".join(state.get("errors", []) or ["没有匹配数据"])
-        title = "跨公司财务排名" if state["intent"].task_type == "ranking" else f"{state['intent'].companies[0].company_name} 财务分析"
+        title = (
+            "跨公司财务排名"
+            if state["intent"].task_type == "ranking"
+            else f"{state['intent'].companies[0].company_name} 财务分析"
+        )
         lines = [f"## {title}", "", "### 结构化财务事实"]
         if state["intent"].task_type == "ranking":
             for row in state["financial_data"][:10]:
-                lines.append(f"- 第{row['rank']}名 {row['company_name']}：{float(row['metric_value']):,.2f}{row['normalized_unit']}")
+                lines.append(
+                    f"- 第{row['rank']}名 {row['company_name']}：{float(row['metric_value']):,.2f}{row['normalized_unit']}"
+                )
         elif state.get("calculations", {}).get("series"):
             for item in state["calculations"]["series"]:
                 values = "；".join(
@@ -280,11 +341,17 @@ class FinanceInsightAgent:
                     + (f"（同比 {p['yoy_pct']:+.2f}%）" if p.get("yoy_pct") is not None else "")
                     for p in item["points"]
                 )
-                cagr = f"，期间 CAGR {item['cagr_pct']:+.2f}%" if item.get("cagr_pct") is not None else ""
+                cagr = (
+                    f"，期间 CAGR {item['cagr_pct']:+.2f}%"
+                    if item.get("cagr_pct") is not None
+                    else ""
+                )
                 lines.append(f"- {item['metric_name']}：{values}{cagr}")
         else:
             for row in state["financial_data"][:20]:
-                lines.append(f"- {row['report_year']}年 {row['metric_name']}：{float(row['metric_value']):,.2f}{row['normalized_unit']}")
+                lines.append(
+                    f"- {row['report_year']}年 {row['metric_name']}：{float(row['metric_value']):,.2f}{row['normalized_unit']}"
+                )
         if state.get("anomalies"):
             lines.extend(["", "### 异常检测"])
             lines.extend(f"- {item['year']}年：{item['message']}" for item in state["anomalies"])
@@ -300,15 +367,25 @@ class FinanceInsightAgent:
             lines.extend(["", "### 校验提示"])
             lines.extend(f"- {warning}" for warning in validation.warnings)
             rag_event = next(
-                (event for event in state.get("tool_events", []) if event.get("tool_name") == "annual_report_search"),
+                (
+                    event
+                    for event in state.get("tool_events", [])
+                    if event.get("tool_name") == "annual_report_search"
+                ),
                 None,
             )
-            if rag_event and not rag_event.get("details", {}).get("cause_evidence_sufficient", True):
-                lines.append("- 未检索到覆盖全部目标指标的明确原因原文；以上仅为可验证事实，不据此推断原因。")
-        lines.extend([
-            "",
-            "> 说明：数值来自结构化财务事实库，变化率由 Python 计算，原因引用来自年报；本结果用于经营分析，不构成投资建议。",
-        ])
+            if rag_event and not rag_event.get("details", {}).get(
+                "cause_evidence_sufficient", True
+            ):
+                lines.append(
+                    "- 未检索到覆盖全部目标指标的明确原因原文；以上仅为可验证事实，不据此推断原因。"
+                )
+        lines.extend(
+            [
+                "",
+                "> 说明：数值来自结构化财务事实库，变化率由 Python 计算，原因引用来自年报；本结果用于经营分析，不构成投资建议。",
+            ]
+        )
         return "\n".join(lines)
 
     @staticmethod
@@ -318,9 +395,16 @@ class FinanceInsightAgent:
             {
                 key: row.get(key)
                 for key in (
-                    "stock_code", "company_name", "report_year", "metric_code",
-                    "metric_name", "metric_value", "normalized_unit", "source_file",
-                    "source_page", "quality_status",
+                    "stock_code",
+                    "company_name",
+                    "report_year",
+                    "metric_code",
+                    "metric_name",
+                    "metric_value",
+                    "normalized_unit",
+                    "source_file",
+                    "source_page",
+                    "quality_status",
                 )
                 if key in row
             }
@@ -329,14 +413,16 @@ class FinanceInsightAgent:
         calculations = state.get("calculations", {})
         series = []
         for item in calculations.get("series", [])[:20]:
-            series.append({
-                "stock_code": item.get("stock_code"),
-                "company_name": item.get("company_name"),
-                "metric_code": item.get("metric_code"),
-                "metric_name": item.get("metric_name"),
-                "points": item.get("points", [])[:10],
-                "cagr_pct": item.get("cagr_pct"),
-            })
+            series.append(
+                {
+                    "stock_code": item.get("stock_code"),
+                    "company_name": item.get("company_name"),
+                    "metric_code": item.get("metric_code"),
+                    "metric_name": item.get("metric_name"),
+                    "points": item.get("points", [])[:10],
+                    "cagr_pct": item.get("cagr_pct"),
+                }
+            )
         return {
             "facts": facts,
             "calculations": {
@@ -355,7 +441,11 @@ class FinanceInsightAgent:
     def _execution_context(self, state: AgentState) -> dict[str, Any]:
         """Return only the small set of run facts useful to a reviewer."""
         sql_event = next(
-            (event for event in state.get("tool_events", []) if event.get("tool_name") == "financial_query"),
+            (
+                event
+                for event in state.get("tool_events", [])
+                if event.get("tool_name") == "financial_query"
+            ),
             {},
         )
         details = sql_event.get("details", {})
@@ -377,10 +467,16 @@ class FinanceInsightAgent:
             return "partial"
         validation = state.get("validation")
         if validation and validation.status == "failed":
-            return "error" if not state.get("financial_data") and not state.get("citations") else "partial"
+            return (
+                "error"
+                if not state.get("financial_data") and not state.get("citations")
+                else "partial"
+            )
         if validation and validation.status == "warning":
             return "partial"
-        if any(event.get("status") in {"partial", "error"} for event in state.get("tool_events", [])):
+        if any(
+            event.get("status") in {"partial", "error"} for event in state.get("tool_events", [])
+        ):
             return "partial" if state.get("financial_data") or state.get("citations") else "error"
         if not state.get("errors") and (not validation or validation.status == "passed"):
             return "success"
@@ -408,33 +504,57 @@ class FinanceInsightAgent:
                 "validation": state.get("validation"),
             }
             try:
-                answer = self.llm.chat([
-                    {"role": "system", "content": ANSWER_SYSTEM_PROMPT},
-                    {"role": "user", "content": json.dumps(evidence, ensure_ascii=False, default=str)},
-                ]).content
+                answer = self.llm.chat(
+                    [
+                        {"role": "system", "content": ANSWER_SYSTEM_PROMPT},
+                        {
+                            "role": "user",
+                            "content": json.dumps(evidence, ensure_ascii=False, default=str),
+                        },
+                    ]
+                ).content
                 fallback = False
             except Exception as exc:
                 self.tracer.emit(
-                    trace_id=state["trace_id"], session_id=state["session_id"],
-                    event="llm_fallback", status="partial", error=str(exc),
+                    trace_id=state["trace_id"],
+                    session_id=state["session_id"],
+                    event="llm_fallback",
+                    status="partial",
+                    error=str(exc),
                 )
                 return {
-                    "final_answer": answer, "fallback_used": True,
-                    "errors": state.get("errors", []) + [f"LLM 调用失败，已降级为确定性报告: {exc}"],
+                    "final_answer": answer,
+                    "fallback_used": True,
+                    "errors": state.get("errors", [])
+                    + [f"LLM 调用失败，已降级为确定性报告: {exc}"],
                     "step_count": state.get("step_count", 0) + 1,
                 }
         self.tracer.emit(
-            trace_id=state["trace_id"], session_id=state["session_id"],
-            event="synthesize", status="success", fallback_used=fallback,
+            trace_id=state["trace_id"],
+            session_id=state["session_id"],
+            event="synthesize",
+            status="success",
+            fallback_used=fallback,
         )
-        return {"final_answer": answer, "fallback_used": fallback, "step_count": state.get("step_count", 0) + 1}
+        return {
+            "final_answer": answer,
+            "fallback_used": fallback,
+            "step_count": state.get("step_count", 0) + 1,
+        }
 
-    def run(self, question: str, *, session_id: str | None = None, use_llm: bool = True) -> QueryResponse:
+    def run(
+        self, question: str, *, session_id: str | None = None, use_llm: bool = True
+    ) -> QueryResponse:
         session_id = session_id or str(uuid.uuid4())
         trace_id = str(uuid.uuid4())
         initial: AgentState = {
-            "question": question, "session_id": session_id, "trace_id": trace_id,
-            "use_llm": use_llm, "tool_events": [], "errors": [], "step_count": 0,
+            "question": question,
+            "session_id": session_id,
+            "trace_id": trace_id,
+            "use_llm": use_llm,
+            "tool_events": [],
+            "errors": [],
+            "step_count": 0,
         }
         try:
             final = self.graph.invoke(
@@ -443,24 +563,38 @@ class FinanceInsightAgent:
             )
             status = self._response_status(final)
             return QueryResponse(
-                trace_id=trace_id, session_id=session_id, status=status,
-                answer=final.get("final_answer", ""), intent=final.get("intent"),
-                charts=final.get("chart_paths", []), citations=final.get("citations", []),
-                tool_events=final.get("tool_events", []), errors=final.get("errors", []),
+                trace_id=trace_id,
+                session_id=session_id,
+                status=status,
+                answer=final.get("final_answer", ""),
+                intent=final.get("intent"),
+                charts=final.get("chart_paths", []),
+                citations=final.get("citations", []),
+                tool_events=final.get("tool_events", []),
+                errors=final.get("errors", []),
                 fallback_used=final.get("fallback_used", False),
                 evidence_summary=self._evidence_summary(final),
                 execution_context=self._execution_context(final),
-                task_plan=final.get("task_plan"), validation=final.get("validation"),
+                task_plan=final.get("task_plan"),
+                validation=final.get("validation"),
             )
         except Exception as exc:
             self.tracer.emit(
-                trace_id=trace_id, session_id=session_id,
-                event="agent", status="error", error=str(exc),
+                trace_id=trace_id,
+                session_id=session_id,
+                event="agent",
+                status="error",
+                error=str(exc),
             )
             return QueryResponse(
-                trace_id=trace_id, session_id=session_id, status="error",
-                answer=f"任务失败：{exc}", errors=[str(exc)], fallback_used=True,
-                evidence_summary={}, execution_context={"fallback_used": True, "recursion_limit": 12},
+                trace_id=trace_id,
+                session_id=session_id,
+                status="error",
+                answer=f"任务失败：{exc}",
+                errors=[str(exc)],
+                fallback_used=True,
+                evidence_summary={},
+                execution_context={"fallback_used": True, "recursion_limit": 12},
             )
 
     async def arun(
@@ -470,8 +604,13 @@ class FinanceInsightAgent:
         session_id = session_id or str(uuid.uuid4())
         trace_id = str(uuid.uuid4())
         initial: AgentState = {
-            "question": question, "session_id": session_id, "trace_id": trace_id,
-            "use_llm": use_llm, "tool_events": [], "errors": [], "step_count": 0,
+            "question": question,
+            "session_id": session_id,
+            "trace_id": trace_id,
+            "use_llm": use_llm,
+            "tool_events": [],
+            "errors": [],
+            "step_count": 0,
         }
         try:
             final = await self.graph.ainvoke(
@@ -480,23 +619,36 @@ class FinanceInsightAgent:
             )
             status = self._response_status(final)
             return QueryResponse(
-                trace_id=trace_id, session_id=session_id, status=status,
-                answer=final.get("final_answer", ""), intent=final.get("intent"),
-                charts=final.get("chart_paths", []), citations=final.get("citations", []),
-                tool_events=final.get("tool_events", []), errors=final.get("errors", []),
+                trace_id=trace_id,
+                session_id=session_id,
+                status=status,
+                answer=final.get("final_answer", ""),
+                intent=final.get("intent"),
+                charts=final.get("chart_paths", []),
+                citations=final.get("citations", []),
+                tool_events=final.get("tool_events", []),
+                errors=final.get("errors", []),
                 fallback_used=final.get("fallback_used", False),
                 evidence_summary=self._evidence_summary(final),
                 execution_context=self._execution_context(final),
-                task_plan=final.get("task_plan"), validation=final.get("validation"),
+                task_plan=final.get("task_plan"),
+                validation=final.get("validation"),
             )
         except Exception as exc:
             self.tracer.emit(
-                trace_id=trace_id, session_id=session_id,
-                event="agent", status="error", error=str(exc),
+                trace_id=trace_id,
+                session_id=session_id,
+                event="agent",
+                status="error",
+                error=str(exc),
             )
             return QueryResponse(
-                trace_id=trace_id, session_id=session_id, status="error",
-                answer=f"任务失败：{exc}", errors=[str(exc)], fallback_used=True,
-                evidence_summary={}, execution_context={"fallback_used": True, "recursion_limit": 12},
+                trace_id=trace_id,
+                session_id=session_id,
+                status="error",
+                answer=f"任务失败：{exc}",
+                errors=[str(exc)],
+                fallback_used=True,
+                evidence_summary={},
+                execution_context={"fallback_used": True, "recursion_limit": 12},
             )
-

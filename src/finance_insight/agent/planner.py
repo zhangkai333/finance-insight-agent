@@ -8,8 +8,12 @@ from finance_insight.schemas import QueryIntent, SubTask, TaskPlan
 
 def _task(
     kind: Literal[
-        "financial_query", "financial_analysis", "annual_report_search",
-        "chart_generation", "validation", "clarification",
+        "financial_query",
+        "financial_analysis",
+        "annual_report_search",
+        "chart_generation",
+        "validation",
+        "clarification",
     ],
     objective: str,
     dependencies: list[str] | None = None,
@@ -38,7 +42,10 @@ def build_task_plan(question: str, intent: QueryIntent | None) -> TaskPlan:
             planner="deterministic-policy-v1",
         )
 
-    multi_intent = any(word in question for word in ("同时", "并且", "以及", "和", "分别")) and len(intent.metrics) > 1
+    multi_intent = (
+        any(word in question for word in ("同时", "并且", "以及", "和", "分别"))
+        and len(intent.metrics) > 1
+    )
     has_fusion = intent.needs_rag and (intent.needs_calculation or len(intent.metrics) > 1)
     strategy = "multi_intent" if multi_intent else "fusion" if has_fusion else "single"
     subtasks: list[SubTask] = []

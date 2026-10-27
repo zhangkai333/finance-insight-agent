@@ -18,7 +18,13 @@ METRIC_EVIDENCE_TERMS = {
     "operating_cash_flow": ("经营活动产生的现金流量", "经营现金流"),
 }
 CAUSE_TERMS = (
-    "主要系", "主要原因", "原因如下", "原因在于", "所致", "导致", "等因素",
+    "主要系",
+    "主要原因",
+    "原因如下",
+    "原因在于",
+    "所致",
+    "导致",
+    "等因素",
 )
 CHANGE_TERMS = ("下降", "减少", "增长", "增加", "承压", "挤压", "降低", "提升", "变动")
 
@@ -130,9 +136,7 @@ class AnnualReportSearchTool:
             try:
                 rows = [
                     dict(row)
-                    for row in con.execute(
-                        sql, [fts_query, *stock_codes, *years, top_k]
-                    ).fetchall()
+                    for row in con.execute(sql, [fts_query, *stock_codes, *years, top_k]).fetchall()
                 ]
                 for row in rows:
                     row["retrieval_mode"] = "fts5"
@@ -180,7 +184,9 @@ class AnnualReportSearchTool:
             evidence_score = 0.0
             sufficient = False
             final_rewrite = rewrite_financial_query(search_query)
-            needs_cause = any(word in intent.question for word in ("原因", "解释", "为什么", "归因"))
+            needs_cause = any(
+                word in intent.question for word in ("原因", "解释", "为什么", "归因")
+            )
             vector_available = self.retriever.available()
             effective_backend = self.effective_backend
             if not vector_available:
@@ -190,9 +196,7 @@ class AnnualReportSearchTool:
                     effective_backend = "sqlite"
 
             for attempt_number in range(1, self.config.rag_max_retrieval_rounds + 1):
-                rewritten = rewrite_financial_query(
-                    search_query, broaden=attempt_number == 2
-                )
+                rewritten = rewrite_financial_query(search_query, broaden=attempt_number == 2)
                 final_rewrite = rewritten
                 candidates: list[dict] = []
                 if vector_available:
@@ -222,12 +226,20 @@ class AnnualReportSearchTool:
                         terms = METRIC_EVIDENCE_TERMS.get(metric, ())
                         if not terms:
                             continue
-                        candidates.extend(self._fts_search(
-                            " OR ".join(f'"{term}"' for term in terms),
-                            terms=list(terms), stock_codes=stock_codes,
-                            years=years, top_k=top_k * 4,
-                        ))
-                by_id = {row["chunk_id"]: row for row in [*rows, *candidates]}
+                        candidates.extend(
+                            self._fts_search(
+                                " OR ".join(f'"{term}"' for term in terms),
+                                terms=list(terms),
+                                stock_codes=stock_codes,
+                                years=years,
+                                top_k=top_k * 4,
+                            )
+                        )
+                # Preserve richer hybrid records when lexical supplementation returns
+                # the same chunk with a simpler fallback trace.
+                by_id: dict[int, dict] = {}
+                for row in [*rows, *candidates]:
+                    by_id.setdefault(row["chunk_id"], row)
                 ranked = self.reranker.rerank(
                     list(by_id.values()),
                     terms=rewritten.terms,
@@ -277,7 +289,10 @@ class AnnualReportSearchTool:
                         "sufficient": sufficient,
                     }
                 )
-                if sufficient and (not intent.metrics or {row["matched_metric"] for row in rows} >= set(intent.metrics)):
+                if sufficient and (
+                    not intent.metrics
+                    or {row["matched_metric"] for row in rows} >= set(intent.metrics)
+                ):
                     break
 
             citations = [
@@ -312,10 +327,13 @@ class AnnualReportSearchTool:
                 "candidate_count": sum(item["candidate_count"] for item in attempts),
                 "evidence_score": evidence_score,
                 "evidence_sufficient": sufficient,
-                "cause_evidence_sufficient": not needs_cause or all(
+                "cause_evidence_sufficient": not needs_cause
+                or all(
                     any(
                         row["matched_metric"] == metric
-                        and has_cause_evidence(row["excerpt"], METRIC_EVIDENCE_TERMS.get(metric, ()))
+                        and has_cause_evidence(
+                            row["excerpt"], METRIC_EVIDENCE_TERMS.get(metric, ())
+                        )
                         for row in rows
                     )
                     for metric in intent.metrics
