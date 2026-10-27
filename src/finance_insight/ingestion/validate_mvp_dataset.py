@@ -1,10 +1,24 @@
 """Validate the Phase 1 MVP candidate dataset without loading source PDFs into the chat."""
+
 from __future__ import annotations
-import argparse, json, math
+
+import argparse
+import json
+import math
 from pathlib import Path
+
 import pandas as pd
 
-RAW = ["revenue", "net_profit_attributable", "net_profit_excl_non_recurring", "operating_cash_flow", "eps", "roe", "total_assets", "net_assets"]
+RAW = [
+    "revenue",
+    "net_profit_attributable",
+    "net_profit_excl_non_recurring",
+    "operating_cash_flow",
+    "eps",
+    "roe",
+    "total_assets",
+    "net_assets",
+]
 DERIVED = ["net_margin", "operating_cash_margin"]
 EXPECTED_STOCKS = 10
 
@@ -24,7 +38,7 @@ def main() -> None:
     expected_periods = {("FY", 2022), ("FY", 2023), ("FY", 2024)}
     if args.require_q3:
         expected_periods.add(("2025Q3", 2025))
-    actual_periods = set(zip(df.period_code, df.report_year))
+    actual_periods = set(zip(df.period_code, df.report_year, strict=False))
     if df.stock_code.nunique() != EXPECTED_STOCKS:
         errors.append(f"公司数={df.stock_code.nunique()}，预期={EXPECTED_STOCKS}")
     if actual_periods != expected_periods:
@@ -46,12 +60,19 @@ def main() -> None:
     if (roe.normalized_value.abs() > 1000).any():
         errors.append("ROE 超出合理审计阈值 ±1000%")
     # Verify derived values against raw facts.
-    facts = df.pivot_table(index=["stock_code", "period_code", "report_year"], columns="metric_code", values="normalized_value")
+    facts = df.pivot_table(
+        index=["stock_code", "period_code", "report_year"],
+        columns="metric_code",
+        values="normalized_value",
+    )
     for idx, row in facts.iterrows():
         if row.revenue == 0:
             errors.append(f"收入为0，无法校验衍生指标: {idx}")
             continue
-        for code, expected in [("net_margin", row.net_profit_attributable / row.revenue * 100), ("operating_cash_margin", row.operating_cash_flow / row.revenue * 100)]:
+        for code, expected in [
+            ("net_margin", row.net_profit_attributable / row.revenue * 100),
+            ("operating_cash_margin", row.operating_cash_flow / row.revenue * 100),
+        ]:
             if abs(row[code] - expected) > 1e-4:
                 errors.append(f"{code} 公式不一致: {idx}")
     audit = {
@@ -72,4 +93,6 @@ def main() -> None:
     if errors:
         raise SystemExit(1)
 
-if __name__ == "__main__": main()
+
+if __name__ == "__main__":
+    main()

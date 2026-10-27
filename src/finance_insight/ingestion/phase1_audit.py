@@ -1,4 +1,5 @@
 """Create a lightweight Phase 1 audit from official metadata and sample files."""
+
 from __future__ import annotations
 
 import argparse
@@ -30,7 +31,10 @@ def read_schema(path: Path) -> dict[str, list[dict[str, str]]]:
             continue
         headers = [str(value).strip() if value is not None else "" for value in rows[0]]
         result[sheet.title] = [
-            {headers[i]: str(value).strip() if value is not None else "" for i, value in enumerate(row)}
+            {
+                headers[i]: str(value).strip() if value is not None else ""
+                for i, value in enumerate(row)
+            }
             for row in rows[1:]
             if any(value is not None and str(value).strip() for value in row)
         ]
@@ -60,7 +64,11 @@ def main() -> None:
         for row in company_rows[1:]
         if any(value is not None for value in row)
     ]
-    sample_company = next(row for row in companies if str(row.get("股票代码")) == "2821" or str(row.get("股票代码")).zfill(6) == "002821")
+    sample_company = next(
+        row
+        for row in companies
+        if str(row.get("股票代码")) == "2821" or str(row.get("股票代码")).zfill(6) == "002821"
+    )
 
     files = [path for path in formal.rglob("*") if path.is_file()]
     extension_counts = Counter(path.suffix.lower() or "<no_extension>" for path in files)
@@ -71,9 +79,7 @@ def main() -> None:
     report = {
         "scope": "Phase 1 lightweight audit",
         "sample_company": sample_company,
-        "schema_sheets": {
-            sheet: len(rows) for sheet, rows in schema.items()
-        },
+        "schema_sheets": {sheet: len(rows) for sheet, rows in schema.items()},
         "schema_fields": {
             sheet: [row.get("字段名称", "") for row in rows]
             for sheet, rows in schema.items()
@@ -114,7 +120,7 @@ def main() -> None:
     json_path = args.output_dir / "phase1_data_audit.json"
     json_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    md = f"""# Phase 1 数据审计报告\n\n## 样本公司\n\n- 公司：{sample_company.get('公司名称')}\n- 股票代码：{str(sample_company.get('股票代码')).zfill(6)}\n- 行业：{sample_company.get('所属证监会行业')}\n\n## 已发现数据\n\n- 财报 PDF：{financial_pdf_count} 份\n- 研报 PDF：{research_pdf_count} 份\n- 研报 Markdown：{research_md_count} 份\n- 字段定义工作表：{len(schema)} 个\n- B 题样本公司：{len(companies)} 家\n\n## 第一轮指标映射\n\n| metric_code | 中文名 | 原始字段候选 | 单位 |\n|---|---|---|---|\n| revenue | 营业收入 | 核心业绩指标表.total_operating_revenue；利润表.total_operating_revenue | 万元 |\n| net_profit | 净利润 | 核心业绩指标表.net_profit_10k_yuan；利润表.net_profit | 万元 |\n| roe | 净资产收益率 | 核心业绩指标表.roe | % |\n\n## 重要发现\n\n正式数据目录当前没有发现官方财务事实值 CSV/Excel，只有数据库字段定义和财报 PDF。因而后续不能直接把字段说明导入财务事实表；需要以年报 PDF 为来源，用 Python 抽取凯莱英 2022—2024 年的财务数据，再进行交叉核验。\n\n## 下一步\n\n先实现一个年报表格抽取与人工可核验输出：\n\n```text\n年报 PDF → 候选财务表格/文本 → revenue、net_profit、roe → CSV → 人工核验\n```\n\n核验通过后，再写入 MySQL 的原始层和统一事实层。\n"""
+    md = f"""# Phase 1 数据审计报告\n\n## 样本公司\n\n- 公司：{sample_company.get("公司名称")}\n- 股票代码：{str(sample_company.get("股票代码")).zfill(6)}\n- 行业：{sample_company.get("所属证监会行业")}\n\n## 已发现数据\n\n- 财报 PDF：{financial_pdf_count} 份\n- 研报 PDF：{research_pdf_count} 份\n- 研报 Markdown：{research_md_count} 份\n- 字段定义工作表：{len(schema)} 个\n- B 题样本公司：{len(companies)} 家\n\n## 第一轮指标映射\n\n| metric_code | 中文名 | 原始字段候选 | 单位 |\n|---|---|---|---|\n| revenue | 营业收入 | 核心业绩指标表.total_operating_revenue；利润表.total_operating_revenue | 万元 |\n| net_profit | 净利润 | 核心业绩指标表.net_profit_10k_yuan；利润表.net_profit | 万元 |\n| roe | 净资产收益率 | 核心业绩指标表.roe | % |\n\n## 重要发现\n\n正式数据目录当前没有发现官方财务事实值 CSV/Excel，只有数据库字段定义和财报 PDF。因而后续不能直接把字段说明导入财务事实表；需要以年报 PDF 为来源，用 Python 抽取凯莱英 2022—2024 年的财务数据，再进行交叉核验。\n\n## 下一步\n\n先实现一个年报表格抽取与人工可核验输出：\n\n```text\n年报 PDF → 候选财务表格/文本 → revenue、net_profit、roe → CSV → 人工核验\n```\n\n核验通过后，再写入 MySQL 的原始层和统一事实层。\n"""
     md_path = args.output_dir / "phase1_data_audit.md"
     md_path.write_text(md, encoding="utf-8")
     print(md)

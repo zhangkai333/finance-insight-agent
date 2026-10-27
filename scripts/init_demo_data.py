@@ -4,6 +4,7 @@ The generated values and narrative text are fictional and are intended only for
 software demonstrations. Existing databases are never replaced unless --force is
 provided explicitly.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -21,8 +22,8 @@ SRC_DIR = PROJECT_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from finance_insight.ingestion.build_vector_index import build as build_vector_index
-from finance_insight.ingestion.load_sqlite import METRIC_METADATA
+from finance_insight.ingestion.build_vector_index import build as build_vector_index  # noqa: E402
+from finance_insight.ingestion.load_sqlite import METRIC_METADATA  # noqa: E402
 
 COMPANIES: tuple[tuple[str, str, str], ...] = (
     ("002821", "凯莱英", "医药研发服务"),
@@ -54,8 +55,16 @@ def _financial_values(company_index: int, year: int) -> dict[str, float]:
     factors = (1.0, 0.74, 0.93) if company_index == 0 else normal_factors
     revenue = base_revenue * factors[year_index]
 
-    margin = 13.5 + company_index * 0.42 + (-1.8 if year == 2023 and company_index % 3 == 0 else year_index * 0.35)
-    cash_margin = 15.2 + company_index * 0.31 + (-2.4 if year == 2023 and company_index % 4 == 0 else year_index * 0.45)
+    margin = (
+        13.5
+        + company_index * 0.42
+        + (-1.8 if year == 2023 and company_index % 3 == 0 else year_index * 0.35)
+    )
+    cash_margin = (
+        15.2
+        + company_index * 0.31
+        + (-2.4 if year == 2023 and company_index % 4 == 0 else year_index * 0.45)
+    )
     net_profit = revenue * margin / 100
     cash_flow = revenue * cash_margin / 100
     total_assets = revenue * (2.05 + company_index * 0.025)
@@ -85,7 +94,10 @@ def _create_finance_database(db_path: Path, schema_path: Path) -> dict[str, Any]
         con.execute("PRAGMA foreign_keys = ON")
         batch_id = "synthetic_demo_v1"
         payload_marker = json.dumps(
-            {"generator": GENERATOR_VERSION, "notice": "fictional demo data; not actual company results"},
+            {
+                "generator": GENERATOR_VERSION,
+                "notice": "fictional demo data; not actual company results",
+            },
             ensure_ascii=False,
             sort_keys=True,
         )
@@ -209,7 +221,9 @@ def _synthetic_report_chunks(company_index: int, company_name: str) -> tuple[str
     )
     reason = (
         f"【合成演示材料，不是真实年报】{company_name} 指标变化的主要原因："
-        "模型场景假定年度订单确认节奏、虚构产品结构、模拟产能利用率和演示研发投入发生变化。"
+        "营业收入同比出现明显变动，主要原因假定为年度订单确认节奏和虚构产品结构变化；"
+        "归母净利润同比出现明显变动，主要原因假定为模拟产能利用率和演示研发投入变化；"
+        "净资产收益率同比出现明显变动，主要原因假定为虚构产品结构和资产使用效率变化。"
         "这些说明为原创测试文本，与该公司真实经营事实、公告或财务表现无关。"
     )
     return operating, reason
@@ -237,7 +251,9 @@ def _create_rag_database(db_path: Path, schema_path: Path, dimension: int) -> di
                 ),
             )
             document_id = int(cursor.lastrowid)
-            for chunk_index, content in enumerate(_synthetic_report_chunks(company_index, company_name)):
+            for chunk_index, content in enumerate(
+                _synthetic_report_chunks(company_index, company_name)
+            ):
                 chunk_cursor = con.execute(
                     """INSERT INTO document_chunks
                        (document_id, page_number, chunk_index, content, char_count, section_hint)
@@ -326,7 +342,9 @@ def main() -> None:
     parser.add_argument("--finance-schema", type=Path, default=PROJECT_ROOT / "db" / "schema.sql")
     parser.add_argument("--rag-schema", type=Path, default=PROJECT_ROOT / "db" / "rag_schema.sql")
     parser.add_argument("--dimension", type=int, default=256)
-    parser.add_argument("--force", action="store_true", help="显式覆盖 data-dir 中已有的两个 SQLite 数据库")
+    parser.add_argument(
+        "--force", action="store_true", help="显式覆盖 data-dir 中已有的两个 SQLite 数据库"
+    )
     args = parser.parse_args()
     try:
         result = initialize_demo_data(
