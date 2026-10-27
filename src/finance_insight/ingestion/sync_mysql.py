@@ -1,4 +1,5 @@
 """Synchronize the portable SQLite finance demo into the MySQL runtime schema."""
+
 from __future__ import annotations
 
 import argparse
@@ -16,17 +17,28 @@ def read_snapshot(sqlite_path: Path) -> dict[str, list[dict[str, Any]]]:
     with sqlite3.connect(sqlite_path) as connection:
         connection.row_factory = sqlite3.Row
         return {
-            "companies": [dict(row) for row in connection.execute(
-                "SELECT stock_code,company_name,exchange,industry,is_target FROM companies"
-            )],
-            "periods": [dict(row) for row in connection.execute(
-                "SELECT period_code,report_year,report_quarter,period_label,period_start,period_end FROM report_periods"
-            )],
-            "metrics": [dict(row) for row in connection.execute(
-                "SELECT metric_code,metric_name,category,default_unit,value_type,formula,description FROM metric_definitions"
-            )],
-            "facts": [dict(row) for row in connection.execute(
-                """SELECT c.stock_code,rp.period_code,rp.report_year,rp.report_quarter,
+            "companies": [
+                dict(row)
+                for row in connection.execute(
+                    "SELECT stock_code,company_name,exchange,industry,is_target FROM companies"
+                )
+            ],
+            "periods": [
+                dict(row)
+                for row in connection.execute(
+                    "SELECT period_code,report_year,report_quarter,period_label,period_start,period_end FROM report_periods"
+                )
+            ],
+            "metrics": [
+                dict(row)
+                for row in connection.execute(
+                    "SELECT metric_code,metric_name,category,default_unit,value_type,formula,description FROM metric_definitions"
+                )
+            ],
+            "facts": [
+                dict(row)
+                for row in connection.execute(
+                    """SELECT c.stock_code,rp.period_code,rp.report_year,rp.report_quarter,
                           md.metric_code,ff.metric_value,ff.normalized_unit,ff.raw_value,
                           ff.raw_unit,ff.accounting_scope,ff.value_type,ff.source_file,
                           ff.source_page,ff.extraction_method,ff.quality_status
@@ -34,7 +46,8 @@ def read_snapshot(sqlite_path: Path) -> dict[str, list[dict[str, Any]]]:
                    JOIN companies c ON c.company_id=ff.company_id
                    JOIN report_periods rp ON rp.report_period_id=ff.report_period_id
                    JOIN metric_definitions md ON md.metric_id=ff.metric_id"""
-            )],
+                )
+            ],
         }
 
 
@@ -67,7 +80,13 @@ def sync(connection, snapshot: dict[str, list[dict[str, Any]]]) -> dict[str, int
                    VALUES (%s,%s,%s,%s,%s)
                    ON DUPLICATE KEY UPDATE company_name=VALUES(company_name),exchange=VALUES(exchange),
                      industry=VALUES(industry),is_target=VALUES(is_target)""",
-                (row["stock_code"], row["company_name"], row["exchange"], row["industry"], row["is_target"]),
+                (
+                    row["stock_code"],
+                    row["company_name"],
+                    row["exchange"],
+                    row["industry"],
+                    row["is_target"],
+                ),
             )
         for row in snapshot["periods"]:
             cursor.execute(
@@ -76,7 +95,14 @@ def sync(connection, snapshot: dict[str, list[dict[str, Any]]]) -> dict[str, int
                    VALUES (%s,%s,%s,%s,%s,%s)
                    ON DUPLICATE KEY UPDATE period_label=VALUES(period_label),period_start=VALUES(period_start),
                      period_end=VALUES(period_end)""",
-                (row["period_code"], row["report_year"], row["report_quarter"], row["period_label"], row["period_start"], row["period_end"]),
+                (
+                    row["period_code"],
+                    row["report_year"],
+                    row["report_quarter"],
+                    row["period_label"],
+                    row["period_start"],
+                    row["period_end"],
+                ),
             )
         for row in snapshot["metrics"]:
             cursor.execute(
@@ -86,12 +112,24 @@ def sync(connection, snapshot: dict[str, list[dict[str, Any]]]) -> dict[str, int
                    ON DUPLICATE KEY UPDATE metric_name=VALUES(metric_name),category=VALUES(category),
                      default_unit=VALUES(default_unit),value_type=VALUES(value_type),formula=VALUES(formula),
                      description=VALUES(description)""",
-                (row["metric_code"], row["metric_name"], row["category"], row["default_unit"], row["value_type"], row["formula"], row["description"]),
+                (
+                    row["metric_code"],
+                    row["metric_name"],
+                    row["category"],
+                    row["default_unit"],
+                    row["value_type"],
+                    row["formula"],
+                    row["description"],
+                ),
             )
         cursor.execute("SELECT stock_code,company_id FROM companies")
         companies = dict(cursor.fetchall())
-        cursor.execute("SELECT period_code,report_year,report_quarter,report_period_id FROM report_periods")
-        periods = {(code, year, quarter): period_id for code, year, quarter, period_id in cursor.fetchall()}
+        cursor.execute(
+            "SELECT period_code,report_year,report_quarter,report_period_id FROM report_periods"
+        )
+        periods = {
+            (code, year, quarter): period_id for code, year, quarter, period_id in cursor.fetchall()
+        }
         cursor.execute("SELECT metric_code,metric_id FROM metric_definitions")
         metrics = dict(cursor.fetchall())
         for row in snapshot["facts"]:
@@ -107,9 +145,17 @@ def sync(connection, snapshot: dict[str, list[dict[str, Any]]]) -> dict[str, int
                 (
                     companies[row["stock_code"]],
                     periods[(row["period_code"], row["report_year"], row["report_quarter"])],
-                    metrics[row["metric_code"]], row["metric_value"], row["normalized_unit"],
-                    row["raw_value"], row["raw_unit"], row["accounting_scope"], row["value_type"],
-                    row["source_file"], row["source_page"], row["extraction_method"], row["quality_status"],
+                    metrics[row["metric_code"]],
+                    row["metric_value"],
+                    row["normalized_unit"],
+                    row["raw_value"],
+                    row["raw_unit"],
+                    row["accounting_scope"],
+                    row["value_type"],
+                    row["source_file"],
+                    row["source_page"],
+                    row["extraction_method"],
+                    row["quality_status"],
                 ),
             )
     return {key: len(value) for key, value in snapshot.items()}
@@ -117,7 +163,11 @@ def sync(connection, snapshot: dict[str, list[dict[str, Any]]]) -> dict[str, int
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--sqlite", type=Path, default=Path(os.getenv("FINANCE_DB", "/app/data/finance_insight.sqlite3")))
+    parser.add_argument(
+        "--sqlite",
+        type=Path,
+        default=Path(os.getenv("FINANCE_DB", "/app/data/finance_insight.sqlite3")),
+    )
     args = parser.parse_args()
     snapshot = read_snapshot(args.sqlite)
     connection = connect_with_retry()

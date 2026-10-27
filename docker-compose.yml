@@ -1,33 +1,96 @@
 services:
-  finagent:
+  api:
     build: .
     ports:
       - "8000:8000"
     environment:
       APP_ENV: ${APP_ENV:-development}
-      FINANCE_DB: ${FINANCE_DB:-data/finance_insight.sqlite3}
-      RAG_DB: ${RAG_DB:-data/rag.sqlite3}
-      UPLOAD_DATABASE_PATH: ${UPLOAD_DATABASE_PATH:-data/legacy/finagent_runtime.db}
+      DEMO_MODE: "true"
+      FINANCE_BACKEND: mysql
+      FINANCE_DB: /app/data/finance_insight.sqlite3
+      RAG_DB: /app/data/rag.sqlite3
+      RAG_BACKEND: sqlite
+      UPLOAD_DATABASE_PATH: /app/data/legacy/finagent_runtime.db
+      ARTIFACT_DIR: /app/data/artifacts
+      LOG_DIR: /app/data/logs
+      EVAL_DATASET: evals/dataset_demo.json
+      EVAL_OUTPUT: /app/data/evaluation/report.json
+      REDIS_URL: redis://redis:6379/0
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-finance_insight}
+      MYSQL_USER: ${MYSQL_USER:-finance}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-change-me}
+      MYSQL_SYNC_FROM_SQLITE: "true"
+      MYSQL_FALLBACK_TO_SQLITE: "true"
+      MYSQL_POOL_SIZE: ${MYSQL_POOL_SIZE:-4}
+      MYSQL_POOL_ACQUIRE_TIMEOUT_SECONDS: ${MYSQL_POOL_ACQUIRE_TIMEOUT_SECONDS:-5}
       LLM_BASE_URL: ${LLM_BASE_URL:-https://api.deepseek.com}
       LLM_API_KEY: ${LLM_API_KEY:-}
       LLM_MODEL: ${LLM_MODEL:-deepseek-chat}
       LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-30}
       LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.2}
-      RAG_BACKEND: ${RAG_BACKEND:-sqlite}
       EMBEDDING_BASE_URL: ${EMBEDDING_BASE_URL:-https://api.siliconflow.cn/v1}
       EMBEDDING_API_KEY: ${EMBEDDING_API_KEY:-}
       EMBEDDING_MODEL: ${EMBEDDING_MODEL:-BAAI/bge-m3}
-      CHROMA_PATH: ${CHROMA_PATH:-doc/data/.cache/chroma_db}
-      CHROMA_COLLECTION: ${CHROMA_COLLECTION:-report_knowledge}
-      LLM_MAX_RETRIES: ${LLM_MAX_RETRIES:-2}
-      LLM_CIRCUIT_FAILURE_THRESHOLD: ${LLM_CIRCUIT_FAILURE_THRESHOLD:-3}
-      LLM_CIRCUIT_RESET_SECONDS: ${LLM_CIRCUIT_RESET_SECONDS:-60}
-      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-20}
-      MAX_AGENT_RETRIES: ${MAX_AGENT_RETRIES:-1}
-      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      MAX_CONCURRENT_REQUESTS: ${MAX_CONCURRENT_REQUESTS:-2}
+      REQUEST_QUEUE_TIMEOUT_SECONDS: ${REQUEST_QUEUE_TIMEOUT_SECONDS:-15}
     volumes:
       - finagent_data:/app/data
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-finance_insight}
+      MYSQL_USER: ${MYSQL_USER:-finance}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-change-me}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change-root-me}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db/schema.mysql.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h 127.0.0.1 -u root -p\"$${MYSQL_ROOT_PASSWORD}\" --silent",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
     restart: unless-stopped
 
 volumes:
   finagent_data:
+  redis_data:
+  mysql_data:

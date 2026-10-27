@@ -3,6 +3,7 @@
 The script is intentionally separate from the SQLite loader because MySQL uses
 DECIMAL/JSON types and different upsert placeholders.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -52,9 +53,15 @@ def load_rows(connection, rows: list[dict[str, str]], csv_path: Path) -> dict[st
                    ON DUPLICATE KEY UPDATE stock_code = VALUES(stock_code),
                      period_code = VALUES(period_code), report_year = VALUES(report_year),
                      metric_code = VALUES(metric_code), raw_payload = VALUES(raw_payload)""",
-                (batch_id, source_row_number, row["stock_code"], row["period_code"],
-                 as_int(row["report_year"]), row["metric_code"],
-                 json.dumps(row, ensure_ascii=False, sort_keys=True)),
+                (
+                    batch_id,
+                    source_row_number,
+                    row["stock_code"],
+                    row["period_code"],
+                    as_int(row["report_year"]),
+                    row["metric_code"],
+                    json.dumps(row, ensure_ascii=False, sort_keys=True),
+                ),
             )
         for row in rows:
             cursor.execute(
@@ -70,11 +77,19 @@ def load_rows(connection, rows: list[dict[str, str]], csv_path: Path) -> dict[st
                 """INSERT INTO report_periods (period_code, report_year, report_quarter, period_label)
                    VALUES (%s, %s, %s, %s)
                    ON DUPLICATE KEY UPDATE period_label = VALUES(period_label)""",
-                (row["period_code"], as_int(row["report_year"]), as_int(row["report_quarter"]),
-                 f"{row['period_code']}{row['report_year']}"),
+                (
+                    row["period_code"],
+                    as_int(row["report_year"]),
+                    as_int(row["report_quarter"]),
+                    f"{row['period_code']}{row['report_year']}",
+                ),
             )
-        cursor.execute("SELECT period_code, report_year, report_quarter, report_period_id FROM report_periods")
-        periods = {(code, year, quarter): period_id for code, year, quarter, period_id in cursor.fetchall()}
+        cursor.execute(
+            "SELECT period_code, report_year, report_quarter, report_period_id FROM report_periods"
+        )
+        periods = {
+            (code, year, quarter): period_id for code, year, quarter, period_id in cursor.fetchall()
+        }
         for code, meta in METRIC_METADATA.items():
             cursor.execute(
                 """INSERT INTO metric_definitions
@@ -82,13 +97,24 @@ def load_rows(connection, rows: list[dict[str, str]], csv_path: Path) -> dict[st
                    VALUES (%s, %s, %s, %s, %s, %s)
                    ON DUPLICATE KEY UPDATE metric_name = VALUES(metric_name), category = VALUES(category),
                      default_unit = VALUES(default_unit), value_type = VALUES(value_type), formula = VALUES(formula)""",
-                (code, meta["name"], meta["category"], meta["unit"], meta["value_type"], meta["formula"] or None),
+                (
+                    code,
+                    meta["name"],
+                    meta["category"],
+                    meta["unit"],
+                    meta["value_type"],
+                    meta["formula"] or None,
+                ),
             )
         cursor.execute("SELECT metric_code, metric_id FROM metric_definitions")
         metrics = dict(cursor.fetchall())
         for row in rows:
             code = row["metric_code"]
-            period_key = (row["period_code"], as_int(row["report_year"]), as_int(row["report_quarter"]))
+            period_key = (
+                row["period_code"],
+                as_int(row["report_year"]),
+                as_int(row["report_quarter"]),
+            )
             cursor.execute(
                 """INSERT INTO financial_facts
                    (company_id, report_period_id, metric_id, metric_value, normalized_unit,
@@ -101,13 +127,25 @@ def load_rows(connection, rows: list[dict[str, str]], csv_path: Path) -> dict[st
                      value_type = VALUES(value_type), source_file = VALUES(source_file),
                      source_page = VALUES(source_page), extraction_method = VALUES(extraction_method),
                      quality_status = VALUES(quality_status)""",
-                (companies[row["stock_code"]], periods[period_key], metrics[code],
-                 as_number(row["normalized_value"]), row["normalized_unit"],
-                 as_number(row["raw_value"]), row["raw_unit"], "consolidated",
-                 METRIC_METADATA[code]["value_type"], row["source_file"],
-                 as_int(row["source_page"]), row["extraction_method"], row["quality_status"]),
+                (
+                    companies[row["stock_code"]],
+                    periods[period_key],
+                    metrics[code],
+                    as_number(row["normalized_value"]),
+                    row["normalized_unit"],
+                    as_number(row["raw_value"]),
+                    row["raw_unit"],
+                    "consolidated",
+                    METRIC_METADATA[code]["value_type"],
+                    row["source_file"],
+                    as_int(row["source_page"]),
+                    row["extraction_method"],
+                    row["quality_status"],
+                ),
             )
-        cursor.execute("UPDATE ingestion_batches SET status = 'loaded' WHERE batch_id = %s", (batch_id,))
+        cursor.execute(
+            "UPDATE ingestion_batches SET status = 'loaded' WHERE batch_id = %s", (batch_id,)
+        )
     return {"batch_id": batch_id, "csv_rows": len(rows), "facts": len(rows)}
 
 
@@ -126,8 +164,13 @@ def main() -> None:
     except ImportError as exc:
         raise SystemExit("未安装 pymysql；MySQL 服务可用后执行: pip install pymysql") from exc
     connection = pymysql.connect(
-        host=args.host, port=args.port, user=args.user, password=args.password,
-        database=args.database, charset="utf8mb4", autocommit=False,
+        host=args.host,
+        port=args.port,
+        user=args.user,
+        password=args.password,
+        database=args.database,
+        charset="utf8mb4",
+        autocommit=False,
     )
     try:
         execute_schema(connection, args.schema)
@@ -143,5 +186,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-
