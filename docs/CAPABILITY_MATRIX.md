@@ -17,6 +17,9 @@ integrations that require external credentials or infrastructure.
 | sqlite-vec vector search | Yes | Yes | Hybrid RRF retrieval |
 | Chroma + BM25 | Optional local profile | Yes | Hashing fallback indexed 20 chunks |
 | BGE-M3 embeddings | Optional | Adapter only | Requires `EMBEDDING_API_KEY` |
+| OpenAI-compatible LLM API | Optional | Contract-tested | Chat request, auth, JSON mode and retry tests |
+| Third-party Embedding API | Optional | Adapter only | Requires `EMBEDDING_API_KEY` and a compatible endpoint |
+| Local Ollama API | Optional | Documented adapter | OpenAI-compatible local base URL |
 | Reranking | Yes | Yes | Lexical metadata reranker |
 | MCP stdio | Yes | Yes | `financial_query` and `annual_report_search` |
 | Docker Compose | Yes | Yes | API, MySQL and Redis healthy |

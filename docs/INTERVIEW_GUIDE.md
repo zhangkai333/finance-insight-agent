@@ -84,6 +84,15 @@ explicit and testable.
 The LLM cannot submit SQL. It can only propose allowlisted companies, years, and
 metrics. The tool constructs parameterized queries from that typed intent.
 
+**Does the project call external model APIs?**
+
+Yes. The application includes an OpenAI-compatible Chat Completions client and an
+OpenAI-compatible Embeddings client. They support Bearer authentication,
+timeouts, retries, batching and deterministic fallback. The public demo does not
+require a key, and the same code can target a local Ollama endpoint, DeepSeek,
+SiliconFlow, OpenAI or another compatible provider. See
+`docs/API_INTEGRATION.md` for configuration and verification commands.
+
 **How do you know RAG is correct?**
 
 The current checks verify metric evidence, cause wording, page metadata, and

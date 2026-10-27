@@ -14,7 +14,7 @@
 
 > **数字有来源，计算可复核，解释有依据。** SQL 提供财务事实，Python 完成计算，RAG 提供年报证据，LLM 负责理解与表达。
 
-[岗位匹配](#岗位能力匹配) · [个人职责](#个人负责范围) · [快速启动](#快速启动) · [效果截图](#界面与运行效果) · [系统架构](#系统架构) · [验证结果](#验证结果)
+[岗位匹配](#岗位能力匹配) · [个人职责](#个人负责范围) · [快速启动](#快速启动) · [效果截图](#界面与运行效果) · [系统架构](#系统架构) · [模型与 API](#本地运行与模型-api) · [验证结果](#验证结果)
 
 ![FinanceInsight 分析工作台](docs/assets/workbench.png)
 
@@ -32,7 +32,7 @@
 
 | 目标岗位 | JD 常见关键词 | 本仓库对应证据 |
 |:--- |:--- |:--- |
-| AI 应用开发工程师 | LLM 应用、结构化输出、工作流编排、Tool Calling、会话、评测、降级 | Pydantic `QueryIntent`、LangGraph 条件路由、多工具调用、有限重试、Trace、6 题回归评测与确定性 fallback |
+| AI 应用开发工程师 | LLM 应用、第三方模型 API、结构化输出、工作流编排、Tool Calling、会话、评测、降级 | OpenAI-compatible Chat Completions/Embeddings 客户端、Pydantic `QueryIntent`、LangGraph 条件路由、多工具调用、有限重试、Trace、6 题回归评测与确定性 fallback |
 | RAG 系统工程师 | 文档解析、切分、Embedding、向量检索、BM25、混合召回、Rerank、引用 | 按页切片、公司/年份元数据过滤、SQLite FTS5 + `sqlite-vec`、Chroma + BM25、RRF 融合、重排、文件/页码/chunk 引用 |
 | AI 全栈工程师 | 前端、API、异步任务、数据库、缓存、容器化、CI | 响应式 Web 工作台、FastAPI/Swagger、异步评测任务、MySQL、Redis、Docker Compose、GitHub Actions |
 
@@ -285,10 +285,25 @@ python -m ruff check src tests scripts
 
 向量检索安装方式为 `python -m pip install -e ".[dev,production-rag]"`，配置见 [.env.example](.env.example)。MCP 演示入口为 `python scripts/mcp_client_demo.py`。实际后端与降级信息可通过 `/health` 和工具轨迹查看。
 
+## 本地运行与模型 API
+
+项目默认不需要任何外部 Key。以下三种模式都受支持：
+
+| 模式 | 模型与向量 | 是否依赖第三方 |
+|:--- |:--- |:--- |
+| 默认本地模式 | 确定性解析、模板报告、本地 hashing embedding | 否 |
+| 本地模型模式 | Ollama 的 OpenAI-compatible Chat/Embeddings API | 否 |
+| 第三方模型模式 | DeepSeek、SiliconFlow、OpenAI 或其他兼容服务 | 是，按需配置 |
+
+大模型客户端调用 `/chat/completions`，Embedding 客户端调用 `/embeddings`，均支持 Bearer
+鉴权、超时、重试、批处理和失败降级。完整配置、调用链、验证命令和能力边界见
+[模型与 API 接入](docs/API_INTEGRATION.md)。
+
 ## 延伸阅读
 
 - [架构设计](docs/ARCHITECTURE.md)：模块职责与工作流设计。
 - [API 文档](docs/API.md)：查询、任务及导入接口。
+- [模型与 API 接入](docs/API_INTEGRATION.md)：本地模型、第三方模型、Embedding API 与降级策略。
 - [能力矩阵](docs/CAPABILITY_MATRIX.md)：哪些能力已经实测，哪些仍依赖外部 Key 或环境。
 - [作品集评估](docs/PORTFOLIO_REVIEW.md)：从 HR、产品和技术面试官视角给出的可展示结论、追问与改进优先级。
 - [面试讲解稿](docs/INTERVIEW_GUIDE.md)：90 秒介绍、演示顺序与高频技术问答。
