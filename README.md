@@ -296,7 +296,8 @@ python -m ruff check src tests scripts
 | 第三方模型模式 | DeepSeek、SiliconFlow、OpenAI 或其他兼容服务 | 是，按需配置 |
 
 大模型客户端调用 `/chat/completions`，Embedding 客户端调用 `/embeddings`，均支持 Bearer
-鉴权、超时、重试、批处理和失败降级。完整配置、调用链、验证命令和能力边界见
+鉴权、超时、重试、批处理和失败降级。配置有效的兼容 API 地址、Key 和模型名后，即可运行完整的
+Chat Completions + Embeddings + RAG 链路，无需修改业务代码。完整配置、调用链、验证命令和能力边界见
 [模型与 API 接入](docs/API_INTEGRATION.md)。
 
 ## 延伸阅读

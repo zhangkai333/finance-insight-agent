@@ -102,8 +102,10 @@ chunk-level Recall@K, nDCG, and human citation review.
 **What is still incomplete?**
 
 The public demo uses synthetic data. MySQL, Redis, Docker, MCP, and Chroma with
-hashing embeddings were validated locally. A real LLM provider, remote BGE-M3,
-authorization, and production observability still require separate validation.
+hashing embeddings were validated locally. The same workflow can enable a
+compatible LLM and Embedding provider through environment variables. The public
+CI stays in deterministic mode so no credentials or paid API calls are needed;
+authorization and production observability remain separate hardening work.
 
 ## Claims to Avoid
 

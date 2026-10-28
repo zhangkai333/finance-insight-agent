@@ -148,8 +148,9 @@ python scripts/benchmark_deepseek.py --requests 5
 - Chroma + BM25 hashing embedding；
 - SQLite FTS5 + `sqlite-vec` 本地混合检索。
 
-真实第三方 Chat Completions 和 Embedding 调用需要用户自己的 Key，不会放入 CI。它们已经完成
-客户端接入，但不应在未实际调用时宣称“真实 API 已端到端验收”。
+真实第三方 Chat Completions 和 Embedding 调用需要用户自己的 Key，不会放入 CI。配置有效的
+兼容 API 地址、Key 和模型名后，客户端可以运行完整的模型与 Embedding 调用链路；公开 CI 默认
+运行本地模式，避免提交凭据和产生外部费用。
 
 ## 8. 安全要求
 
